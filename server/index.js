@@ -9,7 +9,9 @@ const app = express();
 
 app.get('/',(req,res)=>{
 
-   res.status(200).json({success:true, message:"SNOOK-CODERS"})
+   res.status(200).json({success:true, message:"Hey-SNOOK-CODERS-Changes"})
+
+
 
 })
 
