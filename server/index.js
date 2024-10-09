@@ -19,7 +19,8 @@ app.get('/signup',(req,res)=>{
    res.json({
     success:true,
 
-    message:"sign up Aditya"
+
+    message:"sign up Deepak"
 
    })
 })
