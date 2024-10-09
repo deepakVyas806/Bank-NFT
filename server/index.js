@@ -15,6 +15,12 @@ app.get('/',(req,res)=>{
 
 })
 
+app.get('/signup',(req,res)=>{
+   res.json({
+    success:true,
+    message:"sign up page"
+   })
+})
 
 app.listen(PORT,()=>{
     console.log(`server started at ${PORT}`)
