@@ -18,7 +18,11 @@ app.get('/',(req,res)=>{
 app.get('/signup',(req,res)=>{
    res.json({
     success:true,
+<<<<<<< HEAD
     message:"sign up Demo"
+=======
+    message:"sign up Aditya"
+>>>>>>> signup
    })
 })
 
