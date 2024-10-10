@@ -1,32 +1,34 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import router from './router/general.route.js';
 
 dotenv.config(); // configuration of dot env
 const PORT = process.env.PORT || 4000 ;
 
 const app = express();
 
+//Middlewartes
+app.use(express.json());
+
 app.get('/',(req,res)=>{
-
-  
-
-
    res.status(200).json({success:true, message:"GET READY SNOOK_CODERS"})
-
-
 })
 
-app.get('/signup',(req,res)=>{
-   res.json({
-    success:true,
+app.use('/api/v1',router)
 
 
-    message:"sign up Deepak"
-
-   })
+mongoose.connect(process.env.MONGO_DB_URI)
+.then((resp)=>{
+   if(resp){
+      app.listen(PORT,()=>{
+         console.log(`server started at ${PORT} and Databasr connected also`)
+     })
+   }
+   console.log('database not connected')
+     
+})
+.catch((err)=>{
+   console.log(err.message);
 })
 
-app.listen(PORT,()=>{
-    console.log(`server started at ${PORT}`)
-})
