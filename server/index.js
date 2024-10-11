@@ -26,7 +26,7 @@ app.get("/signup", (req, res) => {
 app.use('/api/v1',router)
 
 try {
-  console.log("mongo db url is ",process.env.MONGO_URL)
+  
   const db = await mongoose.connect(process.env.MONGO_URL);
   if (db) {
     app.listen(PORT, () => {
