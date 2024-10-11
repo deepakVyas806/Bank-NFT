@@ -31,3 +31,4 @@ mongoose.connect('mongodb+srv://root:root@cluster0.qlsvim7.mongodb.net/BET-APP?r
    console.log(err.message);
 })
 
+export const handler = serverless(app);
