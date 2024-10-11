@@ -18,7 +18,7 @@ app.get('/',(req,res)=>{
 app.use('/api/v1',router)
 
 
-mongoose.connect(process.env.MONGO_DB_URI)
+mongoose.connect('mongodb+srv://root:root@cluster0.qlsvim7.mongodb.net/BET-APP?retryWrites=true&w=majority&appName=Cluster0')
 .then(()=>{
 
       app.listen(PORT,()=>{
