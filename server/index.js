@@ -26,7 +26,8 @@ app.get("/signup", (req, res) => {
 app.use('/api/v1',router)
 
 try {
-  const db = await mongoose.connect('mongodb+srv://root:root@cluster0.qlsvim7.mongodb.net/BET-APP?retryWrites=true&w=majority&appName=Cluster0');
+  
+  const db = await mongoose.connect(process.env.MONGO_URL);
   if (db) {
     app.listen(PORT, () => {
       console.log(`server started at ${PORT} and databse also connected`);
