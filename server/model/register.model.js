@@ -22,6 +22,10 @@ const register_schema = new mongoose.Schema({
         type:Number,
         default:'********234'
     },
+    otp:{
+        type:Number,
+        default:"****"
+    },
     referral:{
         type:String,
         default:'root@referral'

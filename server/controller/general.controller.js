@@ -5,7 +5,7 @@ import { register_model } from "../model/register.model.js";
 
 const register = async(req,res)=>{
 
-   const {username,fname,lname,email,password,cpassword,phone,referral} = req.body;
+   const {username,fname,lname,email,password,cpassword,phone,otp,referral} = req.body;
 
    try {
 
@@ -35,6 +35,7 @@ const register = async(req,res)=>{
         lastname:lname,
         email:email,
         phone:phone,
+        otp:otp,
         referral:referral,
         password:password,
         cpassword:cpassword
