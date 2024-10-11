@@ -34,6 +34,10 @@ const register_schema = new mongoose.Schema({
         type:String,
         default:'root@passowrd'
     },
+    otp:{
+       type:String,
+       default:'***123'
+    },
     cpassword:{
         type:String,
         default:'root@cpassowrd'
