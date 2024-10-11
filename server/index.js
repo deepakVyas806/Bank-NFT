@@ -19,14 +19,13 @@ app.use('/api/v1',router)
 
 
 mongoose.connect(process.env.MONGO_DB_URI)
-.then((resp)=>{
-   if(resp){
+.then(()=>{
+
       app.listen(PORT,()=>{
          console.log(`server started at ${PORT} and Databasr connected also`)
-     })
-   }
-   console.log('database not connected')
-     
+      }
+      )
+  
 })
 .catch((err)=>{
    console.log(err.message);
