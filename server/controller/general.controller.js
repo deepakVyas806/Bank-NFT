@@ -6,10 +6,13 @@ import { register_model } from "../model/register.model.js";
 const register = async(req,res)=>{
 
    const {username,fname,lname,email,password,cpassword,phone,otp,referral} = req.body;
-
+   
    try {
-
-
+  
+    if(req.Details.otp!=otp){
+      return  res.status(500).json({success:false,message:"otp not match ",sessionDetails:req.Details});
+    }
+     
     //email check 
     const userEmail = await register_model.findOne({email:email});
     if(userEmail){
@@ -28,7 +31,7 @@ const register = async(req,res)=>{
        return  res.status(500).json({success:false,message:"password and confirm password should be same"});
      } 
 
-   
+
     const registerUser =  await  register_model.create({
         username:username,
         firstname:fname,
