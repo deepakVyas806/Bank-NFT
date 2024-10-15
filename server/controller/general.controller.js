@@ -95,4 +95,16 @@ const register = async (req, res) => {
   }
 };
 
-export { register };
+const login = (req, res) => {
+  try {
+    console.log("login");
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "error in catch of login",
+      error: error.message,
+    });
+  }
+};
+
+export { register, login };

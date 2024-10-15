@@ -1,7 +1,7 @@
-import session from "express-session";
 import dotenv from "dotenv";
 dotenv.config();
 import nodeMailer from "nodemailer";
+import { sessionData } from "../model/session.model.js";
 import { register_model } from "../model/register.model.js";
 
 const mail_otp = async (req, res) => {
@@ -28,28 +28,15 @@ const mail_otp = async (req, res) => {
       },
     });
 
-    // Initialize registerSession object in session if it doesn't exist
-    if (!req.session.registerSession) {
-      req.session.registerSession = {};
-    }
+    //  check entry in databse
 
-    // Check if the email already has a session
-    if (req.session.registerSession[email]) {
-      const userSession = req.session.registerSession[email];
+    const session_db_data = await sessionData.findOne({ email: email });
 
-      // If the session has expired, delete it and allow a new OTP to be created
-      if (Date.now() > userSession.expireAt) {
-        delete req.session.registerSession[email];
-      } else {
-        // If the session is still valid, return a message and do not resend the OTP
-        return res.status(200).json({
-          success: true,
-          message:
-            "OTP is already sent. Please wait for 5 minute for it to expire.",
-          registerSession: userSession,
-          sessionDetails: req.session,
-        });
-      }
+    if (session_db_data) {
+      return res.status(500).json({
+        success: false,
+        message: "wait for 5 minutes otp is not expired yet ",
+      });
     }
 
     // Generate a new OTP if the session does not exist or has expired
@@ -125,48 +112,17 @@ const mail_otp = async (req, res) => {
         </html>
         `,
     });
-
-    // Store the OTP session for this specific email
-    req.session.registerSession[email] = {
-      register_otp: otp,
+    //console.log(`${email},${otp}`);
+    const new_session = await sessionData.create({
       email: email,
-      expireAt: Date.now() + 5 * 60 * 1000, // OTP expires in 5 minute
-    };
-
-    // Save the session before responding
-    req.session.save((err) => {
-      if (err) {
-        return res.status(500).json({
-          success: false,
-          message: "Error saving session data.",
-          error: err.message,
-        });
-      }
-
-      // Respond with success message
-      res.status(200).json({
-        success: true,
-        message: "OTP has been successfully sent to your email.",
-        registerSession: req.session.registerSession[email],
-        sessionDetails: req.session,
-      });
+      otp: otp,
     });
 
-    // Set timeout to delete the session after 1 minute
-    setTimeout(() => {
-      if (req.session.registerSession[email]) {
-        delete req.session.registerSession[email];
-        req.session.save((err) => {
-          if (err) {
-            console.error("Error deleting expired session:", err);
-          } else {
-            console.log(
-              `OTP session for ${email} has been successfully deleted`
-            );
-          }
-        });
-      }
-    }, 5 * 60 * 1000); // after 5 minute this sesisoj is dlete
+    return res.status(200).json({
+      success: true,
+      message: "otp send and session created successfull",
+      sessionDetails: new_session,
+    });
   } catch (error) {
     // Handle any errors
     return res.status(500).json({
