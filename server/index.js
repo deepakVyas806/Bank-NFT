@@ -5,6 +5,7 @@ import router from "./router/general.route.js";
 import MongoStore from "connect-mongo";
 import session from 'express-session';
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 
 dotenv.config(); // configuration of dot env
@@ -33,7 +34,7 @@ app.use(session({
     })
     
 }))
-
+app.use(cookieParser())
 
 
 app.get("/", (req, res) => {
