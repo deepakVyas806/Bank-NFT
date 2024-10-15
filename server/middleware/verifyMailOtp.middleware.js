@@ -5,6 +5,7 @@ const verify_mail_otp = async (req, res, next) => {
 
   try {
     const verifySessionData = await sessionData.findOne({ email: email });
+    console.log('verify session middleware',verifySessionData)
     if (!verifySessionData) {
       return res.status(500).json({
         sucess: false,
