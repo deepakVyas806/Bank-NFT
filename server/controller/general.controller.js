@@ -42,15 +42,15 @@ const register = async (req, res) => {
 
     //mail otp verification
 
-    const sessionData = req.verifyregisterSession;
-    if (
-      sessionData[email].email !== email ||
-      sessionData[email].register_otp !== otp
-    ) {
-      return res.status(500).json({ success: false, message: "otp not match" });
-    }
+    // const sessionData = req.verifyregisterSession;
+    // if (
+    //   sessionData[email].email !== email ||
+    //   sessionData[email].register_otp !== otp
+    // ) {
+    //   return res.status(500).json({ success: false, message: "otp not match" });
+    // }
 
-    // if(email!==req.verifyregisterSession.)
+    // // if(email!==req.verifyregisterSession.)
 
     //phone check
     const userPhone = await register_model.findOne({ phone: phone });
