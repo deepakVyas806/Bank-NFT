@@ -53,7 +53,7 @@ app.get("/signup", (req, res) => {
 app.use("/api/v1", router);
 
 try {
-  const db = await mongoose.connect(process.env.MONGO_DB_URL);
+  const db = await mongoose.connect(process.env.MONGO_URL);
   if (db) {
     app.listen(PORT, () => {
       console.log(`server started at ${PORT} and databse also connected`);
