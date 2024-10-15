@@ -10,9 +10,10 @@ import {
 } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../ApiServices/Axios";
-// import { showToast } from "../../ToastServices/ToastServices";
+import { showToast } from "../../ToastServices/ToastServices";
 import OTPInput from "../../Components/Input/OTPInput";
 import { useEffect, useState } from "react";
+import Loader from "../../Components/Loader/Loader";
 
 // Yup validation schema
 const validationSchema = Yup.object({
@@ -45,13 +46,18 @@ export default function SignUpForm() {
 
   const [resendOtp, setResendOtp] = useState(false);
   const [timer, setTimer] = useState(30);
+  const [loading, setIsLoading] = useState(false);
 
-  const handleSendOtp = async () => {
+  const handleSendOtp = async (values: any) => {
+    if (values?.email == "") {
+      showToast("Please enter your email first.", "error", 1000);
+      return;
+    }
     try {
       console.log("Sending OTP...");
       // Example: API call logic to send OTP
-      const response = await axiosPublic.post("api/v1/send-otp", {
-        phone: "6377280960",
+      const response = await axiosPublic.post("api/v1/send-mail-register", {
+        email: values?.email,
       });
       console.log(response);
       setResendOtp(true);
@@ -73,8 +79,9 @@ export default function SignUpForm() {
     return () => clearInterval(interval);
   }, [resendOtp, timer]);
 
-  const SignUpAsync = async (values: any) => {
-    console.log(values);
+  const SignUpAsync = async (values: any, resetForm: any) => {
+    // console.log(values);
+    setIsLoading(true);
     try {
       const response = await axiosPublic.post("api/v1/register", {
         username: values.username,
@@ -88,7 +95,14 @@ export default function SignUpForm() {
         // lname: "parashar",
       });
       console.log(response.data);
-    } catch (error) {
+      resetForm();
+      navigate("/login");
+      setIsLoading(false);
+      showToast("Registration successfull", "success", 1000);
+    } catch (error: any) {
+      console.log(error);
+      setIsLoading(false);
+      showToast(error?.response?.data?.message, "error", 1000);
       console.error("Error fetching public data", error);
     }
   };
@@ -118,12 +132,12 @@ export default function SignUpForm() {
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting, resetForm }) => {
                   // showToast('This is a warning!', 'warning', 4000);
-                  SignUpAsync(values);
-                  resetForm();
+                  SignUpAsync(values, resetForm);
+                  // resetForm();
                   setSubmitting(false);
                 }}
               >
-                {({ isSubmitting }) => (
+                {({ isSubmitting, values }) => (
                   <Form>
                     <div className="space-y-1">
                       <div>
@@ -136,18 +150,6 @@ export default function SignUpForm() {
                           required
                         />
                       </div>
-
-                      <div>
-                        <AuthInput
-                          label="Mobile"
-                          name="mobile"
-                          placeholder="Enter mobile number"
-                          prefix="+91"
-                          icon={<AiOutlineMobile />}
-                          required
-                        />
-                      </div>
-
                       <div>
                         <AuthInput
                           label="Email"
@@ -169,7 +171,18 @@ export default function SignUpForm() {
                           required
                           resendOtp={resendOtp}
                           timer={timer}
-                          handleSendOtp={handleSendOtp}
+                          handleSendOtp={() => handleSendOtp(values)}
+                        />
+                      </div>
+
+                      <div>
+                        <AuthInput
+                          label="Mobile"
+                          name="mobile"
+                          placeholder="Enter mobile number"
+                          prefix="+91"
+                          icon={<AiOutlineMobile />}
+                          required
                         />
                       </div>
 
@@ -205,7 +218,7 @@ export default function SignUpForm() {
                           prefix=""
                           icon={<AiOutlineUser />}
                         />
-                      </div>                      
+                      </div>
 
                       <div>
                         <button
@@ -213,7 +226,16 @@ export default function SignUpForm() {
                           type="submit"
                           disabled={isSubmitting}
                         >
-                          Sign up
+                          {loading ? (
+                            <Loader
+                              loading={loading}
+                              type={"beat"}
+                              size={80}
+                              color="#ffffff"
+                            />
+                          ) : (
+                            "Sign up"
+                          )}
                         </button>
                         <button
                           onClick={() => navigate("/login")}

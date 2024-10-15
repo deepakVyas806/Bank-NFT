@@ -32,7 +32,10 @@ const OTPInput: React.FC<OTPInputProps> = ({
     <div className="">
       {/* Label */}
       {label && (
-        <label htmlFor={name} className="text-xs mb-1 text-inputlabel font-normal">
+        <label
+          htmlFor={name}
+          className="text-xs mb-1 text-inputlabel font-normal"
+        >
           {label} {required && <span className="text-red-500">*</span>}
         </label>
       )}
@@ -45,7 +48,9 @@ const OTPInput: React.FC<OTPInputProps> = ({
         {/* Prefix (if any) */}
         {prefix && (
           <div className="flex items-center">
-            <span className="pr-2 text-blue-500 text-xs font-medium">{prefix}</span>
+            <span className="pr-2 text-blue-500 text-xs font-medium">
+              {prefix}
+            </span>
           </div>
         )}
 
@@ -63,21 +68,21 @@ const OTPInput: React.FC<OTPInputProps> = ({
         />
 
         {/* Send OTP / Timer */}
-        {name === "code" && (
-          <div className="pl-2">
-            {!resendOtp ? (
-              <button
-                type="button"
-                onClick={handleSendOtp}
-                className="text-blue-500 text-xs font-medium hover:underline focus:outline-none"
-              >
-                Send
-              </button>
-            ) : (
-              <span className="text-gray-500 text-xs">{`Resend in ${timer}s`}</span>
-            )}
-          </div>
-        )}
+        {name === "code" &&
+          // <div className="pl-2">
+          (!resendOtp ? (
+            <button
+              type="button"
+              onClick={handleSendOtp}
+              className="text-blue-500 text-xs font-medium hover:underline focus:outline-none"
+            >
+              Send
+            </button>
+          ) : (
+            <span className="text-gray-500 text-xs">{`Resend in ${timer}s`}</span>
+          ))
+          // </div>
+        }
       </div>
 
       {/* Error Message */}
