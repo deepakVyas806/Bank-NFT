@@ -1,5 +1,6 @@
 import express from 'express';
-import { register,login} from '../controller/general.controller.js';
+import { register,login, refresh} from '../controller/general.controller.js';
+import { verifyToken } from '../middleware/verifyToken.js';
 
 // import send_otp_twilio from '../controller/twilo.controller.js';
 // import {verifyTwilio} from '../middleware/verifyTwilio.js'
@@ -15,6 +16,9 @@ router.post('/register',register);
 
 //login fucntiuonality
 router.post('/login',login)
+
+//refresh token 
+router.post('/refresh',verifyToken,refresh)
 
 
 export default router;

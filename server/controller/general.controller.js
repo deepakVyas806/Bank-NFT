@@ -95,7 +95,7 @@ const login = async(req,res)=>{
           email:existUser.email
           
         },process.env.access_token,{
-          expiresIn:'20m'
+          expiresIn:'1m'
         })
 
         //refresh token 
@@ -103,7 +103,7 @@ const login = async(req,res)=>{
           _id:existUser._id,
           email:existUser.email
           
-        },process.env.refreshToken,{
+        },process.env.refresh_token,{
           expiresIn:'7d'
         })
         
@@ -123,7 +123,7 @@ const login = async(req,res)=>{
 
 
         //set the cookie
-      res.cookie('refreshToken', refresh_token, {
+      res.cookie('refresh_token', refresh_token, {
         httpOnly: true, // Ensures the cookie is not accessible via JavaScript
         secure: true, // Set true for HTTPS in production
         maxAge: 7 * 24 * 60 *  60 * 1000, // 7 days cookie store 
@@ -132,7 +132,7 @@ const login = async(req,res)=>{
     res.cookie('access_token', access_token, {
       httpOnly: true, // Ensures the cookie is not accessible via JavaScript
       secure: true, // Set true for HTTPS in production
-      maxAge:25 * 60 * 1000, // 25 minutes 
+      maxAge:1 * 60 * 1000, // 25 minutes 
       sameSite: 'Strict' // CSRF protection
   });
 
@@ -151,7 +151,70 @@ const {password,cpassword, ...logedinUser} = existUser._doc;
 }
 
 
+const refresh = async(req,res)=>{
+  const Frefresh_token = req.body.refresh_token || req.cookies.refresh_token || req.headers.Authorization?.split(" ")[1];
+  console.log(`req decode data ${JSON.stringify(req.decode)}`);
+try {
+    const user  = await register_model.findById(req.decode._id);
+    if(!user){
+      return res.status(500).json({success:false,message:'invalid token no entries present '})
+    }
+
+    if(Frefresh_token !== user.refreshToken.token){
+      return res.status(500).json({success:false,message:'token is inavlaid'})
+    }
+  
+     //create the access token
+     const access_token = await jwt.sign({
+      _id:user._id,
+      email:user.email
+      
+    },process.env.access_token,{
+      expiresIn:'1m'
+    })
+  
+   
+
+    //refresh token 
+    const refresh_token = await jwt.sign({
+      _id:user._id,
+      email:user.email
+      
+    },process.env.refresh_token,{
+      expiresIn:'7d'
+    })
+  
+    user.refreshToken.token = refresh_token;
+    user.refreshToken.expiryDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
+    try {
+      user.save();
+    } catch (error) {
+       console.log('error in saving the refresh token in use table ')
+    }
 
 
 
-export {register,login};
+    //set the cookie
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true, // Ensures the cookie is not accessible via JavaScript
+      secure: true, // Set true for HTTPS in production
+      maxAge: 7 * 24 * 60 *  60 * 1000, // 7 days cookie store 
+      sameSite: 'Strict' // CSRF protection
+  });
+  res.cookie('access_token', access_token, {
+    httpOnly: true, // Ensures the cookie is not accessible via JavaScript
+    secure: true, // Set true for HTTPS in production
+    maxAge:1 * 60 * 1000, // 25 minutes 
+    sameSite: 'Strict' // CSRF protection
+});
+  
+    return res.status(200).json({success:true,message:'access and refresh token new genearted',acces_token:access_token});
+  
+    
+} catch (error) {
+    return res.status(500).json({'error in catch of verifuication':error.message})
+}
+
+}
+
+export {register,login,refresh};
