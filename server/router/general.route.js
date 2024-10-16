@@ -1,6 +1,7 @@
 import express from 'express';
 import { register,login, refresh} from '../controller/general.controller.js';
 import { verifyToken } from '../middleware/verifyToken.js';
+import { mail_otp } from '../controller/node_mailer.controller.js';
 
 // import send_otp_twilio from '../controller/twilo.controller.js';
 // import {verifyTwilio} from '../middleware/verifyTwilio.js'
