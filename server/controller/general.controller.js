@@ -76,7 +76,7 @@ const login = async (req, res) => {
                 email: existUser.email
             },
             process.env.ACCESS_TOKEN_SECRET || 'AdiAdi', // Use a secure key from .env
-            { expiresIn: '15s' } // Extend token expiration for access token
+            { expiresIn: '1d' } // Extend token expiration for access token
         );
 
         // Generate refresh token
@@ -145,7 +145,7 @@ const refresh = async (req, res) => {
         const access_token = jwt.sign(
             { _id: user._id, email: user.email },
             process.env.ACCESS_TOKEN_SECRET || 'AdiAdi',
-            { expiresIn: '15s' }
+            { expiresIn: '1d' }
         );
 
         // Create new refresh token
