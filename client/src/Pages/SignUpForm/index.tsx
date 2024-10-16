@@ -238,7 +238,7 @@ export default function SignUpForm() {
                           )}
                         </button>
                         <button
-                          onClick={() => navigate("/login")}
+                          onClick={() => navigate("/")}
                           className="w-full mt-4 bg-green-500 text-white text-sm font-semibold py-1.5 rounded-full shadow-md hover:bg-green-600 transition duration-200"
                           type="button"
                         >

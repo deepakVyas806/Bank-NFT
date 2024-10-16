@@ -1,20 +1,39 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignUpForm from "./Pages/SignUpForm";
-import LogInForm from "./Pages/LoginInForm";
 import { ToastContainerWrapper } from "./ToastServices/ToastContainer";
+import MainLayout from "./Layouts/MainLayout/MainLayout";
+import LogInForm from "./Pages/LoginInForm";
+import Profile from "./Pages/Profile/Profile";
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <div className="flex justify-center items-center min-h-screen bg-light">
         <div className="w-full max-w-md">
-          {" "}
-          {/* Full width on mobile and tablet, 33% on desktop */}
           <Routes>
-            <Route path="/" element={<SignUpForm />} />
-            <Route path="/login" element={<LogInForm />} />
-            {/* Add other routes as needed */}
+            {/* Independent routes for SignUp and Login */}
+            <Route path="/" element={<LogInForm />} />
+            <Route path="/signup" element={<SignUpForm />} />
+
+            {/* Routes using the MainLayout */}
+            {/* <Route
+            path="/"
+            element={
+              <MainLayout>
+                <Home />
+              </MainLayout>
+            }
+          /> */}
+            <Route
+              path="/profile"
+              element={
+                <MainLayout>
+                  <Profile />
+                </MainLayout>
+              }
+            />
+            {/* Add more routes as needed */}
           </Routes>
         </div>
       </div>
