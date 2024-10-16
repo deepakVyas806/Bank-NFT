@@ -1,110 +1,183 @@
-//register code
+import dotenv from 'dotenv';
+dotenv.config();
+import { register_model } from '../model/register.model.js';
+import jwt from 'jsonwebtoken';
 
-import { register_model } from "../model/register.model.js";
-
+// Register
 const register = async (req, res) => {
-  /*
-  "username":'aditya',
-  "fname":'aditya',
-  "lname"'parashar',
-  "email":'ap@taketwotechnologies.com',
-  "password":'aditya',
-  "cpassword":'aditya',
-  "phone":'6377280960',
-  "otp":'1232',
-  "referral":'121',*/
+    const { username, fname, lname, email, password, cpassword, phone, otp, referral } = req.body;
 
-  const {
-    username,
-    fname,
-    lname,
-    email,
-    password,
-    cpassword,
-    phone,
-    otp,
-    referral,
-  } = req.body;
+    try {
+        // Email check
+        const userEmail = await register_model.findOne({ email });
+        if (userEmail) {
+            return res.status(500).json({ success: false, message: "Email already exists" });
+        }
 
-  try {
-    // if(req.Details.otp!=otp){
-    //   return  res.status(500).json({success:false,message:"otp not match ",sessionDetails:req.Details});
-    // }
+        // Phone check
+        const userPhone = await register_model.findOne({ phone });
+        if (userPhone) {
+            return res.status(500).json({ success: false, message: "Phone number already exists" });
+        }
 
-    //email check
+        // Password check
+        if (cpassword !== password) {
+            return res.status(500).json({ success: false, message: "Password and Confirm Password should match" });
+        }
 
-    const userEmail = await register_model.findOne({ email: email });
-    if (userEmail) {
-      return res
-        .status(500)
-        .json({ success: false, message: "email is alreay exist" });
+        // Register the user
+        const registerUser = await register_model.create({
+            username,
+            firstname: fname,
+            lastname: lname,
+            email,
+            phone,
+            otp,
+            referral,
+            password,
+            cpassword
+        });
+
+        return res.status(200).json({ success: true, message: "User created successfully", registerUser });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "Error in register API", error: error.message });
     }
-
-    //mail otp verification
-
-    // const sessionData = req.verifyregisterSession;
-    // if (
-    //   sessionData[email].email !== email ||
-    //   sessionData[email].register_otp !== otp
-    // ) {
-    //   return res.status(500).json({ success: false, message: "otp not match" });
-    // }
-
-    // // if(email!==req.verifyregisterSession.)
-
-    //phone check
-    const userPhone = await register_model.findOne({ phone: phone });
-    if (userPhone) {
-      return res
-        .status(500)
-        .json({ success: false, message: "number  is alreay exist" });
-    }
-
-    //cpassword nad password  check
-
-    if (cpassword !== password) {
-      return res.status(500).json({
-        success: false,
-        message: "password and confirm password should be same",
-      });
-    }
-
-    const registerUser = await register_model.create({
-      username: username,
-      firstname: fname,
-      lastname: lname,
-      email: email,
-      phone: phone,
-      otp: otp,
-      referral: referral,
-      password: password,
-      cpassword: cpassword,
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "user created succesffuly",
-      registerUser,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "catch error in register api from backend",
-      error: error.message,
-    });
-  }
 };
 
-const login = (req, res) => {
-  try {
-    console.log("login");
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "error in catch of login",
-      error: error.message,
-    });
-  }
+// Login
+const login = async (req, res) => {
+    const { email, username, login_pass } = req.body;
+
+    try {
+        // Check for either username or email
+        if (!username && !email) {
+            return res.status(500).json({ success: false, message: 'Username or email is required' });
+        }
+
+        // Find user by email or username
+        const existUser = await register_model.findOne({
+            $or: [{ email }, { username }]
+        });
+
+        if (!existUser) {
+            return res.status(500).json({ success: false, message: 'User does not exist. Please sign up first.' });
+        }
+
+        // Password check
+        if (login_pass !== existUser.password) {
+            return res.status(500).json({ success: false, message: 'Password does not match' });
+        }
+
+        // Generate access token
+        const access_token = jwt.sign(
+            {
+               
+                _id: existUser._id,
+                email: existUser.email
+            },
+            process.env.ACCESS_TOKEN_SECRET || 'AdiAdi', // Use a secure key from .env
+            { expiresIn: '15s' } // Extend token expiration for access token
+        );
+
+        // Generate refresh token
+        const refresh_token = jwt.sign(
+            {
+                type: 'refresh_token',
+                _id: existUser._id,
+                email: existUser.email
+            },
+            process.env.REFRESH_TOKEN_SECRET || 'AdiAdi', // Use a secure key from .env
+            { expiresIn: '7d' }
+        );
+
+        // Save refresh token to database
+        existUser.refreshToken = {
+            token: refresh_token,
+            expiryDate: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days expiry
+        };
+
+        await existUser.save();
+
+        // Set cookies
+        res.cookie('refresh_token', refresh_token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            sameSite: 'Strict'
+        });
+        res.cookie('access_token', access_token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: 15 * 60 * 1000, // 15 minutes
+            sameSite: 'Strict'
+        });
+
+        // Remove sensitive fields before sending response
+        const { password, cpassword, ...logedinUser } = existUser._doc;
+
+        res.status(200).json({ success: true, message: 'User logged in successfully', logedinUser, accessToken: access_token, });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error in login API', error: error.message });
+    }
 };
 
-export { register, login };
+// Refresh Token
+const refresh = async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(500).json({ success: false, message: 'No authorization token provided' });
+    }
+
+    const Frefresh_token = authHeader.split(' ')[1];
+    console.log(`Refresh token received: ${Frefresh_token}`);
+
+    try {
+        const user = await register_model.findById(req.decode._id);
+        if (!user) {
+            return res.status(500).json({ success: false, message: 'Invalid token: No user found' });
+        }
+
+        // if (Frefresh_token !== user.refreshToken.token) {
+        //     return res.status(500).json({ success: false, message: 'Invalid refresh token (might be an old one)' });
+        // }
+
+        // Create new access token
+        const access_token = jwt.sign(
+            { _id: user._id, email: user.email },
+            process.env.ACCESS_TOKEN_SECRET || 'AdiAdi',
+            { expiresIn: '15s' }
+        );
+
+        // Create new refresh token
+        const refresh_token = jwt.sign(
+            { _id: user._id, email: user.email },
+            process.env.REFRESH_TOKEN_SECRET || 'AdiAdi',
+            { expiresIn: '7d' }
+        );
+
+        // Update refresh token in DB
+        user.refreshToken.token = refresh_token;
+        user.refreshToken.expiryDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
+        await user.save();
+
+        // Set cookies with new tokens
+        res.cookie('refresh_token', refresh_token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            sameSite: 'Strict'
+        });
+        res.cookie('access_token', access_token, {
+            httpOnly: true,
+            secure: true,
+            maxAge: 15 * 60 * 1000,
+            sameSite: 'Strict'
+        });
+
+        return res.status(200).json({ success: true, message: 'New access and refresh tokens generated', accessToken: access_token });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: 'Error during token refresh', error: error.message });
+    }
+};
+
+export { register, login, refresh };

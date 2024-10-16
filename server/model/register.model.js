@@ -19,7 +19,7 @@ const register_schema = new mongoose.Schema({
         default:'root@email.com'
     },
     phone:{
-        type:Number,
+        type:String,
         default:'********234'
     },
     otp:{
@@ -41,6 +41,16 @@ const register_schema = new mongoose.Schema({
     cpassword:{
         type:String,
         default:'root@cpassowrd'
+    },
+    refreshToken:{
+        token:{
+        type:String,
+        default:null
+        },
+        expiryDate:{
+            type:Date,
+            default:null
+        }
     },
     createdAt:{
         type:Date,

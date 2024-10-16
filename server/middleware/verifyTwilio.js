@@ -6,7 +6,7 @@
 //         const verfiy_data = {
 //             otp:req.session.Details.otp,
 //             sessionDetails:req.session.Details
-
+           
 //         }
 //        req.Details = verfiy_data;
 //        return next();
@@ -16,5 +16,13 @@
 //     }
 //      res.json({message:'session in regioster',session:req.session});
 // }
+
+//     } catch (error) {
+//          return res.status(500).json({success:false,message:"cat error in verify twilio otp",error:error.message})
+//     }
+//      res.json({message:'session in regioster',session:req.session});
+// }
+
+
 
 // export {verifyTwilio}
