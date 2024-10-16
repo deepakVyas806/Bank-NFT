@@ -3,7 +3,12 @@ import * as Yup from "yup";
 import "./style.css";
 import AuthInput from "../../Components/Input/AuthInput";
 import { AiOutlineLock, AiOutlineRight, AiOutlineUser } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { axiosPublic } from "../../ApiServices/Axios";
+import { showToast } from "../../ToastServices/ToastServices";
+import Loader from "../../Components/Loader/Loader";
+// import Cookies from 'js-cookie'
 
 // Yup validation schema
 const validationSchema = Yup.object({
@@ -20,6 +25,30 @@ const validationSchema = Yup.object({
 });
 
 export default function LogInForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const SignInAsync = async (values: any, resetForm: any) => {
+    // console.log(values);
+    setIsLoading(true);
+    try {
+      const response = await axiosPublic.post("api/v1/login", {
+        email: values.email,
+        login_pass: values.password,        
+      });
+      console.log(response.data);
+      // Cookies.set('ACCESS_TOKEN',response?.data?.accessToken)
+      // Cookies.set('REFRESH_TOKEN',response?.data?.accessToken)
+      resetForm();
+      navigate("/profile");
+      setIsLoading(false);
+      showToast("Login successfull", "success", 1000);
+    } catch (error: any) {
+      console.log(error);
+      setIsLoading(false);
+      showToast(error?.response?.data?.message, "error", 1000);
+      console.error("Error fetching public data", error);
+    }
+  };
   return (
     <section className="bg-white flex justify-center items-center min-h-screen">
       <div className="container mx-auto p-4">
@@ -40,7 +69,8 @@ export default function LogInForm() {
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting, resetForm }) => {
                   console.log(values);
-                  resetForm();
+                  SignInAsync(values, resetForm);
+                  // resetForm();
                   setSubmitting(false);
                 }}
               >
@@ -88,7 +118,16 @@ export default function LogInForm() {
                           type="submit"
                           disabled={isSubmitting}
                         >
-                          Sign in
+                          {isLoading ? (
+                            <Loader
+                              loading={isLoading}
+                              type={"beat"}
+                              size={80}
+                              color="#ffffff"
+                            />
+                          ) : (
+                            "Sign in"
+                          )}
                         </button>
                       </div>
                       <div className="flex justify-between">
@@ -96,7 +135,7 @@ export default function LogInForm() {
                           RETRIEVE PASSWORD
                         </div>
                         <Link
-                          to={"/"}
+                          to={"/signUp"}
                           className="text-gray-400 mt-2 text-sm font-medium flex items-center"
                         >
                           REGISTER <AiOutlineRight />{" "}
