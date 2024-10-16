@@ -91,6 +91,7 @@ const login = async(req,res)=>{
         
         //create the access token
         const access_token = await jwt.sign({
+          type:'access_token',
           _id:existUser._id,
           email:existUser.email
           
@@ -100,6 +101,7 @@ const login = async(req,res)=>{
 
         //refresh token 
         const refresh_token = await jwt.sign({
+          type:'refresh_token',
           _id:existUser._id,
           email:existUser.email
           
@@ -152,16 +154,21 @@ const {password,cpassword, ...logedinUser} = existUser._doc;
 
 
 const refresh = async(req,res)=>{
-  const Frefresh_token = req.body.refresh_token || req.cookies.refresh_token || req.headers.Authorization?.split(" ")[1];
+  const authHeader = req.headers['authorization'];
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.sendStatus(500).json({success:false,message:'please provide a valid heared '}); // Unauthorized
+      };
+
+      const Frefresh_token  = authHeader.split(' ')[1];
   console.log(`req decode data ${JSON.stringify(req.decode)}`);
 try {
     const user  = await register_model.findById(req.decode._id);
     if(!user){
-      return res.status(500).json({success:false,message:'invalid token no entries present '})
+      return res.status(500).json({success:false,message:'invalid token no user present entries present '})
     }
 
     if(Frefresh_token !== user.refreshToken.token){
-      return res.status(500).json({success:false,message:'token is inavlaid'})
+      return res.status(500).json({success:false,message:'token is invalid (may be you are sending the access token or old refresh token)'})
     }
   
      //create the access token
