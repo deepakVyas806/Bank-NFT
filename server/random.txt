@@ -1,0 +1,7 @@
+MONGO_DB_URL=mongodb+srv://root:root@cluster0.qlsvim7.mongodb.net/BET-APP?retryWrites=true&w=majority&appName=Cluster0
+mail_host=smtp.gmail.com
+mail_port=465
+mail_secure=true
+mail_user=ap@taketwotechnologies.com
+mail_pass=wzfy azfa kfiv efxd
+
