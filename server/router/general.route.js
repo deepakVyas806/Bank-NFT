@@ -2,6 +2,7 @@ import express from 'express';
 import { register,login, refresh} from '../controller/general.controller.js';
 import { verifyToken } from '../middleware/verifyToken.js';
 import { mail_otp } from '../controller/node_mailer.controller.js';
+import { verify_mail_otp } from '../middleware/verifyMailOtp.middleware.js';
 
 // import send_otp_twilio from '../controller/twilo.controller.js';
 // import {verifyTwilio} from '../middleware/verifyTwilio.js'
@@ -9,7 +10,7 @@ import { mail_otp } from '../controller/node_mailer.controller.js';
 const router = express.Router();
 
 // register route
-router.post('/register',register);
+router.post('/register',verify_mail_otp,register);
 
 //send otp route
 // router.post('/send-otp',send_otp_twilio)
