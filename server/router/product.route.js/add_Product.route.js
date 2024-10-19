@@ -1,4 +1,7 @@
+import express from 'express';
 import multer from 'multer';
+import { addProduct } from '../../controller/product.controller.js/addProduct.controller.js';  // Ensure this is the correct path
+import { verifyToken } from '../../middleware/verifyToken.js';
 
 // Multer setup for memory storage
 const storage = multer.memoryStorage();
