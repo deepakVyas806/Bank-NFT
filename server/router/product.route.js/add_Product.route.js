@@ -1,7 +1,8 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
-import { addProduct } from '../../controller/product.controller.js/addProduct.controller.js';  // Make sure this is the correct path
+import { addProduct } from '../../controller/product.controller.js/addProduct.controller.js'; // Adjust path if necessary
+import { verifyToken } from '../../middleware/verifyToken.js'; // Ensure this path is correct
 
 const proute = express.Router();
 
@@ -12,7 +13,6 @@ console.log(`Upload destination path: ${uploadsDir}`);
 // Multer setup for file storage
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        // Log the destination for debugging
         console.log(`Setting upload destination to: ${uploadsDir}`);
         cb(null, uploadsDir);  // Ensure the 'uploads' directory exists
     },
@@ -27,12 +27,11 @@ const upload = multer({ storage: storage });
 
 // Route to create the product
 proute.post('/add_product', verifyToken, upload.single('product_image'), async (req, res) => {
+    console.log('Request received to add product');
     try {
-        // Check if file was uploaded
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
-
         console.log('File uploaded:', req.file);  // Log the uploaded file details
 
         // Call the addProduct controller
