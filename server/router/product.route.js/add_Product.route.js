@@ -1,16 +1,25 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
-import { addProduct } from '../../controller/product.controller.js/addProduct.controller.js';  // Ensure this is the correct path
+import fs from 'fs'; // Import fs module for file system operations
+import { addProduct } from '../../controller/product.controller.js/addProduct.controller.js';
 import { verifyToken } from '../../middleware/verifyToken.js';
 
 const proute = express.Router();
 
 try {
+  const uploadDir = path.resolve('uploads'); // Path for uploads directory
+
+  // Ensure 'uploads' directory exists or create it if it doesn't
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true }); // Create directory if not found
+    console.log(`Created upload directory at: ${uploadDir}`);
+  }
+
   // Multer setup for file storage
   const storage = multer.diskStorage({
       destination: function (req, file, cb) {
-          cb(null, path.resolve('uploads'));  // Ensure the 'uploads' directory exists
+          cb(null, uploadDir);  // Use the dynamically created path
       },
       filename: function (req, file, cb) {
           const uniqueName = `${Date.now()}-${file.originalname}`;
@@ -26,20 +35,15 @@ try {
 
   // Route to create the product
   proute.post('/add_product', verifyToken, (req, res) => {
-      // Run Multer middleware for file upload
       upload(req, res, function (err) {
           if (err instanceof multer.MulterError) {
-              // Multer-specific errors
               console.log('Multer error:', err.message);
               return res.status(500).json({ error: `Multer error: ${err.message}` });
           } else if (err) {
-              // General errors
               console.log('Upload error:', err.message);
               return res.status(500).json({ error: `Upload error: ${err.message}` });
           }
-
-          // If no error, call the controller to handle the rest
-          addProduct(req, res);
+          addProduct(req, res); // Call the controller function
       });
   });
 
