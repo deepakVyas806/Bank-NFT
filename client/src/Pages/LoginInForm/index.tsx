@@ -7,15 +7,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { axiosPublic } from "../../ApiServices/Axios";
 import { showToast } from "../../ToastServices/ToastServices";
-import Loader from "../../Components/Loader/Loader";
-// import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
+import SubmitButton from "../../Components/Button/SubmitButton/SubmitButton"; // Updated import to SubmitButton
 
 // Yup validation schema
 const validationSchema = Yup.object({
-  // mobile: Yup.string()
-  //   .matches(/^[0-9]+$/, "Mobile number must be numeric")
-  //   .min(10, "Mobile number must be at least 10 digits")
-  //   .required("Mobile number is required"),
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
@@ -27,34 +23,40 @@ const validationSchema = Yup.object({
 export default function LogInForm() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
   const SignInAsync = async (values: any, resetForm: any) => {
-    // console.log(values);
     setIsLoading(true);
     try {
       const response = await axiosPublic.post("api/v1/login", {
         email: values.email,
-        login_pass: values.password,        
+        login_pass: values.password,
       });
-      console.log(response.data);
-      // Cookies.set('ACCESS_TOKEN',response?.data?.accessToken)
-      // Cookies.set('REFRESH_TOKEN',response?.data?.accessToken)
+  
+      // Assuming the response contains accessToken and refreshToken
+      const { accessToken, logedinUser } = response.data;
+  
+      // Set tokens in cookies
+      Cookies.set('ACCESS_TOKEN', accessToken, { expires: 7, path: '/' }); // Expires in 7 days
+      Cookies.set('REFRESH_TOKEN', logedinUser?.refreshToken?.token, { expires: 7, path: '/' }); // Expires in 7 days
+  
       resetForm();
       navigate("/profile");
       setIsLoading(false);
-      showToast("Login successfull", "success", 1000);
+      showToast("Login successful", "success", 1000);
     } catch (error: any) {
-      console.log(error);
       setIsLoading(false);
-      showToast(error?.response?.data?.message, "error", 1000);
+      showToast(error?.response?.data?.message || 'Login failed', "error", 1000);
       console.error("Error fetching public data", error);
     }
   };
+
   return (
     <section className="bg-white flex justify-center items-center min-h-screen">
       <div className="container mx-auto p-4">
         <div className="flex justify-center">
           <div className="w-full max-w-md">
             <div className="p-6">
+              {/* <img src="/logo.png" className="w-20 h-20 rounded-md mb-1"/> */}
               <h2 className="text-xl font-semibold text-left">Welcome</h2>
               <h3 className="text-gray-600 text-sm mb-5 text-left">
                 Enter your credentials to access your account
@@ -67,27 +69,13 @@ export default function LogInForm() {
                   password: "",
                 }}
                 validationSchema={validationSchema}
-                onSubmit={(values, { setSubmitting, resetForm }) => {
-                  console.log(values);
+                onSubmit={(values, { resetForm }) => {
                   SignInAsync(values, resetForm);
-                  // resetForm();
-                  setSubmitting(false);
                 }}
               >
                 {({ isSubmitting }) => (
                   <Form>
                     <div className="space-y-1">
-                      {/* <div>
-                        <AuthInput
-                          label="Mobile"
-                          name="mobile"
-                          placeholder="Enter mobile number"
-                          prefix="+91"
-                          icon={<AiOutlineMobile />}
-                          required
-                        />
-                      </div> */}
-
                       <div>
                         <AuthInput
                           label="Email"
@@ -113,23 +101,10 @@ export default function LogInForm() {
                       </div>
 
                       <div>
-                        <button
-                          className="w-full mt-6 bg-blue-500 text-white text-sm font-semibold py-1.5 rounded-full shadow-md hover:bg-blue-600 transition duration-200"
-                          type="submit"
-                          disabled={isSubmitting}
-                        >
-                          {isLoading ? (
-                            <Loader
-                              loading={isLoading}
-                              type={"beat"}
-                              size={80}
-                              color="#ffffff"
-                            />
-                          ) : (
-                            "Sign in"
-                          )}
-                        </button>
+                        {/* Use SubmitButton instead of the original button */}
+                        <SubmitButton isLoading={isLoading} disabled={isSubmitting} buttonText={'Sign in'}/>
                       </div>
+
                       <div className="flex justify-between">
                         <div className="text-gray-400 mt-2 text-sm font-medium">
                           RETRIEVE PASSWORD
