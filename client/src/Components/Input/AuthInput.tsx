@@ -2,6 +2,20 @@ import React, { InputHTMLAttributes } from 'react';
 import { useField } from 'formik';
 import { FaMobileAlt } from 'react-icons/fa'; // Import an icon (for example)
 
+// Label Component
+export const Label: React.FC<{ htmlFor: string; required?: boolean; label?: string }> = ({
+  htmlFor,
+  required = false,
+  label,
+}) => {
+  if (!label) return null;
+  return (
+    <label htmlFor={htmlFor} className="text-xs mb-1 text-inputlabel font-normal">
+      {label} {required && <span className="text-red-500">*</span>}
+    </label>
+  );
+};
+
 interface AuthInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   name: string;
@@ -25,11 +39,7 @@ const AuthInput: React.FC<AuthInputProps> = ({
   return (
     <div className="">
       {/* Label */}
-      {label && (
-        <label htmlFor={name} className="text-xs mb-1 text-inputlabel font-normal">
-          {label} {required && <span className="text-red-500">*</span>}
-        </label>
-      )}
+      <Label htmlFor={name} label={label} required={required} />
 
       {/* Input Wrapper */}
       <div className="flex items-center bg-gray-50 border border-inputborder rounded-lg p-2.5">

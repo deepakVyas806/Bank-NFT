@@ -13,7 +13,8 @@ import { axiosPublic } from "../../ApiServices/Axios";
 import { showToast } from "../../ToastServices/ToastServices";
 import OTPInput from "../../Components/Input/OTPInput";
 import { useEffect, useState } from "react";
-import Loader from "../../Components/Loader/Loader";
+// import Loader from "../../Components/Loader/Loader";
+import SubmitButton from "../../Components/Button/SubmitButton/SubmitButton";
 
 // Yup validation schema
 const validationSchema = Yup.object({
@@ -113,6 +114,7 @@ export default function SignUpForm() {
         <div className="flex justify-center">
           <div className="w-full max-w-md">
             <div className="p-6">
+            {/* <img src="/logo.png" className="w-20 h-20 rounded-md mb-1"/> */}
               <h2 className="text-xl font-semibold text-left">Sign Up</h2>
               <h3 className="text-gray-600 text-sm mb-5 text-left">
                 Enter your details to register
@@ -221,29 +223,25 @@ export default function SignUpForm() {
                       </div>
 
                       <div>
-                        <button
-                          className="w-full mt-6 bg-blue-500 text-white text-sm font-semibold py-1.5 rounded-full shadow-md hover:bg-blue-600 transition duration-200"
-                          type="submit"
-                          disabled={isSubmitting}
-                        >
-                          {loading ? (
-                            <Loader
-                              loading={loading}
-                              type={"beat"}
-                              size={80}
-                              color="#ffffff"
-                            />
-                          ) : (
-                            "Sign up"
-                          )}
-                        </button>
-                        <button
+                      <SubmitButton
+                          isLoading={loading} 
+                          disabled={isSubmitting} 
+                          buttonText="Sign up" 
+                        />
+                        <SubmitButton
+                          isLoading={false} 
+                          disabled={false} 
+                          buttonText="Sign in" 
+                          onClick={() => navigate("/")}
+                          buttonColor="bg-green-500"
+                        />
+                        {/* <button
                           onClick={() => navigate("/")}
                           className="w-full mt-4 bg-green-500 text-white text-sm font-semibold py-1.5 rounded-full shadow-md hover:bg-green-600 transition duration-200"
                           type="button"
                         >
                           Sign in
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </Form>

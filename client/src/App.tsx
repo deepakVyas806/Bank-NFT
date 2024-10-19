@@ -1,36 +1,61 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import SignUpForm from "./Pages/SignUpForm";
 import { ToastContainerWrapper } from "./ToastServices/ToastContainer";
 import MainLayout from "./Layouts/MainLayout/MainLayout";
 import LogInForm from "./Pages/LoginInForm";
 import Profile from "./Pages/Profile/Profile";
+import CreateProduct from "./Pages/Admin/CreateProduct";
+import AuthCheck from "./ApiServices/AuthCheck"; // Import the AuthCheck component
 
 const App: React.FC = () => {
+  const protectedRoutes = ["/profile", "/createProduct","/market"]; // Define protected routes
+  const unprotectedRoutes = ["/login", "/signUp", "/forgotPassword"]; // Define unprotected routes
+
   return (
     <BrowserRouter>
       <div className="flex justify-center items-center min-h-screen bg-light">
-        <div className="w-full max-w-md">
+        <div className="w-full">
           <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
             {/* Independent routes for SignUp and Login */}
-            <Route path="/" element={<LogInForm />} />
-            <Route path="/signup" element={<SignUpForm />} />
+            <Route
+              path="/login"
+              element={
+                <AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}>
+                  <LogInForm />
+                </AuthCheck>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}>
+                  <SignUpForm />
+                </AuthCheck>
+              }
+            />
 
-            {/* Routes using the MainLayout */}
-            {/* <Route
-            path="/"
-            element={
-              <MainLayout>
-                <Home />
-              </MainLayout>
-            }
-          /> */}
+            {/* Protected Routes */}
             <Route
               path="/profile"
               element={
-                <MainLayout>
-                  <Profile />
-                </MainLayout>
+                <AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}>
+                  <MainLayout>
+                    <Profile />
+                  </MainLayout>
+                </AuthCheck>
+              }
+            />
+
+            <Route
+              path="/createProduct"
+              element={
+                <AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}>
+                  <MainLayout>
+                    <CreateProduct />
+                  </MainLayout>
+                </AuthCheck>
               }
             />
             {/* Add more routes as needed */}
