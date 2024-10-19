@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../../Components/Navbar/Navbar";
 import { AiOutlineMenu } from "react-icons/ai";
-import { FaUserCircle } from "react-icons/fa"; // Import an icon for the profile
 
 interface MainLayoutProps {
   children: React.ReactNode;
