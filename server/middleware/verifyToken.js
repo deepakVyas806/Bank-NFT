@@ -3,41 +3,59 @@ dotenv.config();
 import jwt from 'jsonwebtoken';
 
 const verifyToken = async (req, res, next) => {
-    // Get the Authorization header
+    // Get the Authorization header or the access_token from cookies
     const authHeader = req.headers['authorization'];
+    const cookieToken = req.cookies.access_token; // Get token from cookies if available;
+    // Get token from cookies if available
+    console.log(`acces token`,cookieToken)
+    let token;
+    // If Authorization header exists and starts with Bearer, extract the token
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+    } 
+    // Otherwise, use the token from cookies if available
+    else if (cookieToken) {
+        token = cookieToken;
+    }
 
-    // Check if Authorization header is provided and starts with 'Bearer '
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    // Check if token is present
+    if (!token) {
         return res.status(401).json({ success: false, message: 'Authorization token not provided or invalid' });
     }
 
-    // Extract the token from the header
-    const token = authHeader.split(' ')[1];
     console.log(`Token received:`, token);
 
     // Verify the token
     try {
-        if (!token) {
-            return res.status(401).json({ success: false, message: 'Token is missing' });
+        const decode = jwt.decode(token);
+        console.log(`Decoded data: ${JSON.stringify(decode)}`);
+
+        if (decode.type === "access_token") {
+            try {
+                const access_verification = jwt.verify(token, process.env.access_token);
+                console.log(`Access token verified`);
+                req.access_verification = access_verification;
+                next();
+            } catch (error) {
+                console.log("Error in access token verification:", error.message);
+                return res.status(401).json({ success: false, message: 'Access token expired', error: error.message });
+            }
         }
 
-        // Verify the access token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'AdiAdi');
-        console.log('Decoded at middleware stage:', decoded);
-
-        // Attach the decoded data to the request object
-        req.decode = decoded;
-
-        // Call the next middleware or route handler
-        return next();
+        if (decode.type === "refresh_token") {
+            try {
+                const refresh_verification = jwt.verify(token, process.env.refresh_token);
+                console.log(`Refresh token verified`);
+                req.refresh_verification = refresh_verification;
+                next();
+            } catch (error) {
+                console.log("Error in refresh token verification:", error.message);
+                return res.status(401).json({ success: false, message: 'Refresh token expired', error: error.message });
+            }
+        }
     } catch (error) {
-        // Handle JWT verification errors
         console.log(`Token verification failed: ${error.message}`);
-        if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({ success: false, message: 'Token has expired', error: error.message });
-        } else {
-            return res.status(401).json({ success: false, message: 'Token is invalid', error: error.message });
-        }
+        return res.status(401).json({ success: false, message: 'Token is invalid', error: error.message });
     }
 };
 

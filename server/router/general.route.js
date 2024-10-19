@@ -18,7 +18,7 @@ router.post('/register',register);
 router.post('/login',login)
 
 //refresh token 
-router.post('/refresh',verifyToken,refresh)
+router.post('/refresh',refresh)
 
 //send register mail otp
 router.post("/send-mail-register", mail_otp);

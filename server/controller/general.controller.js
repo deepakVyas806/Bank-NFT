@@ -46,6 +46,7 @@ const register = async (req, res) => {
 
 // Login
 const login = async (req, res) => {
+    
     const { email, username, login_pass } = req.body;
 
     try {
@@ -71,27 +72,28 @@ const login = async (req, res) => {
         // Generate access token
         const access_token = jwt.sign(
             {
-               
+                type:'access_token',
                 _id: existUser._id,
                 email: existUser.email
             },
-            process.env.ACCESS_TOKEN_SECRET || 'AdiAdi', // Use a secure key from .env
-            { expiresIn: '1d' } // Extend token expiration for access token
+            process.env.access_token || 'AdiAdi', // Use a secure key from .env
+            { expiresIn: '5m' } // Extend token expiration for access token
         );
 
         // Generate refresh token
         const refresh_token = jwt.sign(
             {
-                type: 'refresh_token',
+                type:'refresh_token',
                 _id: existUser._id,
                 email: existUser.email
             },
-            process.env.REFRESH_TOKEN_SECRET || 'AdiAdi', // Use a secure key from .env
+            process.env.refresh_token || 'AdiAdi', // Use a secure key from .env
             { expiresIn: '7d' }
         );
 
         // Save refresh token to database
         existUser.refreshToken = {
+            
             token: refresh_token,
             expiryDate: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days expiry
         };
@@ -108,7 +110,7 @@ const login = async (req, res) => {
         res.cookie('access_token', access_token, {
             httpOnly: true,
             secure: true,
-            maxAge: 15 * 60 * 1000, // 15 minutes
+            maxAge: 15 * 60 * 1000, // 15 minutes expiry of cookie
             sameSite: 'Strict'
         });
 
@@ -123,35 +125,48 @@ const login = async (req, res) => {
 
 // Refresh Token
 const refresh = async (req, res) => {
+  
+    
+
+   // console.log('kya bhai access token')
     const authHeader = req.headers['authorization'];
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith('Bearer')) {
         return res.status(500).json({ success: false, message: 'No authorization token provided' });
     }
 
+
+    //decoding for safetyu niot to access aces_token
     const Frefresh_token = authHeader.split(' ')[1];
-    console.log(`Refresh token received: ${Frefresh_token}`);
+     
+ 
+    //verifuyinf the user 
 
     try {
-        const user = await register_model.findById(req.decode._id);
+
+        const refreshToken =  jwt.verify(Frefresh_token,process.env.refresh_token)
+
+        const user = await register_model.findById(refreshToken._id);
+  
+    
         if (!user) {
-            return res.status(500).json({ success: false, message: 'Invalid token: No user found' });
+            return res.status(401).json({ success: false, message: 'Invalid token: No user found' });
         }
 
-        // if (Frefresh_token !== user.refreshToken.token) {
-        //     return res.status(500).json({ success: false, message: 'Invalid refresh token (might be an old one)' });
-        // }
+        if(Frefresh_token!==user.refreshToken.token){
+            return res.status(401).json({ success: false, message: 'Invalid token: Old Token' });
+        }
 
         // Create new access token
         const access_token = jwt.sign(
-            { _id: user._id, email: user.email },
-            process.env.ACCESS_TOKEN_SECRET || 'AdiAdi',
-            { expiresIn: '1d' }
+            {type:"access_token", _id: user._id, email: user.email },
+            process.env.access_token || 'AdiAdi',
+            { expiresIn: '5m' }
         );
 
         // Create new refresh token
         const refresh_token = jwt.sign(
-            { _id: user._id, email: user.email },
-            process.env.REFRESH_TOKEN_SECRET || 'AdiAdi',
+            { type:"refresh_token",_id: user._id, email: user.email },
+            process.env.refresh_token || 'AdiAdi',
             { expiresIn: '7d' }
         );
 
