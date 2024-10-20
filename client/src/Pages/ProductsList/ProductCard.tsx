@@ -8,7 +8,7 @@ interface ProductCardProps {
   image: string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ name, price, image }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ name, price }) => {
   return (
     <div
       className="flex flex-col rounded-lg border border-gray-200 grow"
