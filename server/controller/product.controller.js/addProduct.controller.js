@@ -39,6 +39,9 @@ const addProduct = async(req,res)=>{
     } catch (error) {
         logger.error(`eror in catch api ${error.message}`)
         return  res.status(500).json({success:false,message:'there is some error in catch api of product',error:error.message})
+    }finally {
+        // Clear the buffer reference
+        req.file.buffer = null; // This helps free up memory sooner
     }
     
    
