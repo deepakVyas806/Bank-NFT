@@ -7,7 +7,7 @@ import path from 'path'
 const addProduct = async(req,res)=>{
     
     const {product_name,product_price,daily_income,validity,total_income,purcahse_limit} = req.body;
-    console.log(`req.file`,req.file)
+  //  console.log(`req.file`,req.file)
     const originalname = req.file.originalname;
     const extension = path.extname(originalname);
     const product_image = path.join('uploads', `${Date.now()}-${extension}`);
