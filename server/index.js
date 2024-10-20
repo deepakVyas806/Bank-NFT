@@ -19,7 +19,10 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
+console.log(__filename)
 const __dirname = path.dirname(__filename);
+console.log(__dirname);
+console.log(path.join(__dirname, 'public/uploads'))
 
 // Middlewares
 app.use(cookieParser());  // Parse cookies
@@ -30,7 +33,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));  // Parse form data
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // Morgan logging to both console and database
 app.use(morgan('combined', {
