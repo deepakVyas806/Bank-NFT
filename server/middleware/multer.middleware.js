@@ -1,20 +1,30 @@
 import dotenv from 'dotenv';
-import multer from 'multer'
+import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
 
-const  isEnvironemnt = process.env.is_env;
+// Load environment variables
+dotenv.config(); 
 
-    const storage = isEnvironemnt?multer.storage():multer.diskStorage({
-        destination: function(req, file, cb) {
-            cb(null, './public/uploads');  // Ensure the 'uploads' directory exists
-        },
-        filename: function(req, file, cb) {
-            // Ensure correct formatting of the filename (no extra hyphen before the extension)
-            const uniqueName = `${Date.now()}-${file.originalname}`;
-            cb(null, uniqueName);  // Unique timestamp + original filename
-        }
-    });
-    // Multer middleware to handle single file uploads (with field name 'product_image')
+// Ensure the 'uploads' directory exists
+const uploadsDir = path.join(process.cwd(), 'public/uploads'); // Adjust path if necessary
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true }); // Create the directory if it doesn't exist
+}
+
+// Set up storage configuration
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadsDir); // Set the destination directory for uploads
+    },
+    filename: function (req, file, cb) {
+        const uniqueName = `${Date.now()}-${file.originalname}`; // Create a unique filename
+        cb(null, uniqueName); // Set the filename
+    }
+});
+
+// Initialize Multer with the defined storage
 const upload = multer({ storage: storage });
 
-
-export {upload}
+// Export the Multer upload middleware
+export { upload };
