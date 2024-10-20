@@ -45,7 +45,7 @@ const AuthCheck: React.FC<AuthCheckProps> = ({
     return <Navigate to="/login" replace />;
   } else if (!isProtectedRoute && accessToken) {
     // If access token is found and the user tries to access a non-protected route
-    return <Navigate to="/profile" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>; // Render children if authenticated and accessing a protected route
