@@ -15,7 +15,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen bg-white">
       {/* Sidebar - Visible permanently on desktop, togglable on smaller screens */}
       <aside
         className={`fixed inset-y-0 left-0 z-30 bg-gray-800 text-white transition-transform transform ${
@@ -31,7 +31,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <Header toggleSidebar={toggleSidebar} />
 
         {/* Main content */}
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 overflow-y-auto max-h-[90vh]">{children}</main>
       </div>
 
       {/* Overlay for sidebar on smaller screens */}

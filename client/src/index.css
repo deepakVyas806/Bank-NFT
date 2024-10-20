@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+.hide-scrollbar {
+  overflow: hidden; /* Hide scrollbar */
+}
+
+/* For Webkit browsers */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Hide scrollbar */
+}
+
+/* For Firefox */
+.hide-scrollbar {
+  scrollbar-width: none; /* Hide scrollbar */
+}
+
+
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
