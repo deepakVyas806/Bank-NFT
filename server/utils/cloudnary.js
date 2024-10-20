@@ -1,36 +1,39 @@
 import dotenv from 'dotenv';
+import { v2 as cloudinary } from 'cloudinary';
+
 dotenv.config();
-import {v2 as cloudinary } from 'cloudinary';
-import fs from 'fs'
 
-console.log(process.env.cloud_name)
+// Configure Cloudinary
+cloudinary.config({ 
+    cloud_name: process.env.cloud_name,
+    api_key: process.env.api_key,
+    api_secret: process.env.api_secret 
+});
 
-    // Configuration
-    cloudinary.config({ 
-        cloud_name:process.env.cloud_name,
-        api_key:process.env.api_key,
-        api_secret: process.env.api_secret // Click 'View API Keys' above to copy your API secret
-    });
-
- const uploadOnCloud = async(localFilePath)=>{
-    
+const uploadOnCloud = async (fileBuffer) => {
     try {
-        
-        if(!localFilePath){
+        if (!fileBuffer) {
             return null;
         }
 
-        const response = await cloudinary.uploader.upload(localFilePath,{
-            resource_type:'auto'
-        })
+        const response = await cloudinary.uploader.upload_stream(
+            { resource_type: 'auto' },
+            (error, result) => {
+                if (error) {
+                    throw new Error(error);
+                }
+                return result;
+            }
+        );
 
-        console.log(response);
-        return response;
+        const stream = cloudinary.uploader.upload_stream(response);
+        stream.end(fileBuffer); // End the stream with the file buffer
+
+        return response; // Return the Cloudinary response
     } catch (error) {
-         fs.unlinkSync(localFilePath)
-         console.log(error.message);
+        console.error("Error uploading to Cloudinary:", error);
+        return null;
     }
- }
+};
 
-
-    export {uploadOnCloud}
+export { uploadOnCloud };

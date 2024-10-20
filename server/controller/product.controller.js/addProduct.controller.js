@@ -10,8 +10,8 @@ const addProduct = async(req,res)=>{
     const {product_name,product_price,daily_income,validity,total_income,purcahse_limit} = req.body;
     console.log(`req.file`,req.file)
 
-    const cloudnaryResponse = await uploadOnCloud(req.file.path);
-    console.log("cloudnary response" ,cloudnaryResponse.secure_url)
+    const result = await uploadOnCloud(req.file.buffer);
+    console.log("cloudnary response" ,result.secure_url)
     // const originalname = req.file.originalname;
     // // const extension = path.extname(originalname);
     // const product_image = path.join('uploads', `${Date.now()}-${extension}`);
@@ -20,7 +20,7 @@ const addProduct = async(req,res)=>{
         
         const product_create = await product_model.create({
             product_name,
-            product_image:cloudnaryResponse.secure_url,
+            product_image:result.secure_url,
             product_price,
             daily_income,
             total_income,
