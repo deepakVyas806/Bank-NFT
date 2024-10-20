@@ -1,7 +1,9 @@
+import dotenv from 'dotenv';
 import multer from 'multer'
 
+const  isEnvironemnt = process.env.is_env;
 
-    const storage = multer.diskStorage({
+    const storage = isEnvironemnt?multer.storage():multer.diskStorage({
         destination: function(req, file, cb) {
             cb(null, './public/uploads');  // Ensure the 'uploads' directory exists
         },
