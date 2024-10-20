@@ -22,7 +22,7 @@ const Profile: React.FC = () => {
     { value: "0.00", label: "Team Commision" },
   ];
   return (
-    <div className="bg-white rounded-md shadow-md p-6 h-full">
+    <div className="bg-white rounded-md shadow-md p-6">
       {/* Profile Card Start */}
       <div
         className="flex flex-col items-center justify-center rounded-md p-0 bg-center bg-cover bg-no-repeat"

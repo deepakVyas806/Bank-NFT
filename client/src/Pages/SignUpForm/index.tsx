@@ -3,17 +3,16 @@ import * as Yup from "yup";
 import "./style.css";
 import AuthInput from "../../Components/Input/AuthInput";
 import {
-  AiOutlineMobile,
   AiOutlineLock,
   AiOutlineUser,
   AiOutlineKey,
+  AiOutlineMobile,
 } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../ApiServices/Axios";
 import { showToast } from "../../ToastServices/ToastServices";
 import OTPInput from "../../Components/Input/OTPInput";
 import { useEffect, useState } from "react";
-// import Loader from "../../Components/Loader/Loader";
 import SubmitButton from "../../Components/Button/SubmitButton/SubmitButton";
 
 // Yup validation schema
@@ -34,9 +33,9 @@ const validationSchema = Yup.object({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), ""], "Passwords must match")
     .required("Please confirm your password"),
-  invitation: Yup.string()
-    .max(10, "Invitation code must be 10 characters or less")
-    .required("Invitation code is required"),
+  // invitation: Yup.string()
+  //   .max(10, "Invitation code must be 10 characters or less")
+  //   .required("Invitation code is required"),
   code: Yup.string()
     .max(6, "Code must be 6 characters or less")
     .required("Code is required"),
@@ -50,7 +49,7 @@ export default function SignUpForm() {
   const [loading, setIsLoading] = useState(false);
 
   const handleSendOtp = async (values: any) => {
-    if (values?.email == "") {
+    if (values?.email === "") {
       showToast("Please enter your email first.", "error", 1000);
       return;
     }
@@ -81,7 +80,6 @@ export default function SignUpForm() {
   }, [resendOtp, timer]);
 
   const SignUpAsync = async (values: any, resetForm: any) => {
-    // console.log(values);
     setIsLoading(true);
     try {
       const response = await axiosPublic.post("api/v1/register", {
@@ -92,14 +90,12 @@ export default function SignUpForm() {
         email: values.email,
         phone: values.mobile,
         referral: values.invitation, // Assuming invitation is referral
-        // fname: "aditya", // Assuming these are hardcoded for now
-        // lname: "parashar",
       });
       console.log(response.data);
       resetForm();
       navigate("/login");
       setIsLoading(false);
-      showToast("Registration successfull", "success", 1000);
+      showToast("Registration successful", "success", 1000);
     } catch (error: any) {
       console.log(error);
       setIsLoading(false);
@@ -109,14 +105,19 @@ export default function SignUpForm() {
   };
 
   return (
-    <section className="bg-white flex justify-center items-center min-h-screen">
-      <div className="container mx-auto p-4">
+    <section
+      className="flex justify-center items-center min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/login-bg.jpg')" }} // Update with your image path
+    >
+      <div className="container mx-auto my-10 md:my-0">
         <div className="flex justify-center">
-          <div className="w-full max-w-md">
-            <div className="p-6">
-            {/* <img src="/logo.png" className="w-20 h-20 rounded-md mb-1"/> */}
-              <h2 className="text-xl font-semibold text-left">Sign Up</h2>
-              <h3 className="text-gray-600 text-sm mb-5 text-left">
+          <div className="w-full md:max-w-[80%] lg:max-w-[40%]">
+            <div className="p-6 bg-white rounded-lg shadow-md">
+              <div className="flex justify-center">
+                <img src="/image.jpg" className="w-20 h-20 rounded-full mb-1" />
+              </div>
+              <h2 className="text-xl font-semibold text-center">Get Started – Register Your Account Now</h2>
+              <h3 className="text-gray-600 text-sm mb-2 text-center">
                 Enter your details to register
               </h3>
 
@@ -133,26 +134,14 @@ export default function SignUpForm() {
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting, resetForm }) => {
-                  // showToast('This is a warning!', 'warning', 4000);
                   SignUpAsync(values, resetForm);
-                  // resetForm();
                   setSubmitting(false);
                 }}
               >
                 {({ isSubmitting, values }) => (
                   <Form>
-                    <div className="space-y-1">
-                      <div>
-                        <AuthInput
-                          label="Username"
-                          name="username"
-                          placeholder="Enter your username"
-                          prefix=""
-                          icon={<AiOutlineUser />}
-                          required
-                        />
-                      </div>
-                      <div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div>
                         <AuthInput
                           label="Email"
                           name="email"
@@ -176,6 +165,17 @@ export default function SignUpForm() {
                           handleSendOtp={() => handleSendOtp(values)}
                         />
                       </div>
+                      
+                      <div>
+                        <AuthInput
+                          label="Username"
+                          name="username"
+                          placeholder="Enter your username"
+                          prefix=""
+                          icon={<AiOutlineUser />}
+                          required
+                        />
+                      </div>                      
 
                       <div>
                         <AuthInput
@@ -212,7 +212,7 @@ export default function SignUpForm() {
                         />
                       </div>
 
-                      <div>
+                      <div className="grid md:col-span-2">
                         <AuthInput
                           label="Invitation Code"
                           name="invitation"
@@ -220,30 +220,23 @@ export default function SignUpForm() {
                           prefix=""
                           icon={<AiOutlineUser />}
                         />
-                      </div>
-
-                      <div>
-                      <SubmitButton
-                          isLoading={loading} 
-                          disabled={isSubmitting} 
-                          buttonText="Sign up" 
-                        />
+                      </div>                      
+                    </div>
+                    <div>
                         <SubmitButton
-                          isLoading={false} 
-                          disabled={false} 
-                          buttonText="Sign in" 
+                          isLoading={loading}
+                          disabled={isSubmitting}
+                          buttonText="Sign up"
+                        />
+                        {/* <SubmitButton
+                          isLoading={false}
+                          disabled={false}
+                          buttonText="Sign in"
                           onClick={() => navigate("/")}
                           buttonColor="bg-green-500"
-                        />
-                        {/* <button
-                          onClick={() => navigate("/")}
-                          className="w-full mt-4 bg-green-500 text-white text-sm font-semibold py-1.5 rounded-full shadow-md hover:bg-green-600 transition duration-200"
-                          type="button"
-                        >
-                          Sign in
-                        </button> */}
+                        /> */}
+                        <p className="text-xs mt-2 text-center">already have an account? <Link className="text-blue-500" to={'/login'}>Log in</Link></p>
                       </div>
-                    </div>
                   </Form>
                 )}
               </Formik>

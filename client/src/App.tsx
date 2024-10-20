@@ -8,9 +8,15 @@ import Profile from "./Pages/Profile/Profile";
 import CreateProduct from "./Pages/Admin/CreateProduct";
 import AuthCheck from "./ApiServices/AuthCheck"; // Import the AuthCheck component
 import Dashboard from "./Pages/Dashboard";
+import ProductList from "./Pages/ProductsList";
 
 const App: React.FC = () => {
-  const protectedRoutes = ["/profile", "/createProduct","/market",'/dashboard']; // Define protected routes
+  const protectedRoutes = [
+    "/profile",
+    "/createProduct",
+    "/market",
+    "/dashboard",
+  ]; // Define protected routes
   const unprotectedRoutes = ["/login", "/signUp", "/forgotPassword"]; // Define unprotected routes
 
   return (
@@ -23,7 +29,10 @@ const App: React.FC = () => {
             <Route
               path="/login"
               element={
-                <AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}>
+                <AuthCheck
+                  protectedRoutes={protectedRoutes}
+                  unprotectedRoutes={unprotectedRoutes}
+                >
                   <LogInForm />
                 </AuthCheck>
               }
@@ -31,7 +40,10 @@ const App: React.FC = () => {
             <Route
               path="/signup"
               element={
-                <AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}>
+                <AuthCheck
+                  protectedRoutes={protectedRoutes}
+                  unprotectedRoutes={unprotectedRoutes}
+                >
                   <SignUpForm />
                 </AuthCheck>
               }
@@ -41,7 +53,10 @@ const App: React.FC = () => {
             <Route
               path="/dashboard"
               element={
-                <AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}>
+                <AuthCheck
+                  protectedRoutes={protectedRoutes}
+                  unprotectedRoutes={unprotectedRoutes}
+                >
                   <MainLayout>
                     <Dashboard />
                   </MainLayout>
@@ -52,7 +67,10 @@ const App: React.FC = () => {
             <Route
               path="/profile"
               element={
-                <AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}>
+                <AuthCheck
+                  protectedRoutes={protectedRoutes}
+                  unprotectedRoutes={unprotectedRoutes}
+                >
                   <MainLayout>
                     <Profile />
                   </MainLayout>
@@ -63,9 +81,26 @@ const App: React.FC = () => {
             <Route
               path="/createProduct"
               element={
-                <AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}>
+                <AuthCheck
+                  protectedRoutes={protectedRoutes}
+                  unprotectedRoutes={unprotectedRoutes}
+                >
                   <MainLayout>
                     <CreateProduct />
+                  </MainLayout>
+                </AuthCheck>
+              }
+            />
+
+            <Route
+              path="/market"
+              element={
+                <AuthCheck
+                  protectedRoutes={protectedRoutes}
+                  unprotectedRoutes={unprotectedRoutes}
+                >
+                  <MainLayout>
+                    <ProductList />
                   </MainLayout>
                 </AuthCheck>
               }

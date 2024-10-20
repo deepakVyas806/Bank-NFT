@@ -1,8 +1,7 @@
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import "./style.css";
 import AuthInput from "../../Components/Input/AuthInput";
-import { AiOutlineLock, AiOutlineRight, AiOutlineUser } from "react-icons/ai";
+import { AiOutlineLock, AiOutlineUser } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { axiosPublic } from "../../ApiServices/Axios";
@@ -40,7 +39,7 @@ export default function LogInForm() {
       Cookies.set('REFRESH_TOKEN', logedinUser?.refreshToken?.token, { expires: 7, path: '/' }); // Expires in 7 days
   
       resetForm();
-      navigate("/profile");
+      navigate("/dashboard");
       setIsLoading(false);
       showToast("Login successful", "success", 1000);
     } catch (error: any) {
@@ -51,14 +50,20 @@ export default function LogInForm() {
   };
 
   return (
-    <section className="bg-white flex justify-center items-center min-h-screen">
-      <div className="container mx-auto p-4">
+    <section
+      className="flex justify-center items-center min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/login-bg.jpg')" }} // Update with your image path
+    >
+      <div className="container mx-auto">
         <div className="flex justify-center">
           <div className="w-full max-w-md">
-            <div className="p-6">
-              <div className="flex justify-center"><img src="/image.jpg" className="w-20 h-20 rounded-full mb-1"/></div>
-              <h2 className="text-xl font-semibold text-left">Welcome</h2>
-              <h3 className="text-gray-600 text-sm mb-5 text-left">
+            <div className="p-6 bg-white rounded-lg shadow-md">
+              <div className="flex justify-center">
+                <img src="/image.jpg" className="w-20 h-20 rounded-full mb-1" />
+              </div>
+              {/* <h2 className="text-xl font-semibold text-center">Log in to Betting app</h2> */}
+              <h2 className="text-xl font-semibold text-center">Welcome Back – Log In to Your Account</h2>
+              <h3 className="text-gray-600 text-sm mb-2 text-center">
                 Enter your credentials to access your account
               </h3>
 
@@ -102,19 +107,21 @@ export default function LogInForm() {
 
                       <div>
                         {/* Use SubmitButton instead of the original button */}
-                        <SubmitButton isLoading={isLoading} disabled={isSubmitting} buttonText={'Sign in'}/>
+                        <SubmitButton isLoading={isLoading} disabled={isSubmitting} buttonText={'Log in'}/>
                       </div>
 
                       <div className="flex justify-between">
-                        <div className="text-gray-400 mt-2 text-sm font-medium">
+                        {/* <div className="text-gray-400 mt-2 text-sm font-medium">
                           RETRIEVE PASSWORD
-                        </div>
-                        <Link
+                        </div> */}
+                        <p className="text-xs mt-2 text-center"><Link className="text-blue-500" to={'/forgotPassword'}>Forgot password?</Link></p>
+                        {/* <Link
                           to={"/signUp"}
                           className="text-gray-400 mt-2 text-sm font-medium flex items-center"
                         >
                           REGISTER <AiOutlineRight />{" "}
-                        </Link>
+                        </Link> */}
+                        <p className="text-xs mt-2 text-center mr-1">don't have an account? <Link className="text-blue-500" to={'/signUp'}>Sign up</Link></p>
                       </div>
                     </div>
                   </Form>
