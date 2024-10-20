@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../../Components/Navbar/Navbar";
-import { AiOutlineMenu } from "react-icons/ai";
+import Header from "../../Components/Header/Header";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -23,35 +23,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         } lg:relative lg:translate-x-0 lg:flex lg:flex-col w-64`}
       >
         {/* Sidebar content */}
-        <Navbar />
+        <Navbar toggleSidebar={toggleSidebar}/>
       </aside>
 
       <div className="flex-1 flex flex-col w-full">
         {/* Header */}
-        <header className="bg-white shadow-md flex items-center justify-between lg:justify-end px-4 py-2 lg:py-2">
-          <button className="text-gray-800 lg:hidden" onClick={toggleSidebar}>
-            <AiOutlineMenu size={28} />
-          </button>
-
-          {/* Profile Icon */}
-          {/* <div className="flex items-center space-x-4">
-            <FaUserCircle size={32} className="text-gray-800 cursor-pointer" />
-          </div> */}
-          <div className="flex items-center space-x-2 cursor-pointer">
-            <div className="text-right">
-              <p className="text-sm font-medium text-gray-800">vyasdeepak608@gmail.com</p>
-              <p className="text-xs font-normal text-gray-500">6378506435</p>
-            </div>
-            <img
-              src={"/image.jpg"}
-              alt={`profile icon`}
-              className={`w-10 h-10 rounded-full`} // Apply color change to icon
-            />
-          </div>
-        </header>
+        <Header toggleSidebar={toggleSidebar} />
 
         {/* Main content */}
-        <main className="flex-1 p-4">{children}</main>
+        <main className="flex-1">{children}</main>
       </div>
 
       {/* Overlay for sidebar on smaller screens */}

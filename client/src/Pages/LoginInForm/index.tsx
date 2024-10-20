@@ -56,7 +56,7 @@ export default function LogInForm() {
         <div className="flex justify-center">
           <div className="w-full max-w-md">
             <div className="p-6">
-              {/* <img src="/logo.png" className="w-20 h-20 rounded-md mb-1"/> */}
+              <div className="flex justify-center"><img src="/image.jpg" className="w-20 h-20 rounded-full mb-1"/></div>
               <h2 className="text-xl font-semibold text-left">Welcome</h2>
               <h3 className="text-gray-600 text-sm mb-5 text-left">
                 Enter your credentials to access your account

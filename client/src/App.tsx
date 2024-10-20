@@ -7,9 +7,10 @@ import LogInForm from "./Pages/LoginInForm";
 import Profile from "./Pages/Profile/Profile";
 import CreateProduct from "./Pages/Admin/CreateProduct";
 import AuthCheck from "./ApiServices/AuthCheck"; // Import the AuthCheck component
+import Dashboard from "./Pages/Dashboard";
 
 const App: React.FC = () => {
-  const protectedRoutes = ["/profile", "/createProduct","/market"]; // Define protected routes
+  const protectedRoutes = ["/profile", "/createProduct","/market",'/dashboard']; // Define protected routes
   const unprotectedRoutes = ["/login", "/signUp", "/forgotPassword"]; // Define unprotected routes
 
   return (
@@ -37,6 +38,17 @@ const App: React.FC = () => {
             />
 
             {/* Protected Routes */}
+            <Route
+              path="/dashboard"
+              element={
+                <AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}>
+                  <MainLayout>
+                    <Dashboard />
+                  </MainLayout>
+                </AuthCheck>
+              }
+            />
+
             <Route
               path="/profile"
               element={
