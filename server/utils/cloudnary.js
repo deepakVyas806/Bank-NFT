@@ -11,29 +11,26 @@ cloudinary.config({
 });
 
 const uploadOnCloud = async (fileBuffer) => {
-    try {
+    return new Promise((resolve, reject) => {
         if (!fileBuffer) {
-            return null;
+            return reject(new Error("No file buffer provided"));
         }
 
-        const response = await cloudinary.uploader.upload_stream(
+        // Create a stream for uploading
+        const stream = cloudinary.uploader.upload_stream(
             { resource_type: 'auto' },
             (error, result) => {
                 if (error) {
-                    throw new Error(error);
+                    console.error("Error uploading to Cloudinary:", error);
+                    return reject(new Error(error));
                 }
-                return result;
+                resolve(result); // Resolve the promise with the result
             }
         );
 
-        const stream = cloudinary.uploader.upload_stream(response);
+        // Write the buffer to the stream
         stream.end(fileBuffer); // End the stream with the file buffer
-
-        return response; // Return the Cloudinary response
-    } catch (error) {
-        console.error("Error uploading to Cloudinary:", error);
-        return null;
-    }
+    });
 };
 
 export { uploadOnCloud };

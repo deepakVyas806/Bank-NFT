@@ -11,7 +11,7 @@ const addProduct = async(req,res)=>{
     console.log(`req.file`,req.file)
 
     const result = await uploadOnCloud(req.file.buffer);
-    console.log("cloudnary response" ,result.secure_url)
+    console.log("cloudnary response" ,result)
     // const originalname = req.file.originalname;
     // // const extension = path.extname(originalname);
     // const product_image = path.join('uploads', `${Date.now()}-${extension}`);
@@ -39,9 +39,6 @@ const addProduct = async(req,res)=>{
     } catch (error) {
         logger.error(`eror in catch api ${error.message}`)
         return  res.status(500).json({success:false,message:'there is some error in catch api of product',error:error.message})
-    }finally {
-        // Clear the buffer reference
-        req.file.buffer = null; // This helps free up memory sooner
     }
     
    
