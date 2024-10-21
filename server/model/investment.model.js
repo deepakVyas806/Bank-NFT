@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const investmentSchema = new mongoose.Schema({
     productId:{
@@ -26,6 +26,10 @@ const investmentSchema = new mongoose.Schema({
         type:Date,
         default:Date.now
     },
+    last_run:{
+        type:Date,
+        default:Date.now
+    },
     end_date:{
         type:Date,
     },
@@ -47,3 +51,4 @@ investmentSchema.pre('save', function (next) {
 
 
 export const pro_inv = mongoose.model('investment',investmentSchema)
+

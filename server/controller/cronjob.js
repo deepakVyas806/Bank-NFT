@@ -1,53 +1,40 @@
-// cron/job.js
 import cron from 'node-cron';
 import { pro_inv } from '../model/investment.model.js';
-import { LastRun } from '../model/LastRun.js';
 
-// Function to get the last run time
-async function getLastRunTime() {
-    const lastRunDoc = await LastRun.findOne();
-    return lastRunDoc ? lastRunDoc.lastRun : null;
-}
-
-// Function to set the last run time
-async function setLastRunTime(date) {
-    const lastRunDoc = await LastRun.findOne();
-    if (lastRunDoc) {
-        lastRunDoc.lastRun = date;
-        await lastRunDoc.save();
-    } else {
-        await LastRun.create({ lastRun: date });
-    }
-}
-
-// Schedule the cron job
-cron.schedule('0 0 * * *', async () => { // Runs daily at midnight
+// Schedule the cron job to run every minute
+cron.schedule('* * * * *', async () => {
     try {
-        const lastRun = await getLastRunTime();
-        const now = new Date();
-        console.log(`Last run time: ${lastRun}`);
-        
-        const daysElapsed = lastRun ? Math.floor((now - lastRun) / (1000 * 60 * 60 * 24)) : 0; // Calculate elapsed days
-        console.log(`Days elapsed: ${daysElapsed}`);
+        const today = new Date();
+        console.log('Current Date:', today);
 
-        if (daysElapsed > 0) {
-            const investments = await pro_inv.find({
-                end_date: { $gt: now } // Only consider active investments
-            });
+        // Fetch active investments
+        const investments = await pro_inv.find({ end_date: { $gte: today } });
+        console.log('Active Investments:', investments);
 
-            investments.forEach(async (investment) => {
-                // Update profit based on elapsed days
-                investment.profit += investment.daily_income * daysElapsed; // Increase profit by daily income times the number of elapsed days
-                await investment.save(); // Save the updated investment
-            });
-            console.log(`Profits updated for ${investments.length} investments.`);
-        } else {
-            console.log('No days have elapsed since the last run, skipping profit updates.');
+        // Check if there are any investments
+        if (investments.length === 0) {
+            console.log("There are no active investments at this time.");
+            return; // Exit if no investments found
         }
 
-        await setLastRunTime(now); // Update last run time
-        console.log('Cron job executed and profits updated');
+        // Loop through the investments and calculate profit
+        for (let investment of investments) {
+            // Calculate elapsed time since last_run
+            const elapsedMilliseconds = today - investment.last_run; // Time since last run in milliseconds
+            const elapsedMinutes = Math.floor(elapsedMilliseconds / 60000); // Convert to minutes
+            console.log('Elapsed Minutes:', elapsedMinutes);
+
+            // Only update if some time has passed
+            if (elapsedMinutes > 0) {
+                // Calculate profit based on daily income
+                investment.profit += (elapsedMinutes * investment.daily_income) / 1440; // Calculate profit per minute
+                investment.last_run = today; // Update last_run to current time
+                await investment.save(); // Save the updated investment
+            }
+        }
+
+        console.log('Profit updated for active investments.');
     } catch (error) {
-        console.error('Error executing cron job:', error);
+        console.error('Error in cron job:', error.message);
     }
 });
