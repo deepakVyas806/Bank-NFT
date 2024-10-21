@@ -14,8 +14,7 @@ const uploadOnCloud = async (fileBuffer) => {
     return new Promise((resolve, reject) => {
         if (!fileBuffer) {
             return reject(new Error("No file buffer provided"));
-        }
-
+        } 
         // Create a stream for uploading
         const stream = cloudinary.uploader.upload_stream(
             { resource_type: 'auto' },
