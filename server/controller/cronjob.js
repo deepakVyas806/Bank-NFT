@@ -5,6 +5,8 @@ import { pro_inv } from '../model/investment.model.js';
 const profileData = async(req,res)=>{
   
     try {
+                //const MIN_WAIT_TIME = 60*1000//milllisecinds
+                let isupdate = false;
                 const today = new Date();
                 console.log('Current Date:', today);
         
@@ -23,20 +25,31 @@ const profileData = async(req,res)=>{
                     // Calculate elapsed time since last_run
                     const elapsedMilliseconds = today - investment.last_run; // Time since last run in milliseconds
                     const elapsedMinutes = Math.floor(elapsedMilliseconds / 60000); // Convert to minutes
-                    console.log('Elapsed Minutes:', elapsedMinutes);
+                   
         
                     // Only update if some time has passed
-                    if (elapsedMinutes > 0) {
+                    if (elapsedMinutes > 1) {
+                       
                         // Calculate profit based on daily income
                         investment.profit += (elapsedMinutes * investment.daily_income) / 1440; // Calculate profit per minute
                         investment.last_run = today; // Update last_run to current time
                         await investment.save(); // Save the updated investment
+                        isupdate = true;
                     }
                 }
+
+                if(isupdate){
+                    console.log('Profit updated for active investments.');
+                    return res.status(200).json({success:true,message:'profit updated please check'})
+                }else{
+                    console.log('Profit updated for active investments.');
+                    return res.status(500).json({success:true,message:'niot update wait for a nibutes '})
+                }
         
-                console.log('Profit updated for active investments.');
+                
             } catch (error) {
                 console.error('Error in cron job:', error.message);
+                return res.status(500).json({success:true,message:'erro in cron job'})
             }
 
 
