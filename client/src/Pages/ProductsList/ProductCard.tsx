@@ -8,25 +8,38 @@ interface ProductCardProps {
   image: string;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ name, price }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ price }) => {
   return (
     <div
       className="flex flex-col rounded-lg border border-gray-200 grow"
       style={{ boxShadow: "0px 3px 4px 0px rgba(0, 0, 0, .03)" }}
     >
-      {/* <div className="p-3">
-        <div className="text-[#1B84FF] inline-flex items-center justify-center rounded-md px-2 py-1 text-[10px] font-medium bg-[#EFF6FF] border border-[rgba(27, 132, 255, .2)]">
-          Validity 10 days
-        </div>
-      </div> */}
       <div className="flex flex-col justify-center items-left grow">
-        <img src="/product-example.jpg" className="w-full h-32 rounded-t-md" />
-        <div className="flex flex-col items-center ml-2">
-          <p className="text-base font-medium text-gray-900 hover:text-blue-400 cursor-pointer">
-            {name}
-          </p>
-          <p className="text-sm text-gray-700">&#8377; {price}</p>
+        <div className="flex">
+          <img src="/product-example.jpg" className="w-1/2 h-32 rounded-md" />
+          <div className="flex flex-col justify-between items-center w-1/2 my-3">
+            <div className="flex flex-col items-center">
+              <p className="text-[9px] font-medium text-gray-500 hover:text-blue-400 cursor-pointer">
+                Product name
+              </p>
+              <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">
+                Perfume 5001
+              </p>
+            </div>
+            <div className="flex flex-col items-center">
+              <p className="text-[9px] font-medium text-gray-500 hover:text-blue-400 cursor-pointer">
+                Price
+              </p>
+              <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">&#8377; {price}</p>
+            </div>            
+            <div className="">
+              <div className="text-[#1B84FF] inline-flex items-center justify-center rounded-md px-1.5 py-0.5 text-[10px] font-medium bg-[#EFF6FF] border border-[rgba(27, 132, 255, .2)]">
+                Valid for 10 days
+              </div>
+            </div>
+          </div>
         </div>
+
         <div className="flex items-center justify-center flex-wrap mt-2 gap-2">
           <div className="flex flex-col gap-1.5 border border-dashed border-gray-300 rounded-md px-1.5 py-1">
             <span className="text-gray-900 text-sm leading-none font-medium text-center">
@@ -50,8 +63,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ name, price }) => {
       </div>
       <div className="flex justify-around items-center mt-2 border-t p-2 border-gray-200">
         <div className="flex items-center cursor-pointer">
-          <p className="text-gray-500 font-medium text-base hover:text-blue-500">
-            View Details
+          <p className="text-gray-500 font-medium text-sm hover:text-blue-500">
+            {/* View Details */}
+            Buy now
           </p>
         </div>
       </div>
