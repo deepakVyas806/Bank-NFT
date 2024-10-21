@@ -6,7 +6,7 @@ import { upload } from '../../middleware/multer.middleware.js';
 const proute = express.Router();
 
 // Route to create the product
-proute.post('/add_product', verifyToken, upload.single('product_image'), addProduct);
+proute.post('/add_product', verifyToken, upload, addProduct);
 
 
 export { proute };
