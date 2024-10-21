@@ -25,7 +25,7 @@ app.use(
 app.use(cookieParser()); // Parse cookies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Parse form data
-// app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 
 app.get("/", (req, res) => {
   console.log("Request Cookies:", req.cookies); // Log the cookies
