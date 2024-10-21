@@ -188,11 +188,11 @@ const refresh = async (req, res) => {
         .json({ success: false, message: "Invalid token: No user found" });
     }
 
-    if (Frefresh_token !== user.refreshToken.token) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid token: Old Token" });
-    }
+    // if (Frefresh_token !== user.refreshToken.token) {
+    //   return res
+    //     .status(401)
+    //     .json({ success: false, message: "Invalid token: Old Token" });
+    // }
 
     // Create new access token
     const access_token = jwt.sign(
@@ -208,10 +208,10 @@ const refresh = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // Update refresh token in DB
-    user.refreshToken.token = refresh_token;
-    user.refreshToken.expiryDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
-    await user.save();
+    // // Update refresh token in DB
+    // user.refreshToken.token = refresh_token;
+    // user.refreshToken.expiryDate = Date.now() + 7 * 24 * 60 * 60 * 1000;
+    // await user.save();
 
     // Set cookies with new tokens
     res.cookie("refresh_token", refresh_token, {
@@ -231,6 +231,7 @@ const refresh = async (req, res) => {
       success: true,
       message: "New access and refresh tokens generated",
       accessToken: access_token,
+      refresh_token:refresh_token
     });
   } catch (error) {
     return res.status(500).json({
