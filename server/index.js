@@ -25,17 +25,7 @@ app.use(
 app.use(cookieParser()); // Parse cookies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // Parse form data
-app.use("/uploads", express.static("uploads"));
-
-app.get("/", (req, res) => {
-  console.log("Request Cookies:", req.cookies); // Log the cookies
-  if (!req.cookies.access_token) {
-    console.error("No access_token cookie found.");
-  } else {
-    console.log("Access Token:", req.cookies.access_token);
-  }
-  res.status(200).json({ success: true, message: "GET READY SNOOK_CODERS" });
-});
+// app.use("/uploads", express.static("uploads"));
 
 app.use("/api/v1", router); // User routes
 app.use("/api/v1", proute); // Product routes
