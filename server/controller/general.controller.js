@@ -133,15 +133,15 @@ const login = async (req, res) => {
     // Set cookies
     res.cookie("refresh_token", refresh_token, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       // sameSite: "Strict",
     });
     res.cookie("access_token", access_token, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       maxAge: 15 * 60 * 1000, // 15 minutes expiry of cookie
-      sameSite: "Strict",
+      //sameSite: "Strict",
     });
 
     // Remove sensitive fields before sending response
