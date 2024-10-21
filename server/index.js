@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { proute } from "./router/product.route.js/add_Product.route.js";
 import { invest_route } from "./router/product.route.js/invest.route.js";
 import "./controller/cronjob.js";
+import { profileData } from "./controller/cronjob.js";
 
 dotenv.config(); // Load environment variables
 
@@ -30,6 +31,7 @@ app.use(express.urlencoded({ extended: true })); // Parse form data
 app.use("/api/v1", router); // User routes
 app.use("/api/v1", proute); // Product routes
 app.use("/api/v1", invest_route); // Investment routes
+app.get("/api/v1/profile",profileData)
 
 // Database Connection
 mongoose
