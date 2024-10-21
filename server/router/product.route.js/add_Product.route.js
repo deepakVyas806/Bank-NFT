@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
 
 // Create the upload middleware
 const upload = multer({ storage: storage }).single("product_image");
+console.log("upload", upload)
 
 // Route to create the product
 proute.post(
