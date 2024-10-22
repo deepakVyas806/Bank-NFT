@@ -13,7 +13,7 @@ import AuthInput, { Label } from "../../../Components/Input/AuthInput";
 import { axiosPrivate } from "../../../ApiServices/Axios";
 
 interface CreateProductProps {
-  formikRef: React.Ref<any>;
+  formikRef?: React.Ref<any>;
 }
 
 // Validation schema using Yup
