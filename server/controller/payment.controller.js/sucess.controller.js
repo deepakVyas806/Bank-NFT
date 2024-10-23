@@ -64,7 +64,7 @@ const payment_success_con = async(req,res)=>{
        await user_investment.save();
         
          console.log('payment entry save succesfully ',order)
-         return res.redirect(`http://localhost:5173/paymentsuccess?refrence=${razorpay_payment_id}`);
+         return res.redirect(`https://betting-app-frontend-neon.vercel.app/paymentsuccess?refrence=${razorpay_payment_id}`);
       }
       else{
          order.status = 'failed';
