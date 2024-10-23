@@ -11,7 +11,7 @@ export default function Dashboard() {
 
   const payNow = async () => {
     // Create order by calling the server endpoint
-    const response = await fetch('/api/v1/order', {
+    const response = await fetch('api/v1/order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
