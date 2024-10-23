@@ -5,9 +5,10 @@ import router from "./router/general.route.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { proute } from "./router/product.route.js/add_Product.route.js";
-import { invest_route } from "./router/product.route.js/invest.route.js";
 import "./controller/cronjob.js";
 import { profileData } from "./controller/cronjob.js";
+import { payment } from "./router/payment/payment.router.js";
+import { payment_success } from "./router/payment/sucess.router.js";
 
 dotenv.config(); // Load environment variables
 
@@ -17,7 +18,7 @@ const app = express();
 // Middleware for CORS and cookie handling
 app.use(
   cors({
-    origin: true, // Frontend origin (change to your frontend domain in production)
+    origin: "http://localhost:5173", // Frontend origin (change to your frontend domain in production)
     credentials: true, // Allow credentials (required for cookies)
   })
 );
@@ -30,8 +31,11 @@ app.use(express.urlencoded({ extended: true })); // Parse form data
 
 app.use("/api/v1", router); // User routes
 app.use("/api/v1", proute); // Product routes
-app.use("/api/v1", invest_route); // Investment routes
 app.get("/api/v1/profile",profileData)
+//this route related to payment verification and the orde creation
+app.use('/api/v1',payment),
+//payment success call back
+app.use('/api/v1',payment_success)
 
 // Database Connection
 mongoose

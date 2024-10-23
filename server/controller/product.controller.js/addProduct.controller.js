@@ -2,6 +2,7 @@ import { product_model } from "../../model/product.model.js";
 import path from "path";
 import { uploadOnCloud } from "../../utils/cloudnary.js";
 import { resourceLimits } from "worker_threads";
+import { log } from "console";
 
 //controller to crate ethe add the prodiuct
 const addProduct = async (req, res) => {
@@ -13,6 +14,7 @@ const addProduct = async (req, res) => {
     total_income,
     purcahse_limit,
   } = req.body;
+  console.log(`req.body`,req.body)
   console.log(`req.file`, req.file);
 
   const result = await uploadOnCloud(req.file.buffer);
