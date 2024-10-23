@@ -5,7 +5,8 @@ import jwt from 'jsonwebtoken';
 const verifyToken = async (req, res, next) => {
     // Get the Authorization header or the access_token from cookies
     const authHeader = req.headers['authorization'];
-    const cookieToken = req.cookies.access_token; // Get token from cookies if available;
+    console.log('cookie token',JSON.stringify(req.cookies.ACCESS_TOKEN))
+    const cookieToken = req.cookies.ACCESS_TOKEN; // Get token from cookies if available;
     // Get token from cookies if available
     console.log(`acces token`,cookieToken)
     let token;

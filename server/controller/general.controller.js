@@ -108,7 +108,7 @@ const login = async (req, res) => {
         email: existUser.email,
       },
       process.env.access_token || "AdiAdi", // Use a secure key from .env
-      { expiresIn: "5m" } // Extend token expiration for access token
+      { expiresIn: "20m" } // Extend token expiration for access token
     );
 
     // Generate refresh token
@@ -131,16 +131,16 @@ const login = async (req, res) => {
     await existUser.save();
 
     // Set cookies
-    res.cookie("refresh_token", refresh_token, {
+    res.cookie("REFRESH_TOKEN", refresh_token, {
       httpOnly: true,
       // secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       // sameSite: "Strict",
     });
-    res.cookie("access_token", access_token, {
+    res.cookie("ACCESS_TOKEN", access_token, {
       httpOnly: true,
       // secure: true,
-      maxAge: 15 * 60 * 1000, // 15 minutes expiry of cookie
+      maxAge: 20 * 60 * 1000, // 15 minutes expiry of cookie
       //sameSite: "Strict",
     });
 
@@ -198,7 +198,7 @@ const refresh = async (req, res) => {
     const access_token = jwt.sign(
       { type: "access_token", _id: user._id, email: user.email },
       process.env.access_token || "AdiAdi",
-      { expiresIn: "5m" }
+      { expiresIn: "20m" }
     );
 
     // Create new refresh token
@@ -214,16 +214,16 @@ const refresh = async (req, res) => {
     // await user.save();
 
     // Set cookies with new tokens
-    res.cookie("refresh_token", refresh_token, {
+    res.cookie("REFRESH_TOKEN", refresh_token, {
       httpOnly: true,
       secure: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       sameSite: "Strict",
     });
-    res.cookie("access_token", access_token, {
+    res.cookie("ACCESS_TOKEN", access_token, {
       httpOnly: true,
       secure: true,
-      maxAge: 15 * 60 * 1000,
+      maxAge: 20 * 60 * 1000,
       sameSite: "Strict",
     });
 
