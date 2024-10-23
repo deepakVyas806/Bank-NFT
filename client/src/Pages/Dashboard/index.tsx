@@ -11,7 +11,7 @@ export default function Dashboard() {
 
   const payNow = async () => {
     // Create order by calling the server endpoint
-    const response = await fetch('http://localhost:4000/api/v1/order', {
+    const response = await fetch('betting-app-gold.vercel.app/api/v1/order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ export default function Dashboard() {
       name: 'Snook Coder',
       description: 'Test Transaction',
       order_id: order.data.id, // This is the order_id created in the backend
-      callback_url: 'http://localhost:4000/api/v1/payment-success', // Your success URL
+      callback_url: 'betting-app-gold.vercel.app/api/v1/payment-success', // Your success URL
       prefill: {
         name: 'Gaurav Kumar',
         email: 'gaurav.kumar@example.com',
@@ -45,7 +45,7 @@ export default function Dashboard() {
           console.log('Payment modal closed or payment failed');
           
           // Send the failure status to your backend
-          const failureResponse = await fetch('http://localhost:4000/api/v1/payment-failure', {
+          const failureResponse = await fetch('betting-app-gold.vercel.app/v1/payment-failure', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
