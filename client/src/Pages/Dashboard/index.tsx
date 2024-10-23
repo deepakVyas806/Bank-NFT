@@ -1,5 +1,10 @@
-import axios from 'axios';
-import React, { useState } from 'react';
+import  { useState } from 'react';
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 export default function Dashboard() {
   const [amount, setAmount] = useState('');
@@ -12,7 +17,7 @@ export default function Dashboard() {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({ amount: amount, currency: 'INR', receipt: 'receipt#1', productid:'6718b6c9c6c923c43f7e4a12' , daily_income:100,total_income:100}) // Convert amount to paise
+      body: JSON.stringify({ amount: amount, currency: 'INR', receipt: 'receipt#1', productid: '6718b6c9c6c923c43f7e4a12', daily_income: 100, total_income: 100 }) // Convert amount to paise
     });
 
     const order = await response.json();
@@ -37,7 +42,6 @@ export default function Dashboard() {
       },
       modal: {
         ondismiss: async function () {
-          // This is triggered when the user closes the Razorpay modal without completing the payment
           console.log('Payment modal closed or payment failed');
           
           // Send the failure status to your backend
