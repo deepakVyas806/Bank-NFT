@@ -1,18 +1,23 @@
-import axios from 'axios';
-import React, { useState } from 'react';
+import  { useState } from 'react';
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 export default function Dashboard() {
   const [amount, setAmount] = useState('');
 
   const payNow = async () => {
     // Create order by calling the server endpoint
-    const response = await fetch('http://localhost:4000/api/v1/order', {
+    const response = await fetch('betting-app-gold.vercel.app/api/v1/order', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include',
-      body: JSON.stringify({ amount: amount, currency: 'INR', receipt: 'receipt#1', productid:'6718b6c9c6c923c43f7e4a12' , daily_income:100,total_income:100}) // Convert amount to paise
+      body: JSON.stringify({ amount: amount, currency: 'INR', receipt: 'receipt#1', productid: '6718b6c9c6c923c43f7e4a12', daily_income: 100, total_income: 100 }) // Convert amount to paise
     });
 
     const order = await response.json();
@@ -26,7 +31,7 @@ export default function Dashboard() {
       name: 'Snook Coder',
       description: 'Test Transaction',
       order_id: order.data.id, // This is the order_id created in the backend
-      callback_url: 'http://localhost:4000/api/v1/payment-success', // Your success URL
+      callback_url: 'betting-app-gold.vercel.app/api/v1/payment-success', // Your success URL
       prefill: {
         name: 'Gaurav Kumar',
         email: 'gaurav.kumar@example.com',
@@ -37,11 +42,10 @@ export default function Dashboard() {
       },
       modal: {
         ondismiss: async function () {
-          // This is triggered when the user closes the Razorpay modal without completing the payment
           console.log('Payment modal closed or payment failed');
           
           // Send the failure status to your backend
-          const failureResponse = await fetch('http://localhost:4000/api/v1/payment-failure', {
+          const failureResponse = await fetch('betting-app-gold.vercel.app/v1/payment-failure', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
