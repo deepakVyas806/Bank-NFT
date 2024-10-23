@@ -20,7 +20,18 @@ export default function Dashboard() {
       body: JSON.stringify({ amount: amount, currency: 'INR', receipt: 'receipt#1', productid: '6718b6c9c6c923c43f7e4a12', daily_income: 100, total_income: 100 }) // Convert amount to paise
     });
 
-    const order = await response.json();
+     // Check if the response status is OK (200-299)
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+
+    // Check if the response has content before trying to parse
+    const text = await response.text();
+    if (!text) {
+      throw new Error('Empty response from server');
+    }
+    
+   const order = JSON.parse(text)
     console.log("order", order);
 
     // Open Razorpay Checkout
