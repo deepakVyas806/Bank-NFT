@@ -13,7 +13,7 @@ export default function Dashboard() {
   const payNow = async () => {
     try {
       // Create order by calling the server endpoint with Axios
-      const response = await axiosPublic.post('api/v1/order', {
+      const response = await axiosPublic.post("api/v1/order", {
         amount: amount,
         currency: 'INR',
         receipt: 'receipt#1',
