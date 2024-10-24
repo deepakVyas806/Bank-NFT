@@ -3,12 +3,10 @@
 import React from "react";
 
 interface ProductCardProps {
-  name: string;
-  price: number;
-  image: string;
+  Product:any
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ price }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ Product }) => {
   return (
     <div
       className="flex flex-col rounded-lg border border-gray-200 grow"
@@ -23,18 +21,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ price }) => {
                 Product name
               </p>
               <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">
-                Perfume 5001
+                {Product?.product_name}
               </p>
             </div>
             <div className="flex flex-col items-center">
               <p className="text-[9px] font-medium text-gray-500 hover:text-blue-400 cursor-pointer">
                 Price
               </p>
-              <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">&#8377; {price}</p>
+              <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">&#8377; {Product?.product_price}</p>
             </div>            
             <div className="">
               <div className="text-[#1B84FF] inline-flex items-center justify-center rounded-md px-1.5 py-0.5 text-[10px] font-medium bg-[#EFF6FF] border border-[rgba(27, 132, 255, .2)]">
-                Valid for 10 days
+                Valid for {Product?.validity} days
               </div>
             </div>
           </div>
@@ -43,13 +41,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ price }) => {
         <div className="flex items-center justify-center flex-wrap mt-2 gap-2">
           <div className="flex flex-col gap-1.5 border border-dashed border-gray-300 rounded-md px-1.5 py-1">
             <span className="text-gray-900 text-sm leading-none font-medium text-center">
-              &#8377; 100
+              &#8377; {Product?.total_income}
             </span>
             <span className="text-gray-700 text-xs">Total Income</span>
           </div>
           <div className="flex flex-col gap-1.5 border border-dashed border-gray-300 rounded-md px-1.5 py-1">
             <span className="text-gray-900 text-sm leading-none font-medium text-center">
-              &#8377; 10
+              &#8377; {Product?.daily_income}
             </span>
             <span className="text-gray-700 text-xs">Daily Income</span>
           </div>

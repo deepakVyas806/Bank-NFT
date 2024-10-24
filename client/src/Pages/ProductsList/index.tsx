@@ -11,7 +11,7 @@ import { axiosPrivate } from "../../ApiServices/Axios";
 import { showToast } from "../../ToastServices/ToastServices";
 
 interface Product {
-  id: number;
+  _id: number;
   name: string;
   price: number;
   image: string;
@@ -19,16 +19,45 @@ interface Product {
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal open/close
-  const [loading, setLoading] = useState(false); // Loading state for API call
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const formikRef = useRef<FormikProps<any>>(null);
+
+  // Fetch products from API
+  const fetchProducts = async () => {
+    try {
+      const response = await axiosPrivate.get("/api/v1/get-products");
+      return response.data.product; // Assuming API returns a 'product' array
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      return [];
+    }
+  };
+
+  // Load all products on mount
+  useEffect(() => {
+    const loadProducts = async () => {
+      const fetchedProducts = await fetchProducts();
+      setProducts(fetchedProducts);
+    };
+
+    loadProducts();
+  }, []);
+
+  // Get paginated products
+  const paginatedProducts = products
+  
+
+  // Handle next page
+  const loadMoreProducts = () => {
+    if (currentPage * itemsPerPage >= products.length) return;
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
 
   const createProduct = async (values: any, setSubmitting: any) => {
     const formData = new FormData();
-
-    // Appending values to FormData object
     formData.append("product_name", values.product_name);
     formData.append("product_price", values.product_price);
     formData.append("daily_income", values.daily_income);
@@ -39,58 +68,23 @@ const ProductList: React.FC = () => {
 
     try {
       setLoading(true); // Set loading to true before the API call
-      const response = await axiosPrivate.post("api/v1/add_product", formData);
+      const response = await axiosPrivate.post("/api/v1/add_product", formData);
       console.log(response);
-      // Optionally handle the response or refresh the product list here
+      showToast("Product added successfully.", "success", 1000);
     } catch (error) {
       console.error("Error creating product:", error);
-      // Optionally show an error message to the user
     } finally {
       setIsModalOpen(false);
-      showToast('Product added successfully.','success',1000)
-      setSubmitting(false); // Always set submitting to false when done
+      setSubmitting(false); // Set submitting to false when done
       setLoading(false); // Set loading to false after the API call completes
     }
   };
 
   const handleModalSubmit = () => {
-    // If formikRef exists, trigger submit
     if (formikRef.current) {
       createProduct(formikRef.current.values, formikRef.current.setSubmitting);
     }
   };
-
-  const fetchProducts = async (page: number) => {
-    // Simulating a delay for fetching products
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Static data for now
-    const staticProducts: Product[] = Array.from(
-      { length: 10 },
-      (_, index) => ({
-        id: (page - 1) * 10 + index + 1,
-        name: `Product ${(page - 1) * 10 + index + 1}`,
-        price: Math.floor(Math.random() * 100) + 10,
-        image: "https://via.placeholder.com/150",
-      })
-    );
-
-    return staticProducts;
-  };
-
-  const loadMoreProducts = async () => {
-    const newProducts = await fetchProducts(page);
-    setProducts((prevProducts) => [...prevProducts, ...newProducts]);
-
-    if (newProducts.length < 10) {
-      setHasMore(false);
-    }
-    setPage((prevPage) => prevPage + 1);
-  };
-
-  useEffect(() => {
-    loadMoreProducts();
-  }, []);
 
   return (
     <section className="bg-white min-h-screen p-6">
@@ -101,30 +95,29 @@ const ProductList: React.FC = () => {
       />
 
       <InfiniteScroll
-        dataLength={products.length}
+        dataLength={paginatedProducts.length}
         next={loadMoreProducts}
-        hasMore={hasMore}
+        hasMore={currentPage * itemsPerPage < products.length}
         loader={<h4>Loading...</h4>}
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4"
       >
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            name={product.name}
-            price={product.price}
-            image={product.image}
+        {paginatedProducts.map((product) => (
+          <div key={product._id}>
+            <ProductCard
+          Product={product}
           />
+          </div>
         ))}
       </InfiniteScroll>
 
       <Modal
         title="Add Product"
-        isOpen={isModalOpen} // Use state to control modal visibility
-        onClose={() => setIsModalOpen(false)} // Close modal
-        onSubmit={handleModalSubmit} // Submit function from Modal
-        loading={loading} // Pass loading state to Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleModalSubmit}
+        loading={loading}
       >
-        <CreateProduct formikRef={formikRef} /> {/* Pass ref to Formik */}
+        <CreateProduct formikRef={formikRef} />
       </Modal>
     </section>
   );

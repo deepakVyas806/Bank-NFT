@@ -7,3 +7,7 @@ declare module '*.jsx' {
   const content: any;
   export default content;
 }
+// global.d.ts
+interface Window {
+  Razorpay: any;
+}
