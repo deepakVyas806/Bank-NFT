@@ -18,7 +18,7 @@ const app = express();
 // Middleware for CORS and cookie handling
 app.use(
   cors({
-    origin:'https://betting-app-frontend-neon.vercel.app/', // Frontend origin (change to your frontend domain in production)
+    origin:'https://betting-app-frontend-neon.vercel.app', // Frontend origin (change to your frontend domain in production)
     credentials: true, // Allow credentials (required for cookies)
   })
 );
