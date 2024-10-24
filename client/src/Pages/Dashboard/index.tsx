@@ -13,7 +13,7 @@ export default function Dashboard() {
   const payNow = async () => {
     try {
       // Create order by calling the server endpoint with Axios
-      const response = await axiosPublic.post('/api/v1/order', {
+      const response = await axiosPublic.post('api/v1/order', {
         amount: amount,
         currency: 'INR',
         receipt: 'receipt#1',
@@ -47,7 +47,7 @@ export default function Dashboard() {
             console.log('Payment modal closed or payment failed');
 
             // Send the failure status to your backend using Axios
-            const failureResponse = await axiosPublic.post('/api/v1/payment-failure', {
+            const failureResponse = await axiosPublic.post('api/v1/payment-failure', {
               orderId: order.data.id, // Pass the order ID to identify the failed transaction
               status: 'failed',
             });

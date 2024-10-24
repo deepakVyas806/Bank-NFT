@@ -18,7 +18,7 @@ const app = express();
 // Middleware for CORS and cookie handling
 app.use(
   cors({
-    origin:true, // Frontend origin (change to your frontend domain in production)
+    origin: true,
     credentials: true, // Allow credentials (required for cookies)
   })
 );
@@ -31,11 +31,11 @@ app.use(express.urlencoded({ extended: true })); // Parse form data
 
 app.use("/api/v1", router); // User routes
 app.use("/api/v1", proute); // Product routes
-app.get("/api/v1/profile",profileData)
+app.get("/api/v1/profile", profileData);
 //this route related to payment verification and the orde creation
-app.use('/api/v1',payment),
-//payment success call back
-app.use('/api/v1',payment_success)
+app.use("/api/v1", payment),
+  //payment success call back
+  app.use("/api/v1", payment_success);
 
 // Database Connection
 mongoose
