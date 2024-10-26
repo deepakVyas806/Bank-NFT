@@ -18,6 +18,7 @@ export interface Product {
   daily_income:string;
   total_income:string;
   validity:string;
+  product_image:string
 }
 
 const ProductList: React.FC = () => {
