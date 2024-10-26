@@ -6,51 +6,50 @@ import Razorpay from 'razorpay';
 import { response_message } from '../../responses.js';
 import { order_model } from '../../model/order.model.js';
 
-console.log(process.env.razor_api )
-const order_create = async(req, res) => {
 
+const order_create = async (req, res) => {
     try {
-       
-        const {amount,productid,receipt,daily_income,total_income} = req.body;
-        console.log(`req.body`,req.body)
-        const productId = new mongoose.Types.ObjectId(productid)
-        const userId = req.access_verification;
+        const { amount, productid, receipt, daily_income, total_income } = req.body;
         
-        console.log(`userId`,userId)
-        var instance = new Razorpay({ key_id:process.env.razor_api , key_secret:process.env.razor_secret})
+        // Convert productid to ObjectId
+        const productId = new mongoose.Types.ObjectId(productid);
+        const userId = req.access_verification; // Ensure this is set correctly
+
+        // Razorpay order creation
+        var instance = new Razorpay({ key_id: process.env.razor_api, key_secret: process.env.razor_secret });
     
         var options = {
-            amount: amount*100,  // amount in the smallest currency unit
+            amount: amount * 100,  // Amount in smallest currency unit
             currency: "INR",
-            receipt:receipt||"order_rcptid_11",
+            receipt: receipt || "order_rcptid_11",
         };
-       const order = await  instance.orders.create(options);
-       //dont resolve the fiunstion withinh it 
-       //make sure await will work
+
+        // Create Razorpay order
+        const razorOrderData = await instance.orders.create(options);
        
-       // entry created in order model 
-       await order_model.create({
-           orderId:order.id,
-           amount:amount,
-           status:'create',
-           receipt:receipt,
-           userId:userId||'random -user-id',
-           productId:productId||'random-product-id',
-           daily_income:daily_income,
-           total_income:total_income
-       })
+        // Prepare order details
+        const orderDetails = {
+            orderId: razorOrderData.id,
+            amount: amount,
+            status: 'create',
+            receipt: receipt,
+            userId: userId || 'random-user-id',
+            productId: productId || 'random-product-id',
+            daily_income: daily_income,
+            total_income: total_income,
+        };
 
-       if(!order){
-         return response_message(res,400,false,`order creation fail`,null);
-       }
-
-       return response_message(res,200,true,`order carted succesfully`,order)
-       
-
+        // Create and save order
+        const order = new order_model(orderDetails);
+        await order.save();
+        console.log(`order entries in datanase after saving it `,order);
+        return response_message(res, 200, true, `Order created successfully`, order);
+        
     } catch (error) {
-        console.log(`error in the order_create api ${error.message}`);
-        return response_message(res, 500, false, `erorr in catch api ${error}`, null)
+        console.log(`Error in the order_create API: ${error.message}`);
+        return response_message(res, 500, false, `Error in catch API: ${error}`, null);
     }
 }
+
 
 export { order_create }

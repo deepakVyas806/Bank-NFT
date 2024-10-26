@@ -9,7 +9,7 @@ const sessionSchema = mongoose.Schema({
   },
   expiresAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now + 5 * 60 *  1000,
     index: { expires: "5m" },
   },
 });

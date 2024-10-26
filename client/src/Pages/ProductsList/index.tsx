@@ -42,7 +42,8 @@ const ProductList: React.FC = () => {
     try {
       setIsProductsLoading(true);
       const response = await axiosPrivate.get("/api/v1/get-products");
-      setProducts(response.data.product || []);
+      console.log(``,response.data)
+      setProducts(response.data.payload || []);
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {

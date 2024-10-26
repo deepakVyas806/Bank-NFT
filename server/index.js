@@ -9,6 +9,9 @@ import "./controller/cronjob.js";
 import { profileData } from "./controller/cronjob.js";
 import { payment } from "./router/payment/payment.router.js";
 import { payment_success } from "./router/payment/sucess.router.js";
+// import { order_model } from "./model/order.model.js";
+// import {product_model} from "../server/model/product.model.js"
+// import { pro_inv } from "./model/investment.model.js";
 
 dotenv.config(); // Load environment variables
 
@@ -41,8 +44,12 @@ app.use("/api/v1", payment),
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
-    app.listen(PORT, () => {
+    app.listen(PORT, async() => {
       console.log(`Server started at ${PORT} and database connected`);
+      //  await product_model.deleteMany({});
+      //  await pro_inv.deleteMany({});
+     // await order_model.deleteMany() 
+    //  console.log('all products are delete')
     });
   })
   .catch((error) => {

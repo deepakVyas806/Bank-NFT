@@ -22,30 +22,27 @@ const investmentSchema = new mongoose.Schema({
       type:Number,
       default:0
     },
-    start_date:{
-        type:Date,
-        default:Date.now
-    },
     last_run:{
-        type:Date,
-        default:Date.now
+        type:Number,
+        default:() => Math.floor(Date.now()/1000)
     },
     end_date:{
-        type:Date,
+        type:Number,
+        default:() => Math.floor(Date.now()/1000)
     },
     
     created_At:{
-        type:Date,
-        default:Date.now
+        type:Number,
+        default:() => Math.floor(Date.now()/1000) //UNIX timestamp in seconds
     },
     update_At:{
-        type:Date,
-        default:Date.now
+        type:Number,
+        default:() => Math.floor(Date.now()/1000) //UNIX timestamp in seconds
     }
 })
 
 investmentSchema.pre('save', function (next) {
-    this.update_At = Date.now(); // Update the 'update_At' field to the current date
+    this.update_At = Math.floor(Date.now()/1000) // Update the 'update_At' field to the current date
     next();
 });
 

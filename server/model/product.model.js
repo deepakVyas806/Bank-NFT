@@ -29,17 +29,17 @@ const product_schema = new mongoose.Schema({
   },
 
   createdAt: {
-    type: Date,
-    default: Date.now,
+    type:Number,
+    default:()=>Math.floor(Date.now()/1000)
   },
   updatedAt: {
-    type: Date,
-    default: Date.now,
+    type:Number,
+    default:()=>Math.floor(Date.now()/1000)
   },
 });
 
 product_schema.pre("save", function (next) {
-  this.update_At = Date.now(); // Update the 'update_At' field to the current date
+  this.update_At =Math.floor(Date.now()/1000) // Update the 'update_At' field to the current date
   next();
 });
 
