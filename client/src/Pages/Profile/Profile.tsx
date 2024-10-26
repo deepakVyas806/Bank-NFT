@@ -31,7 +31,7 @@ const Profile: React.FC = () => {
         <img
           src={"/image.jpg"}
           alt={`profile icon`}
-          className="w-28 h-28 rounded-full border-3 border-yellow-400"
+          className="w-28 h-28 rounded-full border-2 border-yellow-400"
         />
 
         <div className="flex items-center mt-1">

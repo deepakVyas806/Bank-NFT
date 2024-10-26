@@ -50,7 +50,7 @@ const Modal: React.FC<ResponsiveModalProps> = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4">{children}</div>
+        <div className="flex-1 overflow-y-auto pl-6 pr-4 py-4">{children}</div>
 
         {/* Footer */}
         <div className="flex min-h-[56px] justify-end gap-4 items-center p-2 border-t border-gray-200">
