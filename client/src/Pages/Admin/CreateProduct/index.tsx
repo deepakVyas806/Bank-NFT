@@ -10,7 +10,11 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import AuthInput, { Label } from "../../../Components/Input/AuthInput";
-import SubmitButton from "../../../Components/Button/SubmitButton/SubmitButton"; // Import the SubmitButton
+import { axiosPrivate } from "../../../ApiServices/Axios";
+
+interface CreateProductProps {
+  formikRef?: React.Ref<any>;
+}
 
 // Validation schema using Yup
 const validationSchema = Yup.object().shape({
@@ -34,7 +38,7 @@ const validationSchema = Yup.object().shape({
   product_image: Yup.mixed().required("Product image is required"),
 });
 
-const CreateProduct: React.FC = () => {
+const CreateProduct: React.FC<CreateProductProps> = ({ formikRef }) => {
   const initialValues = {
     product_name: "",
     product_price: "",
@@ -45,8 +49,26 @@ const CreateProduct: React.FC = () => {
     product_image: null,
   };
 
-  const handleSubmit = (values: any) => {
+  const createProduct = async (values: any, setSubmitting: any) => {
+    const formData = new FormData();
+
+    // Appending values to FormData object
+    formData.append("product_name", values.product_name);
+    formData.append("product_price", values.product_price);
+    formData.append("daily_income", values.daily_income);
+    formData.append("validity", values.validity);
+    formData.append("total_income", values.total_income);
+    formData.append("purchase_limit", values.purchase_limit);
+    formData.append("product_image", values.product_image);
+
+    const response = await axiosPrivate.post("api/v1/add_product", formData);
+    console.log(response);
+    setSubmitting(false);
+  };
+
+  const handleSubmit = (values: any, { setSubmitting }: any) => {
     console.log(values);
+    createProduct(values, setSubmitting);
   };
 
   const handleFileChange = (
@@ -60,90 +82,77 @@ const CreateProduct: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white px-8 py-4 border rounded-lg shadow-md">
+    <div>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
+        innerRef={formikRef}
       >
-        {({ setFieldValue, isSubmitting }) => (
-          <Form className="space-y-1">
-            {" "}
-            {/* Combined space-y-1 class */}
+        {({ setFieldValue }: any) => (
+          <Form className="grid grid-cols-1 gap-2 lg:grid-cols-2">
             {/* Product Name */}
-            <div>
-              <AuthInput
-                label="Product Name"
-                name="product_name"
-                type="text"
-                placeholder="Enter product name"
-                icon={<AiOutlineFile />}
-                prefix=""
-                required
-              />
-            </div>
+            <AuthInput
+              label="Product Name"
+              name="product_name"
+              type="text"
+              placeholder="Enter product name"
+              icon={<AiOutlineFile />}
+              prefix=""  // Added prefix here
+              required
+            />
             {/* Product Price */}
-            <div>
-              <AuthInput
-                label="Product Price"
-                name="product_price"
-                type="number"
-                placeholder="Enter product price"
-                icon={<AiOutlineDollar />}
-                prefix=""
-                required
-              />
-            </div>
+            <AuthInput
+              label="Product Price"
+              name="product_price"
+              type="number"
+              placeholder="Enter product price"
+              icon={<AiOutlineDollar />}
+              prefix=""  // Added prefix here
+              required
+            />
             {/* Daily Income */}
-            <div>
-              <AuthInput
-                label="Daily Income"
-                name="daily_income"
-                type="number"
-                placeholder="Enter daily income"
-                icon={<AiOutlineWallet />}
-                prefix=""
-                required
-              />
-            </div>
+            <AuthInput
+              label="Daily Income"
+              name="daily_income"
+              type="number"
+              placeholder="Enter daily income"
+              icon={<AiOutlineWallet />}
+              prefix=""  // Added prefix here
+              required
+            />
             {/* Validity */}
-            <div>
-              <AuthInput
-                label="Validity (days)"
-                name="validity"
-                type="number"
-                placeholder="Enter validity"
-                icon={<AiOutlineCalendar />}
-                prefix=""
-                required
-              />
-            </div>
+            <AuthInput
+              label="Validity (days)"
+              name="validity"
+              type="number"
+              placeholder="Enter validity"
+              icon={<AiOutlineCalendar />}
+              prefix=""  // Added prefix here
+              required
+            />
             {/* Total Income */}
-            <div>
-              <AuthInput
-                label="Total Income"
-                name="total_income"
-                type="number"
-                placeholder="Enter total income"
-                icon={<AiOutlineNumber />}
-                prefix=""
-                required
-              />
-            </div>
+            <AuthInput
+              label="Total Income"
+              name="total_income"
+              type="number"
+              placeholder="Enter total income"
+              icon={<AiOutlineNumber />}
+              prefix=""  // Added prefix here
+              required
+            />
             {/* Purchase Limit */}
-            <div>
-              <AuthInput
-                label="Purchase Limit"
-                name="purchase_limit"
-                type="number"
-                placeholder="Enter purchase limit"
-                icon={<AiOutlineShoppingCart />}
-                prefix=""
-                required
-              />
-            </div>
+            <AuthInput
+              label="Purchase Limit"
+              name="purchase_limit"
+              type="number"
+              placeholder="Enter purchase limit"
+              icon={<AiOutlineShoppingCart />}
+              prefix=""  // Added prefix here
+              required
+            />
             {/* Product Image */}
-            <div>
+            <div className="lg:col-span-2">
               <Label label="Product Image" htmlFor="productImage" />
               <input
                 name="product_image"
@@ -153,14 +162,7 @@ const CreateProduct: React.FC = () => {
                 className="block w-full text-sm text-gray-700 border border-gray-300 p-2 rounded-md"
               />
             </div>
-            {/* Submit Button */}
-            <div>
-              <SubmitButton
-                isLoading={isSubmitting}
-                buttonText="Submit"
-                // Optional: Add buttonColor prop if needed
-              />
-            </div>
+            {/* Add your submit button and other components as necessary */}
           </Form>
         )}
       </Formik>

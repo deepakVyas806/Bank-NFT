@@ -1,9 +1,10 @@
 import express from 'express';
-import { pro_inv } from '../../model/investment.model.js';
+import { product_model } from '../../model/product.model.js';
+
 
 const get_product = async(req,res)=>{
    
-    const product = await pro_inv.find();
+    const product = await product_model.find();
 
     try {
 

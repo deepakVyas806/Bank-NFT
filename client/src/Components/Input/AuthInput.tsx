@@ -3,6 +3,7 @@ import { useField } from 'formik';
 import { FaMobileAlt } from 'react-icons/fa'; // Import an icon (for example)
 
 // Label Component
+export const InputStyle = 'bg-transparent flex-1 focus:outline-none text-inputlabel text-xs font-normal'
 export const Label: React.FC<{ htmlFor: string; required?: boolean; label?: string }> = ({
   htmlFor,
   required = false,

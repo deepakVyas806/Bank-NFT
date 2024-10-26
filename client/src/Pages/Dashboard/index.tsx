@@ -16,7 +16,7 @@ const Dashboard: React.FC = () => {
           productid: '6718b6c9c6c923c43f7e4a12',
           daily_income: 100,
           total_income: 100,
-        },        
+        }        
       );
 
       const order = response.data;
@@ -29,10 +29,10 @@ const Dashboard: React.FC = () => {
         name: 'Snook Coder',
         description: 'Test Transaction',
         order_id: order.data.id,
-        callback_url: 'http://localhost:4000/api/v1/payment-success',
+        callback_url: 'http://localhost:4000/api/v1/dashboard',
         prefill: {
-          name: 'Gaurav Kumar',
-          email: 'gaurav.kumar@example.com',
+          name: 'Deepak vyas',
+          email: 'vyasdeepak608@gmail.com',
           contact: '9999999999',
         },
         theme: {
