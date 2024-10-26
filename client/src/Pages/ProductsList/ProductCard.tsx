@@ -16,7 +16,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ Product, onBuyNow }) => {
     >
       <div className="flex flex-col justify-center items-left grow">
         <div className="flex">
-          <img src="/product-example.jpg" className="w-1/2 h-32 rounded-md" />
+          <img src={Product?.product_image} className="w-1/2 h-32 rounded-md ml-2 mt-2" />
           <div className="flex flex-col justify-between items-center w-1/2 my-3">
             <div className="flex flex-col items-center">
               <p className="text-[9px] font-medium text-gray-500 hover:text-blue-400 cursor-pointer">

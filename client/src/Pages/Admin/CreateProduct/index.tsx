@@ -10,10 +10,11 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import AuthInput, { Label } from "../../../Components/Input/AuthInput";
-import { axiosPrivate } from "../../../ApiServices/Axios";
+// import { axiosPrivate } from "../../../ApiServices/Axios";
 
 interface CreateProductProps {
   formikRef?: React.Ref<any>;
+  onSubmit?:any
 }
 
 // Validation schema using Yup
@@ -38,7 +39,7 @@ const validationSchema = Yup.object().shape({
   product_image: Yup.mixed().required("Product image is required"),
 });
 
-const CreateProduct: React.FC<CreateProductProps> = ({ formikRef }) => {
+const CreateProduct: React.FC<CreateProductProps> = ({ formikRef,onSubmit }) => {
   const initialValues = {
     product_name: "",
     product_price: "",
@@ -49,26 +50,26 @@ const CreateProduct: React.FC<CreateProductProps> = ({ formikRef }) => {
     product_image: null,
   };
 
-  const createProduct = async (values: any, setSubmitting: any) => {
-    const formData = new FormData();
+  // const createProduct = async (values: any, setSubmitting: any) => {
+  //   const formData = new FormData();
 
-    // Appending values to FormData object
-    formData.append("product_name", values.product_name);
-    formData.append("product_price", values.product_price);
-    formData.append("daily_income", values.daily_income);
-    formData.append("validity", values.validity);
-    formData.append("total_income", values.total_income);
-    formData.append("purchase_limit", values.purchase_limit);
-    formData.append("product_image", values.product_image);
+  //   // Appending values to FormData object
+  //   formData.append("product_name", values.product_name);
+  //   formData.append("product_price", values.product_price);
+  //   formData.append("daily_income", values.daily_income);
+  //   formData.append("validity", values.validity);
+  //   formData.append("total_income", values.total_income);
+  //   formData.append("purchase_limit", values.purchase_limit);
+  //   formData.append("product_image", values.product_image);
 
-    const response = await axiosPrivate.post("api/v1/add_product", formData);
-    console.log(response);
-    setSubmitting(false);
-  };
+  //   const response = await axiosPrivate.post("api/v1/add_product", formData);
+  //   console.log(response);
+  //   setSubmitting(false);
+  // };
 
   const handleSubmit = (values: any, { setSubmitting }: any) => {
     console.log(values);
-    createProduct(values, setSubmitting);
+    onSubmit(values, setSubmitting);
   };
 
   const handleFileChange = (

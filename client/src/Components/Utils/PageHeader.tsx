@@ -25,10 +25,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           className="bg-[#1B84FF] text-white font-medium focus:outline-none hover:shadow-lg text-xs px-2 md:px-2.5 py-1.5 md:py-2 rounded-md flex items-center"
         >
           {/* Show + icon on small screens and full text on larger screens */}
-          <span className="block sm:hidden">
-            <img src="/add-white.svg" className="w-4 h-4"/>
+          {/* <span className="block sm:hidden"> */}
+          <span className="">
+            <img src="/add-white.svg" className="w-3.5 h-3.5 mt-0.5 mr-2"/>
           </span>
-          <span className="hidden sm:block">{buttonText}</span>
+          {/* <span className="hidden sm:block">{buttonText}</span> */}
+          <span className="">{buttonText}</span>
         </button>
       )}
     </header>
