@@ -1,12 +1,14 @@
 // src/components/ProductCard/ProductCard.tsx
 
 import React from "react";
+import { Product } from ".";
 
 interface ProductCardProps {
-  Product:any
+  Product: any;
+  onBuyNow: (product: Product) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ Product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ Product, onBuyNow }) => {
   return (
     <div
       className="flex flex-col rounded-lg border border-gray-200 grow"
@@ -28,8 +30,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ Product }) => {
               <p className="text-[9px] font-medium text-gray-500 hover:text-blue-400 cursor-pointer">
                 Price
               </p>
-              <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">&#8377; {Product?.product_price}</p>
-            </div>            
+              <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">
+                &#8377; {Product?.product_price}
+              </p>
+            </div>
             <div className="">
               <div className="text-[#1B84FF] inline-flex items-center justify-center rounded-md px-1.5 py-0.5 text-[10px] font-medium bg-[#EFF6FF] border border-[rgba(27, 132, 255, .2)]">
                 Valid for {Product?.validity} days
@@ -60,7 +64,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ Product }) => {
         </div>
       </div>
       <div className="flex justify-around items-center mt-2 border-t p-2 border-gray-200">
-        <div className="flex items-center cursor-pointer">
+        <div
+          className="flex items-center cursor-pointer"
+          onClick={() => onBuyNow(Product)}
+        >
           <p className="text-gray-500 font-medium text-sm hover:text-blue-500">
             {/* View Details */}
             Buy now

@@ -31,8 +31,8 @@ const Dashboard: React.FC = () => {
         order_id: order.data.id,
         callback_url: 'http://localhost:4000/api/v1/dashboard',
         prefill: {
-          name: 'Gaurav Kumar',
-          email: 'gaurav.kumar@example.com',
+          name: 'Deepak vyas',
+          email: 'vyasdeepak608@gmail.com',
           contact: '9999999999',
         },
         theme: {
