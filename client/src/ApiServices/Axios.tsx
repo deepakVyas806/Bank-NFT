@@ -9,7 +9,7 @@ import Cookies from "js-cookie";
 
 // Base URL of your API
 // const BASE_URL = 'https://betting-app-gold.vercel.app/';  //Live
-const BASE_URL = "https://betting-app-gold.vercel.app/"; //Local
+export const BASE_URL = "https://betting-app-gold.vercel.app/"; //Local
 
 // Get tokens from local storage
 const getAccessToken = (): string | undefined => Cookies.get("ACCESS_TOKEN");
