@@ -25,7 +25,7 @@ const PayUsingRazorpar = async (
       key: "rzp_test_Oz09n2OkZmcgNQ",
       amount: order.amount,
       currency: orderDetails.currency,
-      name: "Snook Coder",
+      name: "AD's Snook Coder",
       description: "Test Transaction",
       order_id: order.orderId,
       callback_url: `${BASE_URL}api/v1/payment-success`,
@@ -35,7 +35,7 @@ const PayUsingRazorpar = async (
         contact: "6378506435",
       },
       theme: {
-        color: "#F37254",
+        color: "#6273bf",
       },
       handler: () => {
         console.log("Payment successful");
