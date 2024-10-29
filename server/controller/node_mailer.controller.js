@@ -3,6 +3,7 @@ dotenv.config();
 import nodeMailer from "nodemailer";
 import { sessionData } from "../model/session.model.js";
 import { register_model } from "../model/register.model.js";
+import { response_message } from "../responses.js";
 
 const mail_otp = async (req, res) => {
   const { email } = req.body;
@@ -15,6 +16,10 @@ const mail_otp = async (req, res) => {
   //     message: "email already exist can genrate new otp",
   //   });
   // }
+
+  if (!email) {
+    response_message(res, 400, false, "email is required", null);
+  }
 
   try {
     // Create the mail transport

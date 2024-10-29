@@ -77,7 +77,7 @@ const login = async (req, res) => {
     // Check for either username or email
     if (!username && !email) {
       return res
-        .status(500)
+        .status(400)
         .json({ success: false, message: "Username or email is required" });
     }
 
@@ -87,7 +87,7 @@ const login = async (req, res) => {
     });
 
     if (!existUser) {
-      return res.status(500).json({
+      return res.status(404).json({
         success: false,
         message: "User does not exist. Please sign up first.",
       });
@@ -96,7 +96,7 @@ const login = async (req, res) => {
     // Password check
     if (login_pass !== existUser.password) {
       return res
-        .status(500)
+        .status(400)
         .json({ success: false, message: "Password does not match" });
     }
 
@@ -231,7 +231,7 @@ const refresh = async (req, res) => {
       success: true,
       message: "New access and refresh tokens generated",
       accessToken: access_token,
-      refresh_token:refresh_token
+      refresh_token: refresh_token,
     });
   } catch (error) {
     return res.status(500).json({

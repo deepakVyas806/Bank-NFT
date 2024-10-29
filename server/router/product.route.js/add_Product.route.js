@@ -14,6 +14,6 @@ proute.post(
   addProduct
 );
 
-proute.get('/get-products',get_product)
+proute.get("/get-products", get_product);
 
 export { proute };
