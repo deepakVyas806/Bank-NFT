@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import { register_model } from "../model/register.model.js";
 import jwt from "jsonwebtoken";
+import { response_message } from "../responses.js";
 
 // Register
 const register = async (req, res) => {
@@ -252,7 +253,7 @@ const profile = async (req,res)=>{
   // wallet info
   const user = await register_model.findOne({_id:userId})
   const wallet_balance = user.wallet_balance
-
+  return response_message(res,200,true,'wallet info first got it ',{"wallet_balance":wallet_balance})
 }
 
 export { register, login, refresh ,profile };
