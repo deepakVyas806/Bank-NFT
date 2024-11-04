@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 dotenv.config();
 import Razorpay from "razorpay";
 import { response_message } from "../../responses.js";
@@ -11,7 +11,7 @@ const recharge_create = async (req, res) => {
     const { amount, receipt } = req.body;
 
     if (!amount) {
-      response_message(res, 400, false, "amount is required", null);
+     return  response_message(res, 400, false, "amount is required", null);
     }
 
     // Convert productid to ObjectId

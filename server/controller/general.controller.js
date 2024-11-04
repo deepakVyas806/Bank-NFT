@@ -242,4 +242,17 @@ const refresh = async (req, res) => {
   }
 };
 
-export { register, login, refresh };
+
+//profile data logic
+const profile = async (req,res)=>{
+  
+  //user id info 
+  const userId = req.access_verification._id;
+
+  // wallet info
+  const user = await register_model.findOne({_id:userId})
+  const wallet_balance = user.wallet_balance
+
+}
+
+export { register, login, refresh ,profile };

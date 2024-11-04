@@ -33,10 +33,11 @@ const mail_otp = async (req, res) => {
       },
     });
 
+   // console.log(`transport`,transport)
     //  check entry in databse
 
     const session_db_data = await sessionData.findOne({ email: email });
-
+   // console.log(session_db_data)
     if (session_db_data) {
       return res.status(500).json({
         success: false,
@@ -50,7 +51,7 @@ const mail_otp = async (req, res) => {
     for (let i = 0; i < 4; i++) {
       otp += digit[Math.floor(Math.random() * 10)];
     }
-
+   // console.log(`otp`,otp)
     // Send OTP email
     const mail_send = await transport.sendMail({
       from: "noreply@snookcoder.com",
@@ -117,11 +118,15 @@ const mail_otp = async (req, res) => {
         </html>
         `,
     });
+    //console.log(`mail`,mail_send)
     //console.log(`${email},${otp}`);
     const new_session = await sessionData.create({
       email: email,
       otp: otp,
     });
+
+   const session  = await new_session;
+  // console.log(`session`,session)
 
     return res.status(200).json({
       success: true,
