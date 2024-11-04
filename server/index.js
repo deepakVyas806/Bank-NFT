@@ -6,10 +6,11 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { proute } from "./router/product.route.js/add_Product.route.js";
 import "./controller/cronjob.js";
-import { profileData } from "./controller/cronjob.js";
+// import { profileData } from "./controller/cronjob.js";
 import { payment } from "./router/payment/payment.router.js";
 import { payment_success } from "./router/payment/sucess.router.js";
-// import { order_model } from "./model/order.model.js";
+// import { register_model } from "./model/register.model.js";
+import { order_model } from "./model/order.model.js";
 // import {product_model} from "../server/model/product.model.js"
 // import { pro_inv } from "./model/investment.model.js";
 
@@ -34,7 +35,7 @@ app.use(express.urlencoded({ extended: true })); // Parse form data
 
 app.use("/api/v1", router); // User routes
 app.use("/api/v1", proute); // Product routes
-app.get("/api/v1/profile", profileData);
+// app.get("/api/v1/profile", profileData);
 //this route related to payment verification and the orde creation
 app.use("/api/v1", payment),
   //payment success call back
@@ -44,12 +45,13 @@ app.use("/api/v1", payment),
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
-    app.listen(PORT, async() => {
+    app.listen(PORT, async () => {
       console.log(`Server started at ${PORT} and database connected`);
+      //await register_model.deleteMany({});
       //  await product_model.deleteMany({});
       //  await pro_inv.deleteMany({});
-     // await order_model.deleteMany() 
-    //  console.log('all products are delete')
+      // await order_model.deleteMany();
+      // console.log("all products are delete");
     });
   })
   .catch((error) => {
