@@ -3,6 +3,7 @@ dotenv.config();
 import { register_model } from "../model/register.model.js";
 import jwt from "jsonwebtoken";
 import { response_message } from "../responses.js";
+import { user_product_model } from "../model/user_product.js";
 
 // Register
 const register = async (req, res) => {
@@ -244,16 +245,95 @@ const refresh = async (req, res) => {
 };
 
 
-//profile data logic
-const profile = async (req,res)=>{
-  
-  //user id info 
-  const userId = req.access_verification._id;
+//profile logic 
 
-  // wallet info
-  const user = await register_model.findOne({_id:userId})
-  const wallet_balance = user.wallet_balance
-  return response_message(res,200,true,'wallet info first got it ',{"wallet_balance":wallet_balance})
-}
+const profile = async (req, res) => {
+  try {
+    const userId = req.access_verification._id;
+
+    // Retrieve wallet balance from user
+    const user = await register_model.findOne({ _id: userId });
+    const wallet_balance = user.wallet_balance;
+
+
+    
+    const today = Math.floor(Date.now() / 1000);
+    let products = [];
+    // Get all products associated with the user
+    const user_products = await user_product_model.find({ user_id: user._id });
+    if (user_products.length === 0) {
+      return response_message(res, 200, false, 'There are no products for this user',{
+        wallet_balance,
+        products,
+      } );
+    }
+
+
+    // Process each product separately
+    for (let user_product of user_products) {
+      let hourly_profit = 0;
+      const daily_profit = user_product.daily_income;
+
+      // Check if the product has expired
+      if (user_product.end_date < today && user_product.withdrawl_flag===0) {
+        user_product.total_income = user_product.daily_income * user_product.validity;
+        user_product.withdrawl_flag = 1;
+      } else {
+        const elapsed_hours = (today - user_product.last_run) / 3600;
+
+        // Update total income on an hourly basis if at least 1 hour has passed
+        if (elapsed_hours >= 1) {
+          const lastRunDate = new Date(user_product.last_run * 1000);
+          const currentDate = new Date(today * 1000);
+
+          // Check if last update was on a previous day
+          // if (lastRunDate.toDateString() !== currentDate.toDateString()) {
+          //   // It's a new day, so reset the hourly profit
+          //   hourly_profit = 0;
+          //   user_product.last_run = today; // Update last_run to now
+
+          //   // Optionally reset total income for the new day if required
+          //   // user_product.total_income = 0; // Uncomment if you want to reset total income daily
+          // }
+
+          // Calculate hourly income based on elapsed hours since last run
+          const hourly_income = (daily_profit / 24) * elapsed_hours;
+          user_product.total_income += hourly_income; // Accumulate total income
+         // hourly_profit += hourly_income; // Set hourly profit based on the elapsed time
+          user_product.last_run = today;
+        }
+      }
+
+      // Save the updated user_product to the database
+      await user_product.save();
+
+      // Add the product's income details to the response
+      products.push({
+        product_id: user_product._id,
+        total_income: `₹${user_product.total_income.toFixed(2)}`,  // Add ₹ symbol
+        // hourly_income: `₹${hourly_profit.toFixed(2)}`,            // Add ₹ symbol
+        daily_income: `₹${daily_profit}`,  
+        withdrawal_balance: user_product.withdrawl_flag === 1 ? user_product.total_income : 0,
+        last_run: user_product.last_run,
+        start_date: user_product.start_date,
+        end_date: user_product.end_date
+      });
+    }
+
+    // Update user's withdrawal balance based on total income of withdrawable products
+    user.withdrawl_balance = products.reduce((sum, product) => sum + product.withdrawal_balance, 0);
+    await user.save();
+
+    return response_message(res, 200, true, 'Wallet info retrieved successfully', {
+      wallet_balance,
+      "withdral_ballance": user.withdrawl_balance,
+      products,
+    });
+  } catch (error) {
+    return response_message(res, 500, false, 'Error in profile API', error.message);
+  }
+};
+
+
 
 export { register, login, refresh ,profile };
