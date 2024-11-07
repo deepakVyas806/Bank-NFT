@@ -252,9 +252,9 @@ const profile = async (req, res) => {
     const userId = req.access_verification._id;
     const user = await register_model.findOne({ _id: userId });
     const wallet_balance = user.wallet_balance;
-    const today = Math.floor(Date.now() / 1000);
+    const today = Math.floor(Date.now() / 1000);  // Current timestamp (seconds)
     let products = [];
-    
+
     // Get all products associated with the user
     const user_products = await user_product_model.find({ user_id: user._id });
     if (user_products.length === 0) {
@@ -267,19 +267,20 @@ const profile = async (req, res) => {
     for (let user_product of user_products) {
       let hourly_income = 0;
       const daily_profit = user_product.daily_income;
-
-      // Check if product has expired
+      
+      // Check if the product has expired
       if (user_product.end_date < today && user_product.withdrawl_flag === 0) {
-        user_product.total_income = user_product.daily_income * user_product.validity;
-        user_product.withdrawl_flag = 1;
+        user_product.total_income = user_product.daily_income * user_product.validity; // Expired product, full income
+        user_product.withdrawl_flag = 1; // Mark for withdrawal if expired
       } else {
-        const elapsed_hours = Math.floor((today - user_product.last_run) / 3600);
+        const elapsed_seconds = today - user_product.last_run;  // Elapsed time in seconds
+        const elapsed_hours = elapsed_seconds / 3600; // Convert elapsed time to hours
 
         // Update income if at least one hour has passed
         if (elapsed_hours >= 1) {
-          hourly_income = (daily_profit / 24) * elapsed_hours; // Calculate income over elapsed hours
-          user_product.total_income += hourly_income;          // Accumulate total income
-          user_product.last_run = today;                       // Update last run to current time
+          hourly_income = (daily_profit / 24) * elapsed_hours;  // Calculate hourly income for the elapsed time
+          user_product.total_income += hourly_income;  // Accumulate total income
+          user_product.last_run = today;  // Update last run to the current time
         }
       }
 
@@ -289,27 +290,28 @@ const profile = async (req, res) => {
       // Add the product's income details to the response
       products.push({
         product_id: user_product._id,
-        total_income: `₹${user_product.total_income.toFixed(2)}`,
+        total_income: `₹${user_product.total_income.toFixed(2)}`,  // Format total income
         daily_income: `₹${daily_profit}`,
         withdrawal_balance: user_product.withdrawl_flag === 1 ? user_product.total_income : 0,
         last_run: user_product.last_run,
         start_date: user_product.start_date,
-        end_date: user_product.end_date
+        end_date: user_product.end_date,
       });
     }
 
-    // Update user's withdrawal balance
+    // Update the user's withdrawal balance
     user.withdrawl_balance = products.reduce((sum, product) => sum + product.withdrawal_balance, 0);
     await user.save();
 
     return response_message(res, 200, true, 'Wallet info retrieved successfully', {
       wallet_balance,
-      "withdrawal_balance": user.withdrawl_balance,
+      withdrawal_balance: user.withdrawl_balance,
       products,
     });
   } catch (error) {
     return response_message(res, 500, false, 'Error in profile API', error.message);
   }
 };
+
 
 export { register, login, refresh ,profile };
