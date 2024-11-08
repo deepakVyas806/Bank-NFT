@@ -1,5 +1,5 @@
 import axios from "axios";
-import { axiosPrivate, BASE_URL } from "../ApiServices/Axios";
+import { BASE_URL } from "../ApiServices/Axios";
 
 export interface OrderDetails {
   amount: string;
@@ -10,24 +10,27 @@ export interface OrderDetails {
   total_income: string;
 }
 
+
+interface RechargeDetails {
+  amount: string;
+  recharge_id:string,
+}
+
 const PayUsingRazorpar = async (
-  orderDetails: OrderDetails,
+  rechargeOrder: RechargeDetails,
   onSuccess?: () => void,
   onFailure?: (error: any) => void
 ) => {
   try {
-    const response = await axiosPrivate.post("api/v1/order", orderDetails);
-    console.log("order details",response.data.payload)
-    const order = response.data.payload;
-    console.log(order)
+    
 
     const options = {
       key: "rzp_test_Oz09n2OkZmcgNQ",
-      amount: order.amount,
-      currency: orderDetails.currency,
+      amount: rechargeOrder.amount,
+      currency: 'INR',
       name: "AD's Snook Coder",
       description: "Test Transaction",
-      order_id: order.orderId,
+      order_id: rechargeOrder.recharge_id,
       callback_url: `${BASE_URL}api/v1/payment-success`,
       prefill: {
         name: "Deepak Vyas",
@@ -43,10 +46,10 @@ const PayUsingRazorpar = async (
       },
       modal: {
         ondismiss: async () => {
-          console.log("Payment modal closed or payment failed");
+          console.log("Payment modal closed or payment failed",rechargeOrder);
           const failureResponse = await axios.post(
             `${BASE_URL}api/v1/payment-failure`,
-            { orderId: order.orderId, status: "failed" },
+            { orderId: rechargeOrder.recharge_id, status: "failed" },
           );
           console.log("Payment Failure:", failureResponse);
           if (onFailure) onFailure(failureResponse.data);

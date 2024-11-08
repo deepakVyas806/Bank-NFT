@@ -8,6 +8,7 @@ interface ResponsiveModalProps {
   title: string;
   onSubmit: () => void;
   loading: boolean;
+  submitButtonText?:string
 }
 
 const Modal: React.FC<ResponsiveModalProps> = ({
@@ -17,6 +18,7 @@ const Modal: React.FC<ResponsiveModalProps> = ({
   title,
   onSubmit,
   loading = false,
+  submitButtonText='Submit'
 }) => {
   useEffect(() => {
     if (isOpen) {
@@ -72,7 +74,7 @@ const Modal: React.FC<ResponsiveModalProps> = ({
                 color="#ffffff"
               />
             ) : (
-              "Submit"
+              submitButtonText
             )}
           </button>
         </div>

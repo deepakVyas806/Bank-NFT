@@ -1,51 +1,91 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMailOutline } from "react-icons/io5";
 import { MdOutlinePhone } from "react-icons/md";
 import PayUsingRazorpar from "../../GlobalFunctions/PayUsingRazorpay";
-import GenerateReceiptNumber from "../../GlobalFunctions/GenerateReceiptNumber";
-import Loader from "../../Components/Loader/Loader";
+// import GenerateReceiptNumber from "../../GlobalFunctions/GenerateReceiptNumber";
+// import Loader from "../../Components/Loader/Loader";
+import { showToast } from "../../ToastServices/ToastServices";
+import { axiosPrivate } from "../../ApiServices/Axios";
+import Modal from "../../Components/Modal/Modal";
+import AddRechargeAmount from "./AddRechargeAmount";
 // import { useSelector } from 'react-redux';
 
 const Profile: React.FC = () => {
-  // const user = useSelector((state:any) => state.user);
-  // console.log(user.userProfile.user)
-  const walletData = [
+  // State for wallet data to be displayed in UI
+  const [walletData, setWalletData] = useState([
     { value: "0.00", label: "Total Recharge Balance" },
     { value: "0.00", label: "Total Income" },
     { value: "0.00", label: "Total Withdrawal" },
-    { value: "0.00", label: "Withdrable Amount" },
-  ];
-
-  // const IncomeData = [
-  //   { value: "0.00", label: "Total Income" },
-  //   { value: "0.00", label: "Today's Income" },
-  //   { value: "0.00", label: "Total Withdraw" },
-  //   // { value: "0.00", label: "Today's Invite" },
-  //   // { value: "0.00", label: "Week Invite" },
-  //   // { value: "0.00", label: "Team Commision" },
-  // ];
+    { value: "0.00", label: "Withdrawable Amount" },
+  ]);
 
   const [rechargeLoading, setRechargeLoading] = useState(false); // Loader for payment
+  const [profileData, setProfileData] = useState(null);
+  const [isRechargeModal, setIsRechargeModal] = useState(false);
+  const [rechargeAmount, setRechargeAmount] = useState(100);
+
+  useEffect(() => {
+    console.log(profileData)
+    const fetchProfileData = async () => {
+      try {
+        const response = await axiosPrivate.post("api/v1/profile");
+        setProfileData(response?.data?.payload);
+
+        // Update walletData with the values received from the API
+        setWalletData((prevData) => [
+          {
+            ...prevData[0],
+            value: response?.data?.payload?.wallet_balance || "0.00",
+          },
+          {
+            ...prevData[1],
+            value: response?.data?.payload?.total_income || "0.00",
+          },
+          {
+            ...prevData[2],
+            value: response?.data?.payload?.total_withdrawal || "0.00",
+          },
+          {
+            ...prevData[3],
+            value: response?.data?.payload?.withdrawal_balance || "0.00",
+          },
+        ]);
+
+        // showToast("Data fetched successfully", "success", 1000);
+      } catch (error: any) {
+        console.log(error);
+        showToast(error?.response?.data?.message, "error", 1000);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   const RechargeButtonClicked = async () => {
     try {
-      setRechargeLoading(true); // Start loading
-      const orderDetails: any = {
-        amount: 100,
-        currency: "INR",
-        receipt: GenerateReceiptNumber(),
-        productid: "671cae3bd8d8d78344fac0fb",
-        daily_income: 100,
-        total_income: 100,
+      setRechargeLoading(true);
+      const rechargeDetails: any = {
+        amount: rechargeAmount,
+        // currency: "INR",
+        // receipt: GenerateReceiptNumber(),
+        // productid: "671cae3bd8d8d78344fac0fb",
+        // daily_income: 100,
+        // total_income: 100,
       };
-      await PayUsingRazorpar(orderDetails);
-      // showToast("Purchase successful", "success", 1000);
+      const response = await axiosPrivate.post(
+        "api/v1/recharge_wallet",
+        rechargeDetails
+      );
+      const rechargeOrder = response.data.payload;
+      await PayUsingRazorpar(rechargeOrder);
     } catch (error) {
       console.error("Purchase Error:", error);
     } finally {
-      setRechargeLoading(false); // Stop loading
+      setRechargeLoading(false);
+      setIsRechargeModal(false)
     }
   };
+
   return (
     <div className="bg-white p-6">
       {/* Profile Card Start */}
@@ -80,7 +120,6 @@ const Profile: React.FC = () => {
               +91 6378506435
             </p>
           </div>
-          {/* <p>9166550809</p> */}
         </div>
       </div>
       {/* Profile Card Ends */}
@@ -91,12 +130,10 @@ const Profile: React.FC = () => {
           className="flex flex-col rounded-lg border border-gray-200 grow"
           style={{ boxShadow: "0px 3px 4px 0px rgba(0, 0, 0, .03)" }}
         >
-          {/* Header */}
           <div className="flex min-h-[56px] justify-between items-center p-2 border-b border-gray-200">
             <p className="text-gray-500 font-medium text-base ml-4">Wallet</p>
           </div>
 
-          {/* Recharge Fields */}
           <div className="flex px-2 lg:px-5 py-1 gap-2 my-3">
             {walletData.map((item, index) => (
               <React.Fragment key={index}>
@@ -115,30 +152,16 @@ const Profile: React.FC = () => {
             ))}
           </div>
 
-          {/* Recharge and withdrawal buttons */}
-
           <div className="flex min-h-[56px] justify-around items-center p-2 border-t border-gray-200">
-            {rechargeLoading ? (
-              <Loader
-                loading={rechargeLoading}
-                type={"beat"}
-                size={50}
-                color="#6273bf"
-              />
-            ) : (
-              <div
-                className="flex items-center cursor-pointer"
-                onClick={RechargeButtonClicked}
-              >
-                <img
-                  src="/credit-card-fill.png"
-                  className="w-5 h-5 mr-2 mt-1"
-                />
-                <p className="text-gray-500 font-medium text-base hover:text-blue-500">
-                  Recharge
-                </p>
-              </div>
-            )}
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => setIsRechargeModal(true)}
+            >
+              <img src="/credit-card-fill.png" className="w-5 h-5 mr-2 mt-1" />
+              <p className="text-gray-500 font-medium text-base hover:text-blue-500">
+                Recharge
+              </p>
+            </div>
             <div className="flex items-center cursor-pointer">
               <img src="/top-up-fill.png" className="w-5 h-5 mr-2 mt-0.5" />
               <p className="text-gray-500 font-medium text-base hover:text-blue-500">
@@ -148,48 +171,33 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* <div
-          className="flex flex-col rounded-lg border border-gray-200 grow"
-          style={{ boxShadow: "0px 3px 4px 0px rgba(0, 0, 0, .03)" }}
-        >
-          <div className="flex min-h-[56px] justify-between items-center p-2 border-b border-gray-200">
-            <p className="text-gray-500 font-medium text-base ml-4">Income</p>
-          </div>
-
-          <div className="grid grid-cols-3 px-2 lg:px-5 gap-2 my-3">
-            {IncomeData.map((item, index) => (
-              <React.Fragment key={index}>
-                <div className="grid grid-cols-1 flex-1">
-                  <span className="text-gray-900 text-center text-xl lg:text-2.5xl font-semibold">
-                    {item.value}
-                  </span>
-                  <span className="text-gray-700 text-center text-sm">
-                    {item.label}
-                  </span>
-                </div>
-
-                {index === 2 && (
-                  <div className="col-span-3 border-t border-gray-200"></div>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        </div> */}
-
         <div
           className="flex flex-col rounded-lg border border-gray-200 grow"
           style={{ boxShadow: "0px 3px 4px 0px rgba(0, 0, 0, .03)" }}
         >
-          {/* Header */}
           <div className="flex min-h-[56px] justify-between items-center p-2 border-b border-gray-200">
             <p className="text-gray-500 font-medium text-base ml-4">Services</p>
           </div>
-
-          {/* Services List */}
           <div></div>
         </div>
       </div>
       {/* Wallet and Income Grid Ends */}
+
+      {/* Add Recharge Popup */}
+      <Modal
+        title="Add Amount"
+        isOpen={isRechargeModal}
+        onClose={() => setIsRechargeModal(false)}
+        onSubmit={RechargeButtonClicked}
+        loading={rechargeLoading}
+        submitButtonText="Recharge"
+      >
+        <AddRechargeAmount
+          rechargeAmount={rechargeAmount}
+          setRechargeAmount={setRechargeAmount}
+        />
+      </Modal>
+      {/* Add Recharge Popup */}
     </div>
   );
 };

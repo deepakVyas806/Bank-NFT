@@ -8,10 +8,10 @@ import PageHeader from "../../Components/Utils/PageHeader";
 import { axiosPrivate } from "../../ApiServices/Axios";
 // import { showToast } from "../../ToastServices/ToastServices";
 import BuyProductDetails from "./BuyProductDetails";
-import PayUsingRazorpar, {
-  OrderDetails,
-} from "../../GlobalFunctions/PayUsingRazorpay";
-import GenerateReceiptNumber from "../../GlobalFunctions/GenerateReceiptNumber";
+// import PayUsingRazorpar, {
+//   OrderDetails,
+// } from "../../GlobalFunctions/PayUsingRazorpay";
+// import GenerateReceiptNumber from "../../GlobalFunctions/GenerateReceiptNumber";
 import NoDataAvailable from "../../Components/Utils/NoDataAvailable";
 import Loader from "../../Components/Loader/Loader";
 
@@ -105,15 +105,15 @@ const ProductList: React.FC = () => {
     if (!selectedProduct) return;
     try {
       setPaymentLoading(true); // Start loading
-      const orderDetails: OrderDetails = {
-        amount: selectedProduct.product_price,
-        currency: "INR",
-        receipt: GenerateReceiptNumber(),
-        productid: selectedProduct._id,
-        daily_income: selectedProduct.daily_income,
-        total_income: selectedProduct.total_income,
-      };
-      await PayUsingRazorpar(orderDetails);
+      // const orderDetails: OrderDetails = {
+      //   amount: selectedProduct.product_price,
+      //   currency: "INR",
+      //   receipt: GenerateReceiptNumber(),
+      //   productid: selectedProduct._id,
+      //   daily_income: selectedProduct.daily_income,
+      //   total_income: selectedProduct.total_income,
+      // };
+      // await PayUsingRazorpar(orderDetails);
       // showToast("Purchase successful", "success", 1000);
     } catch (error) {
       console.error("Purchase Error:", error);
