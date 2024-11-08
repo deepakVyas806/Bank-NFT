@@ -8,6 +8,7 @@ import { showToast } from "../../ToastServices/ToastServices";
 import { axiosPrivate } from "../../ApiServices/Axios";
 import Modal from "../../Components/Modal/Modal";
 import AddRechargeAmount from "./AddRechargeAmount";
+import Loader from "../../Components/Loader/Loader";
 // import { useSelector } from 'react-redux';
 
 const Profile: React.FC = () => {
@@ -23,41 +24,45 @@ const Profile: React.FC = () => {
   const [profileData, setProfileData] = useState(null);
   const [isRechargeModal, setIsRechargeModal] = useState(false);
   const [rechargeAmount, setRechargeAmount] = useState(100);
+  const [isProfileLoading, setIsProfileLoading] = useState(false);
+
+  const fetchProfileData = async () => {
+    setIsProfileLoading(true);
+    try {
+      const response = await axiosPrivate.post("api/v1/profile");
+      setProfileData(response?.data?.payload);
+
+      // Update walletData with the values received from the API
+      setWalletData((prevData) => [
+        {
+          ...prevData[0],
+          value: response?.data?.payload?.wallet_balance || "0.00",
+        },
+        {
+          ...prevData[1],
+          value: response?.data?.payload?.total_income || "0.00",
+        },
+        {
+          ...prevData[2],
+          value: response?.data?.payload?.total_withdrawal || "0.00",
+        },
+        {
+          ...prevData[3],
+          value: response?.data?.payload?.withdrawal_balance || "0.00",
+        },
+      ]);
+
+      // showToast("Data fetched successfully", "success", 1000);
+    } catch (error: any) {
+      console.log(error);
+      showToast(error?.response?.data?.message, "error", 1000);
+    } finally {
+      setIsProfileLoading(false);
+    }
+  };
 
   useEffect(() => {
-    console.log(profileData)
-    const fetchProfileData = async () => {
-      try {
-        const response = await axiosPrivate.post("api/v1/profile");
-        setProfileData(response?.data?.payload);
-
-        // Update walletData with the values received from the API
-        setWalletData((prevData) => [
-          {
-            ...prevData[0],
-            value: response?.data?.payload?.wallet_balance || "0.00",
-          },
-          {
-            ...prevData[1],
-            value: response?.data?.payload?.total_income || "0.00",
-          },
-          {
-            ...prevData[2],
-            value: response?.data?.payload?.total_withdrawal || "0.00",
-          },
-          {
-            ...prevData[3],
-            value: response?.data?.payload?.withdrawal_balance || "0.00",
-          },
-        ]);
-
-        // showToast("Data fetched successfully", "success", 1000);
-      } catch (error: any) {
-        console.log(error);
-        showToast(error?.response?.data?.message, "error", 1000);
-      }
-    };
-
+    console.log(profileData);
     fetchProfileData();
   }, []);
 
@@ -77,14 +82,24 @@ const Profile: React.FC = () => {
         rechargeDetails
       );
       const rechargeOrder = response.data.payload;
-      await PayUsingRazorpar(rechargeOrder);
+      await PayUsingRazorpar(rechargeOrder, fetchProfileData);
+      console.log("after razorpay success");
+      // fetchProfileData();
     } catch (error) {
       console.error("Purchase Error:", error);
     } finally {
       setRechargeLoading(false);
-      setIsRechargeModal(false)
+      setIsRechargeModal(false);
     }
   };
+
+  if (isProfileLoading) {
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <Loader loading={true} type="moon" size={30} color="#000000" />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white p-6">
