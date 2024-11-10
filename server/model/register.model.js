@@ -1,66 +1,75 @@
 import mongoose from "mongoose";
 
 const register_schema = new mongoose.Schema({
+  username: {
+    type: String,
+    default: "root@username",
+  },
+  firstname: {
+    type: String,
+    default: "root@firstname",
+  },
+  lastname: {
+    type: String,
+    default: "root@lastname",
+  },
+  email: {
+    type: String,
+    default: "root@email.com",
+  },
+  phone: {
+    type: String,
+    default: "********234",
+  },
+  otp: {
+    type: Number,
+    default: 0, // Use 0 or null for default number
+  },
+  referral: {
+    type: String,
+    default: "root@referral",
+  },
+  password: {
+    type: String,
+    required: true, // Consider making this required
+  },
+  cpassword: {
+    type: String,
+    required: true, // Consider making this required
+  },
+  refreshToken: {
+    token: {
+      type: String,
+      default: null,
+    },
+    expiryDate: {
+      type: Number,
+      default: () => Math.floor(Date.now() / 1000),
+    },
+  },
+  wallet_balance: {
+    type: Number,
+    default: 0,
+  },
+  withdrawl_balance: {
+    type: Number,
+    default: 0,
+  },
+  createdAt: {
+    type: Number,
+    default: () => Math.floor(Date.now() / 1000), // Set default for createdAt
+  },
+  updatedAt: {
+    type: Number,
+    default: () => Math.floor(Date.now() / 1000), // Set default for updatedAt
+  },
+});
 
-    username:{
-        type:String,
-        default:'root@username'
-    },
-    firstname:{
-        type:String,
-        default:'root@firstname'
-    },
-    lastname:{
-        type:String,
-        default:'root@lastname'
-    },
-    email:{
-        type:String,
-        default:'root@email.com'
-    },
-    phone:{
-        type:String,
-        default:'********234'
-    },
-    otp:{
-        type:Number,
-        default:"****"
-    },
-    referral:{
-        type:String,
-        default:'root@referral'
-    },
-    password:{
-        type:String,
-        default:'root@passowrd'
-    },
-    otp:{
-       type:String,
-       default:'***123'
-    },
-    cpassword:{
-        type:String,
-        default:'root@cpassowrd'
-    },
-    refreshToken:{
-        token:{
-        type:String,
-        default:null
-        },
-        expiryDate:{
-            type:Date,
-            default:null
-        }
-    },
-    createdAt:{
-        type:Date,
-        default:Date.now
-    },
-    updatedAt:{
-        type:Date,
-        default:Date.now
-    }
-    
-})
+// Middleware to set updatedAt before saving
+register_schema.pre("save", function (next) {
+  this.updatedAt = Math.floor(Date.now() / 1000);
+  next();
+});
 
-export const register_model = mongoose.model('user_register',register_schema)
+// Create the model from the schema
+export const register_model = mongoose.model("user_register", register_schema);

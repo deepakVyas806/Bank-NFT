@@ -1,45 +1,54 @@
-import mongoose, { mongo } from 'mongoose';
+import mongoose from "mongoose";
 
-const order_schmea = new mongoose.Schema({
+const recharge_schema = new mongoose.Schema({
+  recharge_id: {
+    type: String,
+    required: true, // Make it required if necessary
+  },
+  amount: {
+    type: Number,
+    required: true, // Make it required if necessary
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user_register",
+    required: true, // Make it required if necessary
+  },
+  status: {
+    type: String,
+    enum: ["process", "create", "paid", "failed"],
+    default: "process",
+  },
+  receipt: {
+    type: String,
+  },
+  payment_sign: {
+    type: String,
+    default: null,
+  },
+  payment_orderId: {
+    type: String,
+    default: null,
+  },
+  payment_paymentId: {
+    type: String,
+    default: null,
+  },
+  createdAt: {
+    type: Number,
+    default: () => Math.floor(Date.now() / 1000), // Use a function to get the current timestamp
+  },
+  updatedAt: {
+    type: Number,
+    default: () => Math.floor(Date.now() / 1000), // Use a function for updatedAt as well
+  },
+});
 
-    orderId:{
-        type:'String'
-    },
-    amount:{
-        type:Number
-    },
-    userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"user_register"
-    },
-    productId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"product"
-    },
-    status:{
-        type:String,
-        enum:['process','create','paid','failed'],
-        default:'process'
-    },
-    receipt:{
-        type:String
-    },
-    payment_sign:{
-        type:String
-    },
-    payment_orderId:{
-        type:String
-    },
-    payment_paymentId:{
-        type:String
-    },
-    daily_income:{
-        type:Number
-    },
-    total_income:{
-        type:Number
-    }
-})
+// Pre-save middleware to update the updatedAt field
+recharge_schema.pre("save", function (next) {
+  this.updatedAt = Math.floor(Date.now() / 1000); // Update updatedAt to current UNIX timestamp
+  next();
+});
 
-
-export const order_model = mongoose.model('order',order_schmea)
+// Export the model
+export const order_model = mongoose.model("order", recharge_schema);

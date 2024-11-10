@@ -2,6 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "../ApiServices/Axios";
 import { showToast } from "../ToastServices/ToastServices";
 
+
 export interface OrderDetails {
   amount: string;
   currency: string;
@@ -55,6 +56,7 @@ const PayUsingRazorpar = async (
         } catch (error) {
           showToast("Error setting payment status", "error", 1000);
           console.error("Error in Payment Success Callback:", error);
+
         }
       },
       //Success handler
@@ -69,6 +71,7 @@ const PayUsingRazorpar = async (
           const failureResponse = await axios.post(
             `${BASE_URL}api/v1/payment-failure`,
             { orderId: rechargeOrder.recharge_id, status: "failed" }
+
           );
           showToast("payment failed", "error", 1000);
           console.log("Payment Failure:", failureResponse);

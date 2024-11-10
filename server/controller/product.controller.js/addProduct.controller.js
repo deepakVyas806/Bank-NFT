@@ -1,10 +1,11 @@
 import { product_model } from "../../model/product.model.js";
 import path from "path";
 import { uploadOnCloud } from "../../utils/cloudnary.js";
-import { resourceLimits } from "worker_threads";
-import { log } from "console";
 
-//controller to crate ethe add the prodiuct
+
+//Controller to create the product
+
+
 const addProduct = async (req, res) => {
   const {
     product_name,

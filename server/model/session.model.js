@@ -8,8 +8,8 @@ const sessionSchema = mongoose.Schema({
     type: String,
   },
   expiresAt: {
-    type: Date,
-    default: Date.now,
+    type: Number,
+    default: Math.floor(Date.now() / 1000) + 5 * 60,
     index: { expires: "5m" },
   },
 });

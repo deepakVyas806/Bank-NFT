@@ -11,6 +11,7 @@ import Cookies from "js-cookie";
 // const BASE_URL = 'https://betting-app-gold.vercel.app/';  //Live
 export const BASE_URL = "https://betting-app-gold.vercel.app/"; //Local
 
+
 // Get tokens from local storage
 const getAccessToken = (): string | undefined => Cookies.get("ACCESS_TOKEN");
 const getRefreshToken = (): string | undefined => Cookies.get("REFRESH_TOKEN");
