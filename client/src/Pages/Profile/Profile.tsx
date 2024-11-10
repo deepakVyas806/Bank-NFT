@@ -36,21 +36,38 @@ const Profile: React.FC = () => {
       setWalletData((prevData) => [
         {
           ...prevData[0],
-          value: response?.data?.payload?.wallet_balance || "0.00",
+          value:
+            isNaN(Number(response?.data?.payload?.wallet_balance)) ||
+            Number(response?.data?.payload?.wallet_balance) === 0
+              ? "0.00"
+              : Number(response?.data?.payload?.wallet_balance).toFixed(2),
         },
         {
           ...prevData[1],
-          value: response?.data?.payload?.total_income || "0.00",
+          value:
+            isNaN(Number(response?.data?.payload?.total_income)) ||
+            Number(response?.data?.payload?.total_income) === 0
+              ? "0.00"
+              : Number(response?.data?.payload?.total_income).toFixed(2),
         },
         {
           ...prevData[2],
-          value: response?.data?.payload?.total_withdrawal || "0.00",
+          value:
+            isNaN(Number(response?.data?.payload?.total_withdrawal)) ||
+            Number(response?.data?.payload?.total_withdrawal) === 0
+              ? "0.00"
+              : Number(response?.data?.payload?.total_withdrawal).toFixed(2),
         },
         {
           ...prevData[3],
-          value: response?.data?.payload?.withdrawal_balance || "0.00",
+          value:
+            isNaN(Number(response?.data?.payload?.withdrawal_balance)) ||
+            Number(response?.data?.payload?.withdrawal_balance) === 0
+              ? "0.00"
+              : Number(response?.data?.payload?.withdrawal_balance).toFixed(2),
         },
       ]);
+      
 
       // showToast("Data fetched successfully", "success", 1000);
     } catch (error: any) {
@@ -154,7 +171,7 @@ const Profile: React.FC = () => {
               <React.Fragment key={index}>
                 <div className="grid grid-cols-1 flex-1">
                   <span className="text-gray-900 text-center text-2xl lg:text-2.5xl font-semibold">
-                    {item.value}
+                  ₹{item.value}
                   </span>
                   <span className="text-gray-700 text-center text-sm">
                     {item.label}
