@@ -8,12 +8,13 @@ import PageHeader from "../../Components/Utils/PageHeader";
 import { axiosPrivate } from "../../ApiServices/Axios";
 // import { showToast } from "../../ToastServices/ToastServices";
 import BuyProductDetails from "./BuyProductDetails";
-import PayUsingRazorpar, {
-  OrderDetails,
-} from "../../GlobalFunctions/PayUsingRazorpay";
-import GenerateReceiptNumber from "../../GlobalFunctions/GenerateReceiptNumber";
+// import PayUsingRazorpar, {
+//   OrderDetails,
+// } from "../../GlobalFunctions/PayUsingRazorpay";
+// import GenerateReceiptNumber from "../../GlobalFunctions/GenerateReceiptNumber";
 import NoDataAvailable from "../../Components/Utils/NoDataAvailable";
 import Loader from "../../Components/Loader/Loader";
+import { showToast } from "../../ToastServices/ToastServices";
 
 export interface Product {
   _id: string;
@@ -42,7 +43,6 @@ const ProductList: React.FC = () => {
     try {
       setIsProductsLoading(true);
       const response = await axiosPrivate.get("/api/v1/get-products");
-      console.log(``,response.data)
       setProducts(response.data.payload || []);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -92,7 +92,7 @@ const ProductList: React.FC = () => {
   };
   const handleModalSubmit = () => {
     if (formikRef.current) {
-      formikRef.current.submitForm()
+      formikRef.current.submitForm();
       // createProduct(formikRef.current.values, formikRef.current.setSubmitting);
     }
   };
@@ -106,16 +106,11 @@ const ProductList: React.FC = () => {
     if (!selectedProduct) return;
     try {
       setPaymentLoading(true); // Start loading
-      const orderDetails: OrderDetails = {
-        amount: selectedProduct.product_price,
-        currency: "INR",
-        receipt: GenerateReceiptNumber(),
-        productid: selectedProduct._id,
-        daily_income: selectedProduct.daily_income,
-        total_income: selectedProduct.total_income,
-      };
-      await PayUsingRazorpar(orderDetails);
-      // showToast("Purchase successful", "success", 1000);
+      await axiosPrivate.post(`api/v1/buy/${selectedProduct?._id}`, {
+        invest_amount: selectedProduct?.product_price,
+        daily_income: selectedProduct?.daily_income,
+      });
+      showToast("Purchase successful", "success", 1000);
     } catch (error) {
       console.error("Purchase Error:", error);
     } finally {
@@ -168,7 +163,7 @@ const ProductList: React.FC = () => {
         onSubmit={handleModalSubmit}
         loading={loading}
       >
-        <CreateProduct formikRef={formikRef} onSubmit={createProduct}/>
+        <CreateProduct formikRef={formikRef} onSubmit={createProduct} />
       </Modal>
 
       {/* Modal for buying a product */}

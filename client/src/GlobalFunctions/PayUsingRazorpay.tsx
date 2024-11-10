@@ -1,4 +1,7 @@
-import { axiosPrivate } from "../ApiServices/Axios";
+import axios from "axios";
+import { BASE_URL } from "../ApiServices/Axios";
+import { showToast } from "../ToastServices/ToastServices";
+
 
 export interface OrderDetails {
   amount: string;
@@ -9,59 +12,69 @@ export interface OrderDetails {
   total_income: string;
 }
 
+interface RechargeDetails {
+  amount: string;
+  recharge_id: string;
+}
+
 const PayUsingRazorpar = async (
-  orderDetails: OrderDetails,
+  rechargeOrder: RechargeDetails,
   onSuccess?: () => void,
   onFailure?: (error: any) => void
 ) => {
   try {
-    const response = await axiosPrivate.post("api/v1/order", orderDetails);
-    const order = response.data.payload;
     const options = {
       key: "rzp_test_Oz09n2OkZmcgNQ",
-      amount: order.amount,
-      currency: orderDetails.currency,
-      name: "Snook Coder",
+      amount: rechargeOrder.amount,
+      currency: "INR",
+      name: "AD's Snook Coder",
       description: "Test Transaction",
-      order_id: order.orderId,
-      callback_url: "http://localhost:4000/api/v1/payment-success", //we can change this not immedidate beacuse below handler works for us for success
+      order_id: rechargeOrder.recharge_id,
+      callback_url: `${BASE_URL}api/v1/payment-success`,
       prefill: {
         name: "Deepak Vyas",
         email: "vyasdeepak608@gmail.com",
         contact: "6378506435",
       },
       theme: {
-        color: "#F37254",
+        color: "#6273bf",
       },
-      // This handler runs after a successful payment.
       handler: async (response: any) => {
-        console.log("Payment successful");
-
-        // Call your backend success API with the Razorpay response details.
+        console.log("Payment successful", response);
         try {
-          const successResponse = await axiosPrivate.post(
-            "api/v1/payment-success",
+          await axios.post(
+            `${BASE_URL}api/v1/payment-success`,
             {
-              orderId: order.orderId,
               paymentId: response.razorpay_payment_id,
+              orderId: response.razorpay_order_id,
               signature: response.razorpay_signature,
-            }
+            } // Send Razorpay response to the server
           );
-          console.log("Payment success response:", successResponse.data);
           if (onSuccess) onSuccess();
+          showToast("Payment successful", "success", 1000);
+          // console.log("Payment Success Server Response:", successResponse);
         } catch (error) {
-          console.error("Error in success API call:", error);
-          if (onFailure) onFailure(error);
+          showToast("Error setting payment status", "error", 1000);
+          console.error("Error in Payment Success Callback:", error);
+
         }
       },
+      //Success handler
+      // handler: function (response: any) {
+      //   alert(response.razorpay_payment_id);
+      //   alert(response.razorpay_order_id);
+      //   alert(response.razorpay_signature);
+      // },
       modal: {
         ondismiss: async () => {
-          console.log("Payment modal closed or payment failed");
-          const failureResponse = await axiosPrivate.post(
-            "/api/v1/payment-failure",
-            { orderId: order.orderId, status: "failed" }
+          console.log("Payment modal closed or payment failed", rechargeOrder);
+          const failureResponse = await axios.post(
+            `${BASE_URL}api/v1/payment-failure`,
+            { orderId: rechargeOrder.recharge_id, status: "failed" }
+
           );
-          console.log("Payment Failure:", failureResponse.data);
+          showToast("payment failed", "error", 1000);
+          console.log("Payment Failure:", failureResponse);
           if (onFailure) onFailure(failureResponse.data);
         },
       },
