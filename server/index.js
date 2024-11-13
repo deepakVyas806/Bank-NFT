@@ -11,6 +11,7 @@ import { payment } from "./router/payment/payment.router.js";
 import { payment_success } from "./router/payment/sucess.router.js";
 // import { register_model } from "./model/register.model.js";
 import { order_model } from "./model/order.model.js";
+import { user_product_model } from "./model/user_product.js";
 // import {product_model} from "../server/model/product.model.js"
 // import { pro_inv } from "./model/investment.model.js";
 
@@ -41,10 +42,9 @@ app.use("/api/v1", payment),
   //payment success call back
   app.use("/api/v1", payment_success);
 
-
-  app.get('/', (req, res) => {
-    // HTML content with a banner image, title, and Snooker image
-    const htmlContent = `
+app.get("/", (req, res) => {
+  // HTML content with a banner image, title, and Snooker image
+  const htmlContent = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -97,7 +97,7 @@ app.use("/api/v1", payment),
         </body>
         </html>
     `;
-    res.send(htmlContent);
+  res.send(htmlContent);
 });
 // Database Connection
 mongoose
@@ -108,7 +108,8 @@ mongoose
       //await register_model.deleteMany({});
       //  await product_model.deleteMany({});
       //  await pro_inv.deleteMany({});
-       //await order_model.deleteMany();
+      // await order_model.deleteMany();
+      //await user_product_model.deleteMany();
       // console.log("all products are delete");
     });
   })
