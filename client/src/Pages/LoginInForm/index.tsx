@@ -39,7 +39,7 @@ export default function LogInForm() {
       Cookies.set('REFRESH_TOKEN', logedinUser?.refreshToken?.token, { expires: 7, path: '/' }); // Expires in 7 days
   
       resetForm();
-      navigate("/dashboard");
+      navigate("/market");
       setIsLoading(false);
       showToast("Login successful", "success", 1000);
     } catch (error: any) {
