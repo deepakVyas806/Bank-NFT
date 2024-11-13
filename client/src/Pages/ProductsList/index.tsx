@@ -81,9 +81,15 @@ const ProductList: React.FC = () => {
 
       const response = await axiosPrivate.post("api/v1/add_product", formData);
       console.log(response);
+      showToast("Product added successful", "success", 1000);      
       fetchProducts();
       setSubmitting(false);
-    } catch (error) {
+    } catch (error: any) {
+      showToast(
+        error?.response?.data?.message || "Purchase failed",
+        "error",
+        1000
+      );
       console.error("Purchase Error:", error);
     } finally {
       setLoading(false);

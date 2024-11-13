@@ -1,36 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoMailOutline } from "react-icons/io5";
 import { MdOutlinePhone } from "react-icons/md";
 import PayUsingRazorpar from "../../GlobalFunctions/PayUsingRazorpay";
-// import GenerateReceiptNumber from "../../GlobalFunctions/GenerateReceiptNumber";
-// import Loader from "../../Components/Loader/Loader";
 import { showToast } from "../../ToastServices/ToastServices";
 import { axiosPrivate } from "../../ApiServices/Axios";
 import Modal from "../../Components/Modal/Modal";
 import AddRechargeAmount from "./AddRechargeAmount";
 import Loader from "../../Components/Loader/Loader";
-// import { useSelector } from 'react-redux';
+import WithdrawAmount from "./WithdrawAmount";
+import { FormikProps } from "formik";
+import { useDispatch } from "react-redux";
+import { setUserProfile } from "../../redux/actions/userProfileActions";
+import { AiFillProduct } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 const Profile: React.FC = () => {
+  const formikRef = useRef<FormikProps<any>>(null);
+  const navigation = useNavigate()
+
   // State for wallet data to be displayed in UI
   const [walletData, setWalletData] = useState([
     { value: "0.00", label: "Total Recharge Balance" },
     { value: "0.00", label: "Total Income" },
-    { value: "0.00", label: "Total Withdrawal" },
     { value: "0.00", label: "Withdrawable Amount" },
+    // { value: "0.00", label: "Total Withdrawal" },
   ]);
 
   const [rechargeLoading, setRechargeLoading] = useState(false); // Loader for payment
+  const [withdrawLoading, setWithdrawLoading] = useState(false); // Loader for payment
   const [profileData, setProfileData] = useState(null);
   const [isRechargeModal, setIsRechargeModal] = useState(false);
+  const [isWithdrawModal, setIsWithdrawModal] = useState(false);
   const [rechargeAmount, setRechargeAmount] = useState(100);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
 
+  const dispatch = useDispatch();
   const fetchProfileData = async () => {
     setIsProfileLoading(true);
     try {
       const response = await axiosPrivate.post("api/v1/profile");
       setProfileData(response?.data?.payload);
+      dispatch(setUserProfile(response?.data?.payload));
 
       // Update walletData with the values received from the API
       setWalletData((prevData) => [
@@ -50,16 +60,16 @@ const Profile: React.FC = () => {
               ? "0.00"
               : Number(response?.data?.payload?.total_income).toFixed(2),
         },
+        // {
+        //   ...prevData[2],
+        //   value:
+        //     isNaN(Number(response?.data?.payload?.total_withdrawal)) ||
+        //     Number(response?.data?.payload?.total_withdrawal) === 0
+        //       ? "0.00"
+        //       : Number(response?.data?.payload?.total_withdrawal).toFixed(2),
+        // },
         {
           ...prevData[2],
-          value:
-            isNaN(Number(response?.data?.payload?.total_withdrawal)) ||
-            Number(response?.data?.payload?.total_withdrawal) === 0
-              ? "0.00"
-              : Number(response?.data?.payload?.total_withdrawal).toFixed(2),
-        },
-        {
-          ...prevData[3],
           value:
             isNaN(Number(response?.data?.payload?.withdrawal_balance)) ||
             Number(response?.data?.payload?.withdrawal_balance) === 0
@@ -67,7 +77,6 @@ const Profile: React.FC = () => {
               : Number(response?.data?.payload?.withdrawal_balance).toFixed(2),
         },
       ]);
-      
 
       // showToast("Data fetched successfully", "success", 1000);
     } catch (error: any) {
@@ -88,11 +97,6 @@ const Profile: React.FC = () => {
       setRechargeLoading(true);
       const rechargeDetails: any = {
         amount: rechargeAmount,
-        // currency: "INR",
-        // receipt: GenerateReceiptNumber(),
-        // productid: "671cae3bd8d8d78344fac0fb",
-        // daily_income: 100,
-        // total_income: 100,
       };
       const response = await axiosPrivate.post(
         "api/v1/recharge_wallet",
@@ -107,6 +111,37 @@ const Profile: React.FC = () => {
     } finally {
       setRechargeLoading(false);
       setIsRechargeModal(false);
+    }
+  };
+
+  const handleWithdraw = () => {
+    setWithdrawLoading(false);
+    if (formikRef.current) {
+      formikRef.current.submitForm();
+      // createProduct(formikRef.current.values, formikRef.current.setSubmitting);
+    }
+  };
+
+  const WithdrawAmountFunc = async (values: any, setSubmitting: any) => {
+    try {
+      setWithdrawLoading(true);
+      const params = {
+        amount: values.amount,
+        accountHolderName: values.accountHolderName,
+        accountNumber: values.accountNumber,
+        bankName: values.bankName,
+        ifscCode: values.ifscCode,
+      };
+      // Appending values to FormData object
+
+      const response = await axiosPrivate.post("api/v1/withdraw-amount", params);
+      console.log(response);
+      setSubmitting(false);
+    } catch (error) {
+      console.error("Withdraw Error:", error);
+    } finally {
+      setWithdrawLoading(false);
+      setIsWithdrawModal(false);
     }
   };
 
@@ -127,7 +162,7 @@ const Profile: React.FC = () => {
       >
         <img
           src={"/image.jpg"}
-          alt={`profile icon`}
+          alt={"profile icon"}
           className="w-28 h-28 rounded-full border-2 border-yellow-400"
         />
 
@@ -170,8 +205,8 @@ const Profile: React.FC = () => {
             {walletData.map((item, index) => (
               <React.Fragment key={index}>
                 <div className="grid grid-cols-1 flex-1">
-                  <span className="text-gray-900 text-center text-2xl lg:text-2.5xl font-semibold">
-                  ₹{item.value}
+                  <span className="text-gray-900 text-center text-xl lg:text-xl font-semibold">
+                    ₹{item.value}
                   </span>
                   <span className="text-gray-700 text-center text-sm">
                     {item.label}
@@ -194,7 +229,10 @@ const Profile: React.FC = () => {
                 Recharge
               </p>
             </div>
-            <div className="flex items-center cursor-pointer">
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => setIsWithdrawModal(true)}
+            >
               <img src="/top-up-fill.png" className="w-5 h-5 mr-2 mt-0.5" />
               <p className="text-gray-500 font-medium text-base hover:text-blue-500">
                 Withdraw
@@ -210,7 +248,19 @@ const Profile: React.FC = () => {
           <div className="flex min-h-[56px] justify-between items-center p-2 border-b border-gray-200">
             <p className="text-gray-500 font-medium text-base ml-4">Services</p>
           </div>
-          <div></div>
+          <div className="p-2 px-4">
+            <div onClick={()=>{navigation('/market')}} className="cursor-pointer flex flex-col items-center justify-center rounded-xl w-20 h-20">
+              {/* Icon */}
+              <div className="flex items-center justify-center text-blue-600">
+                <AiFillProduct size={25} />
+              </div>
+
+              {/* Text */}
+              <p className="text-blue-600 text-xs font-medium mt-1">
+                My Products
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       {/* Wallet and Income Grid Ends */}
@@ -230,6 +280,21 @@ const Profile: React.FC = () => {
         />
       </Modal>
       {/* Add Recharge Popup */}
+
+      {/* Withdraw Amount Modal */}
+
+      {/* Withdraw Modal */}
+      <Modal
+        title="Withdraw Amount"
+        isOpen={isWithdrawModal}
+        onClose={() => setIsWithdrawModal(false)}
+        onSubmit={() => handleWithdraw()}
+        loading={withdrawLoading}
+        submitButtonText="Withdraw"
+      >
+        <WithdrawAmount onSubmit={WithdrawAmountFunc} formikRef={formikRef} />
+      </Modal>
+      {/* Withdraw Amount modal */}
     </div>
   );
 };

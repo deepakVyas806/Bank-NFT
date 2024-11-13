@@ -42,7 +42,7 @@ const AuthCheck: React.FC<AuthCheckProps> = ({
     }
     return <Navigate to="/login" replace />;
   } else if (!isProtectedRoute && accessToken) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/market" replace />;
   }
 
   return <>{children}</>;
