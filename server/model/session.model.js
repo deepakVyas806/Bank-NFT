@@ -1,4 +1,4 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const sessionSchema = mongoose.Schema({
   email: {
@@ -8,9 +8,9 @@ const sessionSchema = mongoose.Schema({
     type: String,
   },
   expiresAt: {
-    type: Number,
-    default: Math.floor(Date.now() / 1000) + 5 * 60,
-    index: { expires: "5m" },
+    type: Date, // Change the type from Number to Date
+    default: () => new Date(Date.now() + 5 * 60 * 1000), // 5 minutes from now
+    index: { expires: '5m' }, // Set TTL index to expire after 5 minutes
   },
 });
 

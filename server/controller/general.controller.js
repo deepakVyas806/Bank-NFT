@@ -18,7 +18,7 @@ const register = async (req, res) => {
     otp,
     referral,
   } = req.body;
-
+  console.log(req.body);
   try {
     // Email check
     const userEmail = await register_model.findOne({ email });
@@ -256,7 +256,7 @@ const profile = async (req, res) => {
     let products = [];
 
     // Get all products associated with the user
-    const user_products = await user_product_model.find({ user_id: user._id });
+    const user_products = await user_product_model.find({ user_id: user._id }).populate('product_id');
     if (user_products.length === 0) {
       return response_message(
         res,
@@ -265,6 +265,12 @@ const profile = async (req, res) => {
         "There are no products for this user",
         {
           wallet_balance,
+          user_details: {
+            first_name: user.firstname,
+            last_name: user.lastname,
+            email: user.email,
+            phone: user.phone,
+          },
           products,
         }
       );
@@ -295,8 +301,10 @@ const profile = async (req, res) => {
       await user_product.save();
 
       // Add the product's income details to the response
+      console.log(user_products)
       products.push({
-        product_id: user_product._id,
+        
+        product_details: user_product.product_id,
         total_income: `₹${user_product.total_income.toFixed(2)}`, // Format total income
         daily_income: `₹${daily_profit}`,
         withdrawal_balance:
