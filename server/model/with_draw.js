@@ -5,6 +5,10 @@ const withdraw_schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  account_holder_name: {
+    type: String,
+    default: "demo account name",
+  },
   account_no: {
     type: String,
     default: "demo_account",

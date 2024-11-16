@@ -363,7 +363,14 @@ const withdraw = async (req, res) => {
     const user = await register_model.findOne({ _id: userId });
 
     //information for withdraw data
-    const { amount, account_no, ifsc_code, bank_name, upi_id } = req.body;
+    const {
+      amount,
+      account_no,
+      ifsc_code,
+      bank_name,
+      upi_id,
+      account_holder_name,
+    } = req.body;
 
     //check that amount should not greater than withdrawlable amount
     if (amount > user.withdrawl_balance) {
@@ -386,6 +393,7 @@ const withdraw = async (req, res) => {
       upi_id: upi_id,
       amount: amount,
       bank_name: bank_name,
+      account_holder_name: account_holder_name,
     });
 
     return response_message(res, 200, true, withdraw_entry);
