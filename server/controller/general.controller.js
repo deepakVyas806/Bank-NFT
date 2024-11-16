@@ -289,9 +289,13 @@ const profile = async (req, res) => {
 
       // Check if the product has expired
       if (user_product.end_date < today) {
-        user_product.total_income =
-          user_product.daily_income * user_product.validity; // Expired product, full income
+        // user_product.total_income =
+        // user_product.daily_income * user_product.validity; // Expired product, full income
+        // user_product.withdrawal_balance =
+        // user_product.daily_income * user_product.validity;
         user_product.withdrawl_flag = 1; // Mark for withdrawal if expired
+        user.withdrawl_balance +=
+          user_product.daily_income * user_product.validity;
       } else {
         const elapsed_seconds = today - user_product.last_run; // Elapsed time in seconds
         const elapsed_hours = elapsed_seconds / 3600; // Convert elapsed time to hours
@@ -313,8 +317,6 @@ const profile = async (req, res) => {
         product_details: user_product.product_id,
         total_income: `₹${user_product.total_income.toFixed(2)}`, // Format total income
         daily_income: `₹${daily_profit}`,
-        withdrawal_balance:
-          user_product.withdrawl_flag === 1 ? user_product.total_income : 0,
         last_run: user_product.last_run,
         start_date: user_product.start_date,
         end_date: user_product.end_date,
@@ -322,11 +324,11 @@ const profile = async (req, res) => {
     }
     console.log("Testing products", products);
 
-    // Update the user's withdrawal balance
-    user.withdrawl_balance = products.reduce(
-      (sum, product) => sum + product.withdrawal_balance,
-      0
-    );
+    // // Update the user's withdrawal balance
+    // user.withdrawl_balance = products.reduce(
+    //   (sum, product) => sum + product.withdrawal_balance,
+    //   0
+    // );
     await user.save();
 
     return response_message(
