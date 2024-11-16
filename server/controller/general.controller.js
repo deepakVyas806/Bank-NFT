@@ -254,7 +254,7 @@ const profile = async (req, res) => {
     console.log("user", user);
     const wallet_balance = user.wallet_balance;
     // const today = Math.floor(Date.now() / 1000); // Current timestamp (seconds)
-    const today =  1731839413
+    const today =  1731925813
     let products = [];
     const user_products = await user_product_model
       .find({ user_id: user._id })
