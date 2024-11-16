@@ -253,7 +253,8 @@ const profile = async (req, res) => {
     const user = await register_model.findOne({ _id: userId });
     console.log("user", user);
     const wallet_balance = user.wallet_balance;
-    const today = Math.floor(Date.now() / 1000); // Current timestamp (seconds)
+    // const today = Math.floor(Date.now() / 1000); // Current timestamp (seconds)
+    const today = 1731849277
     let products = [];
     const user_products = await user_product_model
       .find({ user_id: user._id })
