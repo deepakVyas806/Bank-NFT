@@ -1,9 +1,11 @@
-import React, { InputHTMLAttributes } from 'react';
+import React, { InputHTMLAttributes, useState } from 'react';
 import { useField } from 'formik';
-import { FaMobileAlt } from 'react-icons/fa'; // Import an icon (for example)
+import { FaMobileAlt } from 'react-icons/fa'; // Example icon
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Icons for password visibility toggle
 
 // Label Component
-export const InputStyle = 'bg-transparent flex-1 focus:outline-none text-inputlabel text-xs font-normal'
+export const InputStyle =
+  'bg-transparent flex-1 focus:outline-none text-inputlabel text-xs font-normal';
 export const Label: React.FC<{ htmlFor: string; required?: boolean; label?: string }> = ({
   htmlFor,
   required = false,
@@ -24,6 +26,7 @@ interface AuthInputProps extends InputHTMLAttributes<HTMLInputElement> {
   readOnly?: boolean;
   icon?: React.ReactNode;
   prefix?: string;
+  isPassword?: boolean; // New prop for password input
 }
 
 const AuthInput: React.FC<AuthInputProps> = ({
@@ -33,9 +36,15 @@ const AuthInput: React.FC<AuthInputProps> = ({
   readOnly = false,
   icon = <FaMobileAlt />, // Example mobile icon
   prefix = '+91', // Example prefix
+  isPassword = false, // Default to false
   ...props
 }) => {
   const [field, meta] = useField(name);
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
 
   return (
     <div className="">
@@ -45,13 +54,11 @@ const AuthInput: React.FC<AuthInputProps> = ({
       {/* Input Wrapper */}
       <div className="flex items-center bg-gray-50 border border-inputborder rounded-lg p-2.5">
         {/* Icon */}
-        <div className="pr-2 text-gray-500">
-          {icon}
-        </div>
+        <div className="pr-2 text-gray-500">{icon}</div>
 
         {/* Prefix (if any) */}
         {prefix && (
-          <div className='flex items-center'>
+          <div className="flex items-center">
             <span className="pr-2 text-blue-500 text-xs font-medium">{prefix}</span>
           </div>
         )}
@@ -61,13 +68,23 @@ const AuthInput: React.FC<AuthInputProps> = ({
           {...field}
           {...props}
           id={name}
-          type="text"
+          type={isPassword && !showPassword ? 'password' : 'text'}
           readOnly={readOnly}
           className={`bg-transparent flex-1 focus:outline-none text-inputlabel text-xs font-normal ${
             meta.touched && meta.error ? 'border-red-500' : ''
           }`}
           placeholder={props.placeholder || ''}
         />
+
+        {/* Password Visibility Toggle */}
+        {isPassword && (
+          <div
+            className="pl-2 cursor-pointer text-gray-500"
+            onClick={togglePasswordVisibility}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </div>
+        )}
       </div>
 
       {/* Error Message */}

@@ -1,20 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-// import InfiniteScroll from "react-infinite-scroll-component";
 import ProductCard from "./ProductCard";
 import Modal from "../../Components/Modal/Modal";
 import CreateProduct from "../Admin/CreateProduct";
-import { FormikProps } from "formik";
 import PageHeader from "../../Components/Utils/PageHeader";
 import { axiosPrivate } from "../../ApiServices/Axios";
-// import { showToast } from "../../ToastServices/ToastServices";
-import BuyProductDetails from "./BuyProductDetails";
-// import PayUsingRazorpar, {
-//   OrderDetails,
-// } from "../../GlobalFunctions/PayUsingRazorpay";
-// import GenerateReceiptNumber from "../../GlobalFunctions/GenerateReceiptNumber";
 import NoDataAvailable from "../../Components/Utils/NoDataAvailable";
 import Loader from "../../Components/Loader/Loader";
 import { showToast } from "../../ToastServices/ToastServices";
+import { useSelector } from "react-redux";
+import { FormikProps } from "formik";
+import BuyProductDetails from "./BuyProductDetails";
+import MyProductsCard from "./MyProductsCard";
 
 export interface Product {
   _id: string;
@@ -26,45 +22,57 @@ export interface Product {
   product_image: string;
 }
 
-const ProductList: React.FC = () => {
+interface ProductListProps {
+  isMyProducts?: boolean; // To determine page type
+}
+
+const ProductList: React.FC<ProductListProps> = ({ isMyProducts = false }) => {
+  // const isMounted = useRef(false); // Prevent multiple executions
+  const profileData = useSelector((state: any) => state.user.userProfile); // Fetch user profile from Redux store
+
   const [products, setProducts] = useState<Product[]>([]);
-  // const [currentPage, setCurrentPage] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [paymentLoading, setPaymentLoading] = useState(false); // Loader for payment
-  const formikRef = useRef<FormikProps<any>>(null);
   const [isProductsLoading, setIsProductsLoading] = useState(false);
-  // const [purchaseInfo, setPurchaseInfo] = useState<any>(null); // Store calculated data here
+  const [loading, setLoading] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const [isCreateProductButton, setIsCreateProductButton] = useState(false);
+  const formikRef = useRef<FormikProps<any>>(null);
 
-  // Fetch products once and set state
+  // Fetch products dynamically based on the page type
   const fetchProducts = useCallback(async () => {
     try {
+      if (isMyProducts) {
+        setProducts(profileData?.products || []); // Fetch products from user's profile
+        return;
+      }
+      if (
+        !isMyProducts &&
+        profileData?.user_details?.email == "admin@gmail.com"
+      )
+        setIsCreateProductButton(true);
+
       setIsProductsLoading(true);
       const response = await axiosPrivate.get("/api/v1/get-products");
-      setProducts(response.data.payload || []);
+      setProducts(response.data.payload || []); // Fetch all products
     } catch (error) {
       console.error("Error fetching products:", error);
+      showToast("Failed to load products", "error", 1000);
     } finally {
       setIsProductsLoading(false);
     }
-  }, []);
+  }, [isMyProducts, profileData]);
 
+  // Run fetchProducts only once per page
   useEffect(() => {
+    // if (!isMounted.current) {
     fetchProducts();
-  }, [fetchProducts]);
+    // isMounted.current = true;
+    // }
+  }, [fetchProducts, isMyProducts]);
 
-  // Paginate products based on currentPage and itemsPerPage
-
-  // const itemsPerPage = 10;
-  // const paginatedProducts = products.slice(0, currentPage * itemsPerPage);
-
-  // const loadMoreProducts = () => {
-  //   if (products.length && currentPage * itemsPerPage < products.length) {
-  //     setCurrentPage((prevPage) => prevPage + 1);
-  //   }
-  // };
+  // Create Product Handler
   const createProduct = async (values: any, setSubmitting: any) => {
     try {
       setLoading(true);
@@ -81,33 +89,29 @@ const ProductList: React.FC = () => {
 
       const response = await axiosPrivate.post("api/v1/add_product", formData);
       console.log(response);
-      showToast("Product added successful", "success", 1000);      
+      showToast("Product added successfully", "success", 1000);
       fetchProducts();
       setSubmitting(false);
     } catch (error: any) {
       showToast(
-        error?.response?.data?.message || "Purchase failed",
+        error?.response?.data?.message || "Failed to add product",
         "error",
         1000
       );
-      console.error("Purchase Error:", error);
+      console.error("Add Product Error:", error);
     } finally {
       setLoading(false);
       setIsCreateModalOpen(false);
     }
   };
-  const handleModalSubmit = () => {
-    if (formikRef.current) {
-      formikRef.current.submitForm();
-      // createProduct(formikRef.current.values, formikRef.current.setSubmitting);
-    }
-  };
 
+  // Buy Now Handler
   const handleBuyNow = (product: Product) => {
     setSelectedProduct(product);
     setIsBuyModalOpen(true);
   };
 
+  // Purchase Handler
   const handlePurchase = async () => {
     if (!selectedProduct) return;
     try {
@@ -119,9 +123,17 @@ const ProductList: React.FC = () => {
       showToast("Purchase successful", "success", 1000);
     } catch (error) {
       console.error("Purchase Error:", error);
+      showToast("Purchase failed", "error", 1000);
     } finally {
       setIsBuyModalOpen(false);
       setPaymentLoading(false); // Stop loading
+    }
+  };
+
+  // Handle Modal Submission
+  const handleModalSubmit = () => {
+    if (formikRef.current) {
+      formikRef.current.submitForm();
     }
   };
 
@@ -136,30 +148,32 @@ const ProductList: React.FC = () => {
   return (
     <section className="bg-white min-h-full p-6">
       <PageHeader
-        title="Products"
-        buttonText="Add product"
+        title={isMyProducts ? "My Products" : "Market"}
+        buttonText="Add Product"
         onButtonClick={() => setIsCreateModalOpen(true)}
+        isButton={isCreateProductButton} // Show button only for the Market page
       />
 
-      {/* <InfiniteScroll
-        dataLength={paginatedProducts.length}
-        next={loadMoreProducts}
-        hasMore={currentPage * itemsPerPage < products.length}
-        loader={<h4>Loading...</h4>}
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4"
-      > */}
       {products.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {products.map((product) => (
-            <div key={product._id}>
-              <ProductCard Product={product} onBuyNow={handleBuyNow} />
-            </div>
-          ))}
+          {isMyProducts
+            ? products.map((product: any) => (
+                <div key={product.product_details._id}>
+                  <MyProductsCard
+                    Product={product}
+                    // onBuyNow={handleBuyNow}
+                  />
+                </div>
+              ))
+            : products.map((product) => (
+                <div key={product._id}>
+                  <ProductCard Product={product} onBuyNow={handleBuyNow} />
+                </div>
+              ))}
         </div>
       ) : (
         <NoDataAvailable />
       )}
-      {/* </InfiniteScroll> */}
 
       {/* Modal for creating a product */}
       <Modal
@@ -181,11 +195,7 @@ const ProductList: React.FC = () => {
         loading={paymentLoading}
       >
         {selectedProduct && (
-          <BuyProductDetails
-            product={selectedProduct}
-            // onCalculate={(data: any) => setPurchaseInfo(data)} // Receive calculated data
-            onCalculate={() => {}} // Receive calculated data
-          />
+          <BuyProductDetails product={selectedProduct} onCalculate={() => {}} />
         )}
       </Modal>
     </section>

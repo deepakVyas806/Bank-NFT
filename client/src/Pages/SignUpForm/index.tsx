@@ -17,6 +17,12 @@ import SubmitButton from "../../Components/Button/SubmitButton/SubmitButton";
 
 // Yup validation schema
 const validationSchema = Yup.object({
+  firstName: Yup.string()
+    .min(2, "First Name must be at least 2 characters")
+    .required("First Name is required"),
+  lastName: Yup.string()
+    .min(2, "Last Name must be at least 2 characters")
+    .required("Last Name is required"),
   username: Yup.string()
     .min(3, "Username must be at least 3 characters")
     .required("Username is required"),
@@ -33,9 +39,6 @@ const validationSchema = Yup.object({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), ""], "Passwords must match")
     .required("Please confirm your password"),
-  // invitation: Yup.string()
-  //   .max(10, "Invitation code must be 10 characters or less")
-  //   .required("Invitation code is required"),
   code: Yup.string()
     .max(6, "Code must be 6 characters or less")
     .required("Code is required"),
@@ -43,7 +46,6 @@ const validationSchema = Yup.object({
 
 export default function SignUpForm() {
   const navigate = useNavigate();
-
   const [resendOtp, setResendOtp] = useState(false);
   const [timer, setTimer] = useState(30);
   const [loading, setIsLoading] = useState(false);
@@ -55,7 +57,6 @@ export default function SignUpForm() {
     }
     try {
       console.log("Sending OTP...");
-      // Example: API call logic to send OTP
       const response = await axiosPublic.post("api/v1/send-mail-register", {
         email: values?.email,
       });
@@ -83,13 +84,15 @@ export default function SignUpForm() {
     setIsLoading(true);
     try {
       const response = await axiosPublic.post("api/v1/register", {
+        fname: values.firstName,
+        lname: values.lastName,
         username: values.username,
         password: values.password,
-        otp: values.code, // Assuming code is OTP
+        otp: values.code,
         cpassword: values.confirmPassword,
         email: values.email,
         phone: values.mobile,
-        referral: values.invitation, // Assuming invitation is referral
+        referral: values.invitation,
       });
       console.log(response.data);
       resetForm();
@@ -107,7 +110,7 @@ export default function SignUpForm() {
   return (
     <section
       className="flex justify-center items-center min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: "url('/login-bg.jpg')" }} // Update with your image path
+      style={{ backgroundImage: "url('/login-bg.jpg')" }}
     >
       <div className="container mx-auto my-10 md:my-0">
         <div className="flex justify-center">
@@ -121,9 +124,10 @@ export default function SignUpForm() {
                 Enter your details to register
               </h3>
 
-              {/* Formik Form */}
               <Formik
                 initialValues={{
+                  firstName: "",
+                  lastName: "",
                   username: "",
                   mobile: "",
                   email: "",
@@ -141,7 +145,27 @@ export default function SignUpForm() {
                 {({ isSubmitting, values }) => (
                   <Form>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div>
+                      <div>
+                        <AuthInput
+                          label="First Name"
+                          name="firstName"
+                          placeholder="Enter your first name"
+                          prefix=""
+                          icon={<AiOutlineUser />}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <AuthInput
+                          label="Last Name"
+                          name="lastName"
+                          placeholder="Enter your last name"
+                          prefix=""
+                          icon={<AiOutlineUser />}
+                          required
+                        />
+                      </div>
+                      <div>
                         <AuthInput
                           label="Email"
                           name="email"
@@ -152,7 +176,6 @@ export default function SignUpForm() {
                           required
                         />
                       </div>
-
                       <div>
                         <OTPInput
                           label="OTP Code"
@@ -165,7 +188,6 @@ export default function SignUpForm() {
                           handleSendOtp={() => handleSendOtp(values)}
                         />
                       </div>
-                      
                       <div>
                         <AuthInput
                           label="Username"
@@ -175,8 +197,7 @@ export default function SignUpForm() {
                           icon={<AiOutlineUser />}
                           required
                         />
-                      </div>                      
-
+                      </div>
                       <div>
                         <AuthInput
                           label="Mobile"
@@ -187,10 +208,10 @@ export default function SignUpForm() {
                           required
                         />
                       </div>
-
                       <div>
                         <AuthInput
                           label="Password"
+                          isPassword
                           name="password"
                           type="password"
                           placeholder="Enter password"
@@ -199,19 +220,18 @@ export default function SignUpForm() {
                           required
                         />
                       </div>
-
                       <div>
                         <AuthInput
                           label="Confirm Password"
                           name="confirmPassword"
                           type="password"
+                          isPassword
                           placeholder="Enter password again"
                           prefix=""
                           icon={<AiOutlineLock />}
                           required
                         />
                       </div>
-
                       <div className="grid md:col-span-2">
                         <AuthInput
                           label="Invitation Code"
@@ -220,23 +240,21 @@ export default function SignUpForm() {
                           prefix=""
                           icon={<AiOutlineUser />}
                         />
-                      </div>                      
+                      </div>
                     </div>
                     <div>
-                        <SubmitButton
-                          isLoading={loading}
-                          disabled={isSubmitting}
-                          buttonText="Sign up"
-                        />
-                        {/* <SubmitButton
-                          isLoading={false}
-                          disabled={false}
-                          buttonText="Sign in"
-                          onClick={() => navigate("/")}
-                          buttonColor="bg-green-500"
-                        /> */}
-                        <p className="text-xs mt-2 text-center">already have an account? <Link className="text-blue-500" to={'/login'}>Log in</Link></p>
-                      </div>
+                      <SubmitButton
+                        isLoading={loading}
+                        disabled={isSubmitting}
+                        buttonText="Sign up"
+                      />
+                      <p className="text-xs mt-2 text-center">
+                        Already have an account?{" "}
+                        <Link className="text-blue-500" to={"/login"}>
+                          Log in
+                        </Link>
+                      </p>
+                    </div>
                   </Form>
                 )}
               </Formik>

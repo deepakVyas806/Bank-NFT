@@ -4,7 +4,9 @@ import { FaUserCircle } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import ClickOutside from "../Utils/ClickOutside";
 import { useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie'
+import Cookies from "js-cookie";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserProfile } from "../../redux/actions/userProfileActions";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -12,6 +14,8 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const profileData = useSelector((state: any) => state.user.userProfile);
 
   // Function to toggle the profile menu
   const toggleProfileMenu = () => {
@@ -22,8 +26,9 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
 
   const onLogoutClicked = () => {
     setIsProfileMenuOpen(false);
-    Cookies.remove('ACCESS_TOKEN')
-    Cookies.remove('REFRESH_TOKEN')
+    Cookies.remove("ACCESS_TOKEN");
+    Cookies.remove("REFRESH_TOKEN");
+    dispatch(setUserProfile(null));
     navigation("/login");
   };
 
@@ -41,9 +46,9 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         >
           <div className="text-right">
             <p className="text-sm font-medium text-gray-800">
-              vyasdeepak608@gmail.com
+              {profileData?.user_details?.email}
             </p>
-            <p className="text-xs font-normal text-gray-500">6378506435</p>
+            <p className="text-xs font-normal text-gray-500">+91 {profileData?.user_details?.phone}</p>
           </div>
           <img
             src={"/image.jpg"}
@@ -62,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
                   onClick={() => {
                     // Handle 'My Profile' click
                     setIsProfileMenuOpen(false);
-                    navigation('/profile')
+                    navigation("/profile");
                     console.log("My Profile clicked");
                   }}
                 >

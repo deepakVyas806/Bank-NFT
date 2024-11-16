@@ -12,7 +12,7 @@ import ProductList from "./Pages/ProductsList";
 import PageNotFound from "./Pages/Errors/404-page-not-found";
 
 const App: React.FC = () => {
-  const protectedRoutes = ["/profile", "/createProduct", "/market", "/dashboard"];
+  const protectedRoutes = ["/profile", "/createProduct", "/market", "/dashboard","/myProducts"];
   const unprotectedRoutes = ["/login", "/signUp", "/forgotPassword", "/404"];
 
   return (
@@ -31,7 +31,8 @@ const App: React.FC = () => {
             <Route path="/dashboard" element={<AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}><MainLayout><Dashboard /></MainLayout></AuthCheck>} />
             <Route path="/profile" element={<AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}><MainLayout><Profile /></MainLayout></AuthCheck>} />
             <Route path="/createProduct" element={<AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}><MainLayout><CreateProduct /></MainLayout></AuthCheck>} />
-            <Route path="/market" element={<AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}><MainLayout><ProductList /></MainLayout></AuthCheck>} />
+            <Route path="/market" element={<AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}><MainLayout><ProductList isMyProducts={false}/></MainLayout></AuthCheck>} />
+            <Route path="/myProducts" element={<AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}><MainLayout><ProductList isMyProducts={true}/></MainLayout></AuthCheck>} />
             
             {/* Redirect to /404 for undefined routes */}
             <Route path="*" element={<Navigate to="/404" replace />} />
