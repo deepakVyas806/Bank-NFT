@@ -4,6 +4,7 @@ import { register_model } from "../model/register.model.js";
 import jwt from "jsonwebtoken";
 import { response_message } from "../responses.js";
 import { user_product_model } from "../model/user_product.js";
+import { withdraw_model } from "../model/with_draw.js";
 
 // Register
 const register = async (req, res) => {
@@ -254,9 +255,9 @@ const profile = async (req, res) => {
     const wallet_balance = user.wallet_balance;
     const today = Math.floor(Date.now() / 1000); // Current timestamp (seconds)
     let products = [];
-
-    // Get all products associated with the user
-    const user_products = await user_product_model.find({ user_id: user._id }).populate('product_id');
+    const user_products = await user_product_model
+      .find({ user_id: user._id })
+      .populate("product_id");
     if (user_products.length === 0) {
       return response_message(
         res,
@@ -280,8 +281,14 @@ const profile = async (req, res) => {
       let hourly_income = 0;
       const daily_profit = user_product.daily_income;
 
+      //skip the product calculation if the withdrawl flag is 1
+      // Skip processing if the withdrawal flag is set
+      if (user_product.withdrawl_flag === 1) {
+        continue; // Skip further processing for this product
+      }
+
       // Check if the product has expired
-      if (user_product.end_date < today && user_product.withdrawl_flag === 0) {
+      if (user_product.end_date < today) {
         user_product.total_income =
           user_product.daily_income * user_product.validity; // Expired product, full income
         user_product.withdrawl_flag = 1; // Mark for withdrawal if expired
@@ -301,9 +308,8 @@ const profile = async (req, res) => {
       await user_product.save();
 
       // Add the product's income details to the response
-      console.log(user_products)
+      console.log(user_products);
       products.push({
-        
         product_details: user_product.product_id,
         total_income: `₹${user_product.total_income.toFixed(2)}`, // Format total income
         daily_income: `₹${daily_profit}`,
@@ -314,6 +320,7 @@ const profile = async (req, res) => {
         end_date: user_product.end_date,
       });
     }
+    console.log("Testing products", products);
 
     // Update the user's withdrawal balance
     user.withdrawl_balance = products.reduce(
@@ -350,4 +357,41 @@ const profile = async (req, res) => {
   }
 };
 
-export { register, login, refresh, profile };
+const withdraw = async (req, res) => {
+  try {
+    const userId = req.access_verification._id;
+    const user = await register_model.findOne({ _id: userId });
+
+    //information for withdraw data
+    const { amount, account_no, ifsc_code, bank_name, upi_id } = req.body;
+
+    //check that amount should not greater than withdrawlable amount
+    if (amount > user.withdrawl_balance) {
+      return response_message(
+        res,
+        400,
+        true,
+        "balanace is not enough to withdraw"
+      );
+    }
+
+    //amout left calaculation and added agan in user table
+    let amount_left = user.withdrawl_balance - amount;
+    user.withdrawl_balance = amount_left;
+    await user.save();
+
+    const withdraw_entry = await withdraw_model.create({
+      account_no: account_no,
+      ifsc_code: ifsc_code,
+      upi_id: upi_id,
+      amount: amount,
+      bank_name: bank_name,
+    });
+
+    return response_message(res, 200, true, withdraw_entry);
+  } catch (error) {
+    return response_message(res, 500, false, error.message);
+  }
+};
+
+export { register, login, refresh, profile, withdraw };
