@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../../Components/Navbar/Navbar";
 import Header from "../../Components/Header/Header";
+import { useSelector } from "react-redux";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -8,6 +9,7 @@ interface MainLayoutProps {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const profileData = useSelector((state: any) => state.user.userProfile);
 
   // Function to toggle sidebar visibility on smaller screens
   const toggleSidebar = () => {
@@ -23,12 +25,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         } lg:relative lg:translate-x-0 lg:flex lg:flex-col w-64`}
       >
         {/* Sidebar content */}
-        <Navbar toggleSidebar={toggleSidebar}/>
+        <Navbar toggleSidebar={toggleSidebar} profileData={profileData}/>
       </aside>
 
       <div className="flex-1 flex flex-col w-full">
         {/* Header */}
-        <Header toggleSidebar={toggleSidebar} />
+        <Header toggleSidebar={toggleSidebar} profileData={profileData} />
 
         {/* Main content */}
         <main className="flex-1 overflow-y-auto max-h-[90vh]">{children}</main>

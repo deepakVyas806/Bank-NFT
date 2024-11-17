@@ -5,20 +5,20 @@ import React from "react";
 
 interface PageHeaderProps {
   title: string;
-  buttonText: string;
-  onButtonClick: () => void; // Function to call on button click
+  buttonText?: string;
+  onButtonClick?: () => void; // Function to call on button click
   isButton?: boolean;
 }
 
 const PageHeader: React.FC<PageHeaderProps> = ({
-  // title,
+  title,
   buttonText,
   onButtonClick,
   isButton = true,
 }) => {
   return (
-    <header className="flex items-center justify-end mb-4 pb-1">
-      {/* <p className="text-lg font-medium leading-none text-gray-900">{title}</p> */}
+    <header className="flex items-center justify-between mb-4 pb-1">
+      <p className="text-lg font-medium leading-none text-gray-900">{title}</p>
       {isButton && (
         <button
           onClick={onButtonClick}
