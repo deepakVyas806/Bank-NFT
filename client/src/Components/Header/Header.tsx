@@ -5,17 +5,18 @@ import { MdLogout } from "react-icons/md";
 import ClickOutside from "../Utils/ClickOutside";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUserProfile } from "../../redux/actions/userProfileActions";
 
 interface HeaderProps {
   toggleSidebar: () => void;
+  profileData:any
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
+const Header: React.FC<HeaderProps> = ({ toggleSidebar,profileData }) => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const dispatch = useDispatch();
-  const profileData = useSelector((state: any) => state.user.userProfile);
+  // const profileData = useSelector((state: any) => state.user.userProfile);
 
   // Function to toggle the profile menu
   const toggleProfileMenu = () => {

@@ -141,20 +141,21 @@ const Profile: React.FC = () => {
       setWithdrawLoading(true);
       const params = {
         amount: values.amount,
-        accountHolderName: values.accountHolderName,
-        accountNumber: values.accountNumber,
-        bankName: values.bankName,
-        ifscCode: values.ifscCode,
+        account_holder_name: values.accountHolderName,
+        account_no: values.accountNumber,
+        bank_name: values.bankName,
+        ifsc_code: values.ifscCode,
+        upi_id: "9166550809@pytes",
       };
       // Appending values to FormData object
 
-      const response = await axiosPrivate.post(
-        "api/v1/withdraw-amount",
-        params
-      );
+      const response = await axiosPrivate.post("api/v1/withdraw", params);
       console.log(response);
+      fetchProfileData();
+      showToast("Withdrawal requested successfully.", "success", 1000);
       setSubmitting(false);
     } catch (error) {
+      showToast("Withdrawal Failed", "error", 1000);
       console.error("Withdraw Error:", error);
     } finally {
       setWithdrawLoading(false);

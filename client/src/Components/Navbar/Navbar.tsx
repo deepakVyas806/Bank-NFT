@@ -6,26 +6,41 @@ interface MenuItem {
   path: string;
   icon: string; // Change to string to hold the icon URL
   section?: string;
+  isShow?: boolean;
 }
 
 // Update paths to your local icon images
-const menuItems: MenuItem[] = [
-  {
-    name: "Dashboard",
-    path: "/dashboard",
-    icon: "/home_1_line.svg",
-    section: "MENU",
-  },
-  { name: "Market", path: "/market", icon: "/store_line.svg", section: "MENU" },
-  // { name: 'Welfare', path: '/transactions', icon: '/welfare.png', section: 'MENU' },
-  { name: "News", path: "/new-draw", icon: "/news_line.svg", section: "MENU" },
-];
 
 interface NavBarProps {
   toggleSidebar: () => void;
+  profileData: any;
 }
 
-const Navbar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
+const Navbar: React.FC<NavBarProps> = ({ toggleSidebar, profileData }) => {
+  const menuItems: MenuItem[] = [
+    {
+      name: "Dashboard",
+      path: "/dashboard",
+      icon: "/home_1_line.svg",
+      section: "MENU",
+      isShow: true,
+    },
+    {
+      name: "Market",
+      path: "/market",
+      icon: "/store_line.svg",
+      section: "MENU",
+      isShow: true,
+    },
+    // { name: 'Welfare', path: '/transactions', icon: '/welfare.png', section: 'MENU' },
+    {
+      name: "Withdrawals",
+      path: "/requests",
+      icon: "/news_line.svg",
+      section: "MENU",
+      isShow: profileData?.user_details?.email == "admin@gmail.com",
+    },
+  ];
   const navigate = useNavigate();
   const location = useLocation(); // Get current location
 
@@ -36,7 +51,7 @@ const Navbar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
 
   // Group menu items by their section
   const groupedMenuItems = menuItems.reduce((acc, item) => {
-    if (item.section) {
+    if (item.section && item?.isShow) {
       if (!acc[item.section]) {
         acc[item.section] = [];
       }
