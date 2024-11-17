@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
 const withdraw_schema = new mongoose.Schema({
+
+  userId:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'user_register'
+  },
+
   amount: {
     type: Number,
     default: 0,
@@ -23,8 +29,8 @@ const withdraw_schema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: "create",
-    enum: ["create", "process", "completed"],
+    default: "process",
+    enum: ["process", "paid", "reject"],
   },
   created_at: {
     type: Number,

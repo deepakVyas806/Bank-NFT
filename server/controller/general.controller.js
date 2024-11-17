@@ -391,6 +391,7 @@ const withdraw = async (req, res) => {
     await user.save();
 
     const withdraw_entry = await withdraw_model.create({
+      userId:userId,
       account_no: account_no,
       ifsc_code: ifsc_code,
       upi_id: upi_id,
@@ -405,4 +406,7 @@ const withdraw = async (req, res) => {
   }
 };
 
-export { register, login, refresh, profile, withdraw };
+
+
+
+export { register, login, refresh, profile, withdraw  };

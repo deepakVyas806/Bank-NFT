@@ -4,7 +4,7 @@ import {
   login,
   refresh,
   profile,
-  withdraw,
+  withdraw
 } from "../controller/general.controller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { mail_otp } from "../controller/node_mailer.controller.js";
@@ -32,5 +32,6 @@ router.post("/profile", verifyToken, profile);
 
 //withdraw route
 router.post("/withdraw", verifyToken, withdraw);
+
 
 export default router;
