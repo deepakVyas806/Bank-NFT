@@ -7,14 +7,17 @@ interface WithdrawalRequestProps {
   item: any;
   onApprove: any;
   onReject: any;
+  isAdmin: boolean;
 }
 
 const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
   item,
   onApprove,
   onReject,
+  isAdmin,
 }) => {
-  const { id, amount, accountNumber, bankName, upiId, status } = item;
+  const { _id, amount, account_no, bank_name, upi_id, status, ifsc_code } =
+    item;
   // const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -24,7 +27,7 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
         <div>
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">
-              Ref. Id: <span className="text-black">#{id}</span>
+              Ref. Id: <span className="text-black">#{_id}</span>
             </h3>
             <span
               className={`ml-1 ${
@@ -44,17 +47,17 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
             <span className="font-medium text-black text-sm">{amount}</span>
           </p>
         </div>
-        {status != "Approved" && (
+        {status != "Approved" && isAdmin && (
           <div className="flex items-center space-x-2">
             <div
               className="bg-red-400 rounded-md p-1 shadow-md cursor-pointer"
-              onClick={onReject}
+              onClick={() => onReject(item)}
             >
               <FaTimes color="white" size={15} />
             </div>
             <div
               className="bg-green-400 rounded-md p-1 shadow-md cursor-pointer"
-              onClick={onApprove}
+              onClick={() => onApprove(item)}
             >
               <FaCheck color="white" size={15} />
             </div>
@@ -98,7 +101,7 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
       >
         Bank details{" "}
         <span className="ml-1 text-xs text-black font-medium">
-          ({bankName})
+          ({bank_name})
         </span>
       </div>
       <div className="mt-0 grid grid-cols-2">
@@ -109,7 +112,7 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
         {/* <span className="font-medium text-sm ">{"Deepak Vyas"}</span> */}
         <div className="mt-2">
           <p className="text-xs text-gray-500 font-medium">Account Number:</p>
-          <p className="font-medium text-sm ">{accountNumber}</p>
+          <p className="font-medium text-sm ">{account_no}</p>
         </div>
         {/* </p> */}
         <div className="mt-2">
@@ -121,12 +124,12 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
 
         <div className="mt-2">
           <p className="text-xs text-gray-500 font-medium">IFSC Code:</p>
-          <p className="font-medium text-sm ">{"INDB0001851"}</p>
+          <p className="font-medium text-sm ">{ifsc_code}</p>
         </div>
 
         <div className="mt-2">
           <p className="text-xs text-gray-500 font-medium">Upi Id:</p>
-          <p className="font-medium text-sm ">{upiId}</p>
+          <p className="font-medium text-sm ">{upi_id}</p>
         </div>
       </div>
       {/* <div className="mt-4">

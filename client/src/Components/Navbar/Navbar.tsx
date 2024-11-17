@@ -16,7 +16,7 @@ interface NavBarProps {
   profileData: any;
 }
 
-const Navbar: React.FC<NavBarProps> = ({ toggleSidebar, profileData }) => {
+const Navbar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
   const menuItems: MenuItem[] = [
     {
       name: "Dashboard",
@@ -38,7 +38,8 @@ const Navbar: React.FC<NavBarProps> = ({ toggleSidebar, profileData }) => {
       path: "/requests",
       icon: "/news_line.svg",
       section: "MENU",
-      isShow: profileData?.user_details?.email == "admin@gmail.com",
+      // isShow: profileData?.user_details?.email == "admin@gmail.com",
+      isShow: true,
     },
   ];
   const navigate = useNavigate();

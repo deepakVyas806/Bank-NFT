@@ -3,6 +3,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import AuthInput from "../../Components/Input/AuthInput"; // Adjust the import based on the location of AuthInput component
 import { AiOutlineUser } from "react-icons/ai"; // Adjust icons as per your preference
+import BankDropdown from "../../Components/Utils/BankDropdown";
 
 // Validation schema using Yup
 const WithdrawSchema = Yup.object().shape({
@@ -27,6 +28,16 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
   const handleSubmit = (values: any, { setSubmitting }: any) => {
     onSubmit(values, setSubmitting);
   };
+  // const handleBankSelect = (bank: { id: number; name: string }) => {
+  //   console.log("Selected Bank:", bank);
+  // };
+  const banksList = [
+    { id: 1, name: "State Bank of India" },
+    { id: 2, name: "HDFC Bank" },
+    { id: 3, name: "ICICI Bank" },
+    { id: 4, name: "Axis Bank" },
+    { id: 5, name: "Punjab National Bank" },
+  ];
   return (
     <Formik
       innerRef={formikRef}
@@ -54,6 +65,13 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
             />
           </div>
 
+          <BankDropdown
+            name="bankName"
+            label="Bank Name"
+            banks={banksList}
+            required
+          />
+
           {/* Account Holder's Name */}
           <div>
             <AuthInput
@@ -78,10 +96,10 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
               required
               icon={<AiOutlineUser />}
             />
-          </div>
+          </div>        
 
           {/* Bank Name */}
-          <div>
+          {/* <div>
             <AuthInput
               label="Bank Name"
               name="bankName"
@@ -91,7 +109,7 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
               required
               icon={<AiOutlineUser />}
             />
-          </div>
+          </div> */}
 
           {/* IFSC Code */}
           <div>
