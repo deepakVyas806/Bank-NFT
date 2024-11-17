@@ -30,7 +30,7 @@ const withdraw_list = async(req,res)=>{
         const userId = req.access_verification._id;
         const user = await register_model.findOne({ _id: userId });
         
-       const individual_withdraw = await withdraw_model.findOne({userId:userId});
+       const individual_withdraw = await withdraw_model.find({userId:userId});
 
        if(!individual_withdraw){
        return  response_message(res,400,false, 'no withdarw available',null);
