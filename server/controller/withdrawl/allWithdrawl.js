@@ -9,7 +9,7 @@ const withdraw_list = async(req,res)=>{
       const userId = req.access_verification._id;
       const user = await register_model.findOne({ _id: userId });
 
-      const withdraws = await withdraw_model.find({userId:userId});
+      const withdraws = await withdraw_model.find();
   
       if(withdraws.length===0){
          return response_message(res,400,false,"no  withdraw right now",null)
