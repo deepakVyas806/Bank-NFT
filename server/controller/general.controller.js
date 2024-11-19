@@ -88,7 +88,7 @@ const login = async (req, res) => {
     const existUser = await register_model.findOne({
       $or: [{ email }, { username }],
     });
-
+   
     if (!existUser) {
       return res.status(404).json({
         success: false,
@@ -102,24 +102,27 @@ const login = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Password does not match" });
     }
-
+     console.log("existe user",existUser)
+    console.log("exist user rople",existUser.role)
     // Generate access token
     const access_token = jwt.sign(
       {
-        type: "access_token",
+         type: "access_token",
         _id: existUser._id,
         email: existUser.email,
+        "role": existUser.role
       },
       process.env.access_token || "AdiAdi", // Use a secure key from .env
       { expiresIn: "20m" } // Extend token expiration for access token
     );
-
+  console.log(access_token)
     // Generate refresh token
     const refresh_token = jwt.sign(
       {
         type: "refresh_token",
         _id: existUser._id,
         email: existUser.email,
+        role:existUser.role
       },
       process.env.refresh_token || "AdiAdi", // Use a secure key from .env
       { expiresIn: "7d" }
@@ -199,14 +202,14 @@ const refresh = async (req, res) => {
 
     // Create new access token
     const access_token = jwt.sign(
-      { type: "access_token", _id: user._id, email: user.email },
+      { type: "access_token", _id: user._id, email: user.email, role:user.role },
       process.env.access_token || "AdiAdi",
       { expiresIn: "20m" }
     );
 
     // Create new refresh token
     const refresh_token = jwt.sign(
-      { type: "refresh_token", _id: user._id, email: user.email },
+      { type: "refresh_token", _id: user._id, email: user.email, role:user.role },
       process.env.refresh_token || "AdiAdi",
       { expiresIn: "7d" }
     );

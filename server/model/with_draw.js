@@ -39,7 +39,8 @@ const withdraw_schema = new mongoose.Schema({
   update_at: {
     type: Number,
     default: () => Math.floor(Date.now() / 1000),
-  },
+  }
+
 });
 
 withdraw_schema.pre("save", function (next) {
