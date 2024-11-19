@@ -3,7 +3,6 @@ dotenv.config();
 import jwt from "jsonwebtoken";
 
 const verifyToken = async (req, res, next) => {
-  console.log('sdafjh')
   let token;
   // Get the Authorization header or the access_token from cookies
   const authHeader = req.headers["authorization"];

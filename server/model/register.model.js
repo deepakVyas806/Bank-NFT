@@ -55,6 +55,11 @@ const register_schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  role:{
+    type:String,
+    default:'user',
+    enum:['user','admin']
+  },
   createdAt: {
     type: Number,
     default: () => Math.floor(Date.now() / 1000), // Set default for createdAt

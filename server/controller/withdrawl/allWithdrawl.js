@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { register_model } from "../../model/register.model.js";
 import { withdraw_model } from "../../model/with_draw.js";
 import { response_message } from "../../responses.js";
@@ -44,4 +45,46 @@ const withdraw_list = async(req,res)=>{
       }
   }
 
-  export { withdraw_list,user_withdraw };
+
+  //withdraw staus -   staus only said to paid,reject
+  const withdraw_status = async(req,res)=>{
+   try {
+     const userId = req.access_verification._id;
+     const user = await register_model.findOne({ _id: userId });
+
+     const {status,refId} = req.body;
+
+     //change the refId into monbgoose opbject so good for compare
+     const stringId = refId.replace('#', '');
+     console.log("stringId",stringId)
+     const refObjectId = await new mongoose.Types.ObjectId(stringId);
+     console.log("refObjectId",refObjectId)
+     
+     //non admin user cant change the status
+     if(user.role=='user'){
+       return response_message(res,400,false,'dont have permission to change the status',null)
+     }
+
+    //admin user functionlaity to change the status
+    
+    //find the ref id in withdraw model
+    const withdraw_entry = await withdraw_model.findOne({_id:refObjectId});
+    console.log("withdraw entry",withdraw_entry);
+    
+    //prevent from multiple status set top paid and reject
+    if(withdraw_entry.status==='paid' || withdraw_entry.status==='reject'){
+      return response_message(res,400,false,'status is already set and  its not in process state',null)
+    }
+
+    //change the status
+    withdraw_entry.status = status;
+    withdraw_entry.save();
+    return response_message(res,200,true,'status update succesfully',withdraw_entry)
+
+   } catch (error) {
+      return response_message(res,500,false,'error in catch withdraw staus',error.message)
+   }
+     
+  }
+
+  export { withdraw_list,user_withdraw ,withdraw_status};
