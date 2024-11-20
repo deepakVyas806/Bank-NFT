@@ -15,9 +15,9 @@ const user_product_schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  invest_amount:{
-    type:Number,
-    default:0
+  invest_amount: {
+    type: Number,
+    default: 0,
   },
 
   total_income: {
@@ -62,10 +62,10 @@ const user_product_schema = new mongoose.Schema({
 
 user_product_schema.pre("save", function (next) {
   this.updatedAt = Math.floor(Date.now() / 1000);
-  next()
+  next();
 });
 
-export const user_product_model =  mongoose.model(
+export const user_product_model = mongoose.model(
   "user_product",
   user_product_schema
 );
