@@ -440,7 +440,7 @@ const forgot_pass = async (req, res) => {
     );
 
     //create the reset link
-    const resetLink = `${process.env.local_url}/resetLink?token=${resetToken}`;
+    const resetLink = `${process.env.frontend_url}/resetLink?token=${resetToken}`;
 
     //send this over a mail
     const transport = await nodeMailer.createTransport({
