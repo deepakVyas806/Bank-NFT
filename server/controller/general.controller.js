@@ -524,7 +524,7 @@ const forgot_pass = async (req, res) => {
       200,
       true,
       "reset password link send succesfully valid for 15 mins only ",
-      mail_send
+      resetToken
     );
   } catch (error) {
     return response_message(
