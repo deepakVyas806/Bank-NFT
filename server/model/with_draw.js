@@ -32,6 +32,10 @@ const withdraw_schema = new mongoose.Schema({
     default: "process",
     enum: ["process", "paid", "reject"],
   },
+  account_holder_name:{
+    type:String,
+    default:'demo'
+  },
   created_at: {
     type: Number,
     default: () => Math.floor(Date.now() / 1000),
