@@ -15,7 +15,7 @@ import { withdraw } from "./router/withdraw.js";
 // import { pro_inv } from "./model/investment.model.js";
 
 dotenv.config(); // Load environment variables
-
+console.log('branch confirmation')
 const PORT = process.env.PORT || 4000;
 const app = express();
 
