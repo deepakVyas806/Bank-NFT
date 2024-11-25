@@ -19,23 +19,31 @@ interface NavBarProps {
 const Navbar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
   const menuItems: MenuItem[] = [
     {
-      name: "Dashboard",
-      path: "/dashboard",
+      name: "Explore",
+      path: "/market",
       icon: "/home_1_line.svg",
       section: "MENU",
       isShow: true,
     },
     {
-      name: "Market",
-      path: "/market",
+      name: "Earn",
+      path: "/earn",
       icon: "/store_line.svg",
       section: "MENU",
       isShow: true,
     },
     // { name: 'Welfare', path: '/transactions', icon: '/welfare.png', section: 'MENU' },
     {
-      name: "Withdrawals",
-      path: "/requests",
+      name: "Reserve",
+      path: "/reserve",
+      icon: "/news_line.svg",
+      section: "MENU",
+      // isShow: profileData?.user_details?.email == "admin@gmail.com",
+      isShow: true,
+    },
+    {
+      name: "Referal",
+      path: "/referAndEarn",
       icon: "/news_line.svg",
       section: "MENU",
       // isShow: profileData?.user_details?.email == "admin@gmail.com",
