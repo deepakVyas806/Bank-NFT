@@ -58,7 +58,11 @@ const ReferAndEarn: React.FC = () => {
                   <button
                     className="ml-10"
                     // className="bg-blue-500 text-white text-sm py-1 px-4 rounded-md hover:bg-blue-600 transition"
-                    onClick={() => navigator.clipboard.writeText(ShareURL)}
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        ShareURL + `?referral=${ReferralCode}`
+                      )
+                    }
                   >
                     <FaRegCopy />
                   </button>

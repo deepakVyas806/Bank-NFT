@@ -8,7 +8,7 @@ import {
   AiOutlineKey,
   AiOutlineMobile,
 } from "react-icons/ai";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { axiosPublic } from "../../ApiServices/Axios";
 import { showToast } from "../../ToastServices/ToastServices";
 import OTPInput from "../../Components/Input/OTPInput";
@@ -45,6 +45,12 @@ const validationSchema = Yup.object({
 });
 
 export default function SignUpForm() {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  // Example: Get a specific query parameter (e.g., id)
+  const InvitationCode = queryParams.get("referral");
+
   const navigate = useNavigate();
   const [resendOtp, setResendOtp] = useState(false);
   const [timer, setTimer] = useState(30);
@@ -119,7 +125,9 @@ export default function SignUpForm() {
               <div className="flex justify-center">
                 <img src="/image.jpg" className="w-20 h-20 rounded-full mb-1" />
               </div>
-              <h2 className="text-xl font-semibold text-center">Get Started – Register Your Account Now</h2>
+              <h2 className="text-xl font-semibold text-center">
+                Get Started – Register Your Account Now
+              </h2>
               <h3 className="text-gray-600 text-sm mb-2 text-center">
                 Enter your details to register
               </h3>
@@ -133,7 +141,7 @@ export default function SignUpForm() {
                   email: "",
                   password: "",
                   confirmPassword: "",
-                  invitation: "",
+                  invitation: InvitationCode ? InvitationCode : "",
                   code: "",
                 }}
                 validationSchema={validationSchema}
