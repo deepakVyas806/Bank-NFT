@@ -7,13 +7,16 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { setUserProfile } from "../../redux/actions/userProfileActions";
+import { useMediaQuery } from "react-responsive";
 
 interface HeaderProps {
   toggleSidebar: () => void;
-  profileData:any
+  profileData: any;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleSidebar,profileData }) => {
+const Header: React.FC<HeaderProps> = ({ toggleSidebar, profileData }) => {
+  const isMobileOrTablet = useMediaQuery({ query: "(max-width: 1024px)" }); // Adjust breakpoint as needed
+
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const dispatch = useDispatch();
   // const profileData = useSelector((state: any) => state.user.userProfile);
@@ -34,10 +37,18 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar,profileData }) => {
   };
 
   return (
-    <header className="bg-white shadow-md flex border-b border-gray-200 rounded-md items-center justify-between lg:justify-end px-4 py-2 lg:py-2">
-      <button className="text-gray-800 lg:hidden" onClick={toggleSidebar}>
-        <AiOutlineMenu size={28} />
-      </button>
+    <header
+      className={`bg-white shadow-md flex border-b border-gray-200 rounded-md items-center ${
+        isMobileOrTablet ? "justify-between" : "justify-between"
+      } lg:justify-end px-4 py-2 lg:py-2`}
+    >
+      {!isMobileOrTablet ? (
+        <button className="text-gray-800 lg:hidden" onClick={toggleSidebar}>
+          <AiOutlineMenu size={28} />
+        </button>
+      ) : (
+        <p>Bank NFT</p>
+      )}
 
       {/* Profile Section */}
       <div className="relative">
@@ -45,12 +56,16 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar,profileData }) => {
           className="flex items-center space-x-2 cursor-pointer"
           onClick={toggleProfileMenu}
         >
-          <div className="text-right">
-            <p className="text-sm font-medium text-gray-800">
-              {profileData?.user_details?.email}
-            </p>
-            <p className="text-xs font-normal text-gray-500">+91 {profileData?.user_details?.phone}</p>
-          </div>
+          {!isMobileOrTablet && (
+            <div className="text-right">
+              <p className="text-sm font-medium text-gray-800">
+                {profileData?.user_details?.email}
+              </p>
+              <p className="text-xs font-normal text-gray-500">
+                +91 {profileData?.user_details?.phone}
+              </p>
+            </div>
+          )}
           <img
             src={"/image.jpg"}
             alt={`profile icon`}
