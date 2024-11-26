@@ -40,7 +40,7 @@ const Profile: React.FC = () => {
   const calculateTotalField = (data: any[]): number => {
     let totalIncome: number = 0;
     data.forEach((item) => {
-      console.log(item?.daily_income?.split("₹"));
+      // console.log(item?.daily_income?.split("₹"));
       totalIncome = totalIncome + Number(item?.total_income?.split("₹")?.[1]);
     });
     return totalIncome || 0;

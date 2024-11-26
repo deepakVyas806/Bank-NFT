@@ -1,5 +1,5 @@
-import React from "react";
-import { FaRegCopy } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaCopy, FaRegCopy } from "react-icons/fa";
 import { useMediaQuery } from "react-responsive";
 import SocialShare from "../../Components/SocialShare/SocialShare";
 import { QRCodeSVG } from "qrcode.react";
@@ -8,6 +8,8 @@ const ReferAndEarn: React.FC = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" }); // Adjust breakpoint as needed
   const ShareURL = "https://betting-app-frontend-neon.vercel.app/signUp";
   const ReferralCode = "ADSC123456";
+  const [isReferalCodeCopied, setIsReferalCodeCopied] = useState(false);
+  const [isReferalLinkCopied, setIsReferalLinkCopied] = useState(false);
 
   return (
     <div className="bg-white px-4 py-2">
@@ -58,13 +60,21 @@ const ReferAndEarn: React.FC = () => {
                   <button
                     className="ml-10"
                     // className="bg-blue-500 text-white text-sm py-1 px-4 rounded-md hover:bg-blue-600 transition"
-                    onClick={() =>
+                    onClick={() => {
+                      setIsReferalLinkCopied(true);
                       navigator.clipboard.writeText(
                         ShareURL + `?referral=${ReferralCode}`
-                      )
-                    }
+                      );
+                      setTimeout(() => {
+                        setIsReferalLinkCopied(false);
+                      }, 2000);
+                    }}
                   >
-                    <FaRegCopy />
+                    {isReferalLinkCopied ? (
+                      <FaCopy size={15} className="mt-0.5" />
+                    ) : (
+                      <FaRegCopy size={15} className="mt-0.5" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -100,9 +110,19 @@ const ReferAndEarn: React.FC = () => {
           <button
             className="ml-2"
             // className="bg-blue-500 text-white text-sm py-1 px-4 rounded-md hover:bg-blue-600 transition"
-            onClick={() => navigator.clipboard.writeText(ReferralCode)}
+            onClick={() => {
+              setIsReferalCodeCopied(true);
+              navigator.clipboard.writeText(ReferralCode);
+              setTimeout(() => {
+                setIsReferalCodeCopied(false);
+              }, 2000);
+            }}
           >
-            <FaRegCopy size={15} className="mt-0.5" />
+            {isReferalCodeCopied ? (
+              <FaCopy size={15} className="mt-0.5" />
+            ) : (
+              <FaRegCopy size={15} className="mt-0.5" />
+            )}
           </button>
         </div>
       </div>
