@@ -77,7 +77,7 @@ const Navbar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
           className="text-lg text-white font-semibold cursor-pointer"
           onClick={() => navigate("/")}
         >
-          Betting App
+          Bank NFT
         </div>
       </div>
 

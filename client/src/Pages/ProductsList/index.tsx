@@ -155,7 +155,7 @@ const ProductList: React.FC<ProductListProps> = ({ isMyProducts = false }) => {
       />
 
       {products.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {isMyProducts
             ? products.map((product: any) => (
                 <div key={product.product_details._id}>

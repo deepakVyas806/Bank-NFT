@@ -61,7 +61,7 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
               type="number"
               placeholder="Enter withdrawal amount"
               required
-              prefix="₹"
+              prefix="$"
             />
           </div>
 

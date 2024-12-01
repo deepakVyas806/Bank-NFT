@@ -114,7 +114,7 @@ const CreateProduct: React.FC<CreateProductProps> = ({ formikRef,onSubmit }) => 
             />
             {/* Daily Income */}
             <AuthInput
-              label="Daily Income"
+              label="Daily Income (%)"
               name="daily_income"
               type="number"
               placeholder="Enter daily income"

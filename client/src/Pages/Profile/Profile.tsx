@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoMailOutline } from "react-icons/io5";
 import { MdOutlinePhone } from "react-icons/md";
-import PayUsingRazorpar from "../../GlobalFunctions/PayUsingRazorpay";
 import { showToast } from "../../ToastServices/ToastServices";
 import { axiosPrivate } from "../../ApiServices/Axios";
 import Modal from "../../Components/Modal/Modal";
@@ -32,7 +31,7 @@ const Profile: React.FC = () => {
   const [profileData, setProfileData] = useState<any>(null);
   const [isRechargeModal, setIsRechargeModal] = useState(false);
   const [isWithdrawModal, setIsWithdrawModal] = useState(false);
-  const [rechargeAmount, setRechargeAmount] = useState(100);
+  // const [rechargeAmount, setRechargeAmount] = useState(100);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
 
   const dispatch = useDispatch();
@@ -40,8 +39,8 @@ const Profile: React.FC = () => {
   const calculateTotalField = (data: any[]): number => {
     let totalIncome: number = 0;
     data.forEach((item) => {
-      // console.log(item?.daily_income?.split("₹"));
-      totalIncome = totalIncome + Number(item?.total_income?.split("₹")?.[1]);
+      // console.log(item?.daily_income?.split("$"));
+      totalIncome = totalIncome + Number(item?.total_income?.split("$")?.[1]);
     });
     return totalIncome || 0;
   };
@@ -107,20 +106,21 @@ const Profile: React.FC = () => {
   }, []); // Empty dependency array ensures it runs only on mount
 
   const RechargeButtonClicked = async () => {
+    console.log(formikRef.current?.values);
     try {
       setRechargeLoading(true);
       const rechargeDetails: any = {
-        amount: rechargeAmount,
+        TxId: formikRef.current?.values?.transactionID,
       };
-      const response = await axiosPrivate.post(
-        "api/v1/recharge_wallet",
-        rechargeDetails
-      );
-      const rechargeOrder = response.data.payload;
-      await PayUsingRazorpar(rechargeOrder, fetchProfileData);
-      console.log("after razorpay success");
+      await axiosPrivate.post("api/v1/binanceVerify", rechargeDetails);
+      showToast("Amount deposited successfully", "success", 1000);
+      fetchProfileData();
+      // const rechargeOrder = response.data.payload;
+      // await PayUsingRazorpar(rechargeOrder, fetchProfileData);
+      // console.log("Deposited Successfully");
       // fetchProfileData();
     } catch (error) {
+      showToast("Error Depositing amout, please contact admin.", "error", 1000);
       console.error("Purchase Error:", error);
     } finally {
       setRechargeLoading(false);
@@ -130,6 +130,14 @@ const Profile: React.FC = () => {
 
   const handleWithdraw = () => {
     setWithdrawLoading(false);
+    if (formikRef.current) {
+      formikRef.current.submitForm();
+      // createProduct(formikRef.current.values, formikRef.current.setSubmitting);
+    }
+  };
+
+  const handleRechargeSubmit = () => {
+    // setWithdrawLoading(false);
     if (formikRef.current) {
       formikRef.current.submitForm();
       // createProduct(formikRef.current.values, formikRef.current.setSubmitting);
@@ -229,7 +237,7 @@ const Profile: React.FC = () => {
                 <React.Fragment key={index}>
                   <div className="grid grid-cols-1 flex-1">
                     <span className="text-gray-900 text-center text-xl lg:text-xl font-semibold">
-                      ₹{item.value}
+                      ${item.value}
                     </span>
                     <span className="text-gray-700 text-center text-sm">
                       {item.label}
@@ -301,16 +309,16 @@ const Profile: React.FC = () => {
 
       {/* Add Recharge Popup */}
       <Modal
-        title="Add Amount"
+        title="Bank NFT"
         isOpen={isRechargeModal}
         onClose={() => setIsRechargeModal(false)}
-        onSubmit={RechargeButtonClicked}
+        onSubmit={handleRechargeSubmit}
         loading={rechargeLoading}
-        submitButtonText="Recharge"
+        submitButtonText="Verify"
       >
         <AddRechargeAmount
-          rechargeAmount={rechargeAmount}
-          setRechargeAmount={setRechargeAmount}
+          formikRef={formikRef}
+          onSubmit={RechargeButtonClicked}
         />
       </Modal>
       {/* Add Recharge Popup */}
