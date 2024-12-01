@@ -2,6 +2,10 @@ import Binance from 'binance-api-node';
 import { response_message } from "../responses.js";
 import { transaction_model } from '../model/binnaceTranscation.model.js';
 import { register_model } from '../model/register.model.js';
+import {HttpsProxyAgent} from 'https-proxy-agent';
+
+
+const proxyAgent = new HttpsProxyAgent('http://164.52.206.180:80');
 
 // Controller for verifying the txid from the deposit history
 const verifyTxId = async (req, res) => {
@@ -33,6 +37,7 @@ const verifyTxId = async (req, res) => {
     const client = Binance.default({
       apiKey: "jr4pAvdJuIjc5PWlYEvqoaFh8tK4TYDSB7a79OF5GeFApHmivsB5zbZFbYJTrZlk",
       apiSecret: "7MNnONkMJyLUUAJBr5H1UEDFUJRS015GvNdCG4uijD0fCCl7cr9hxhpjRqFfmhzI",
+      httpAgent: proxyAgent
     });
     //console.log("client",client)
 
