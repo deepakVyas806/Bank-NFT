@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import Binance from 'binance-api-node';
 import { response_message } from "../responses.js";
 import { transaction_model } from '../model/binnaceTranscation.model.js';
@@ -35,8 +37,8 @@ const verifyTxId = async (req, res) => {
     // Initialize the Binance client using default property 
 
     const client = Binance.default({
-      apiKey: "jr4pAvdJuIjc5PWlYEvqoaFh8tK4TYDSB7a79OF5GeFApHmivsB5zbZFbYJTrZlk",
-      apiSecret: "7MNnONkMJyLUUAJBr5H1UEDFUJRS015GvNdCG4uijD0fCCl7cr9hxhpjRqFfmhzI",
+      apiKey: process.env.Binance_api_key,
+      apiSecret: process.env.Binanace_secret_key,
       httpAgent: proxyAgent
     });
     //console.log("client",client)
@@ -44,7 +46,7 @@ const verifyTxId = async (req, res) => {
     //fetch all the recent 1000 deposits 
 
     const deposits = await client.depositHistory({ limit: 1000 });
-    // console.log("deposits",deposits)
+     console.log("deposits",deposits)
 
  
 
