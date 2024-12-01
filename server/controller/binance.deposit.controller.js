@@ -78,12 +78,23 @@ const verifyTxId = async (req, res) => {
         loginUser.wallet_balance = (loginUser.wallet_balance || 0) + parseFloat(deposit.amount);
         loginUser.save();
     }
-      
+ 
+    // convert the unix timestamp inot date for human time readable formt 
+    const date = new Date(deposit.insertTime)
+    console.log(date.toLocaleString());
+    const isoDate = date.toISOString();  //store in databse like this 
+
+
+    console.log("deposit",deposit)
     const transactionInsert = await transaction_model.create({
         transactionId: extractTransactionNumber(deposit.txId),
         amount:deposit.amount,
         status:deposit.status,
-        userId:userId
+        userId:userId,
+        time:isoDate,
+        destination:deposit.address,
+        coin:deposit.coin
+        
     })
 
      await transactionInsert.save();
@@ -98,5 +109,7 @@ const verifyTxId = async (req, res) => {
    return  response_message(res, 500, false, 'Error in Binance API', error.message);
   }
 };
+
+
 
 export { verifyTxId };

@@ -19,6 +19,18 @@ const transactionSchema = mongoose.Schema({
 
     },
 
+    destination:{
+        type:String
+    },
+
+    time:{
+       type:Date,
+    },
+
+    coin:{
+       type:String
+    },
+
     createdAt:{
         type:Number,
         default:()=>Math.floor(Date.now()/1000)
