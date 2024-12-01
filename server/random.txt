@@ -1,7 +1,16 @@
-MONGO_DB_URL=mongodb+srv://root:root@cluster0.qlsvim7.mongodb.net/BET-APP?retryWrites=true&w=majority&appName=Cluster0
-mail_host=smtp.gmail.com
-mail_port=465
+frontend_url=https://betting-app-frontend-neon.vercel.app
+reset_token_secret=adi12
+local_url=http://localhost:5173
+mail_pass=ebau zctz vgas vmwf
+razor_secret=hHWx8acy5Zu6LD0i1EcnuYOR
+razor_api=rzp_test_Oz09n2OkZmcgNQ
+cloud_name=dddet9uol
+api_key=534476346582149
+api_secret=ej9frYJjK5dMICsSIF43zq7A1aQ
+is_env=production
+refresh_token=AdiAdi
+access_token=AdiAdi
+mail_host=smtp.gmail.comail_port=465
 mail_secure=true
-mail_user=ap@taketwotechnologies.com
-mail_pass=wzfy azfa kfiv efxd
-
+session_secret=AdiAdi
+MONGO_URL=mongodb+srv://root:root@cluster0.qlsvim7.mongodb.net/BET-APP?retryWrites=true&w=majority&appName=Cluster0
