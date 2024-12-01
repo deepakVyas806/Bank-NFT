@@ -31,7 +31,7 @@ const MyProductsCard: React.FC<ProductCardProps> = ({ Product }) => {
                 Purchase Price
               </p>
               <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">
-                &#8377; {Product?.product_details?.product_price}
+                $ {Product?.product_details?.product_price}
               </p>
             </div>
             <div className="">

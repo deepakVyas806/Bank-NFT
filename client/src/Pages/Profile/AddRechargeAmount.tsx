@@ -1,93 +1,105 @@
-import React, { useEffect } from "react";
-import { Formik, Form, useFormikContext } from "formik";
+import React, { useState, forwardRef } from "react";
+import { Formik, Form } from "formik";
 import AuthInput from "../../Components/Input/AuthInput";
 import * as Yup from "yup";
 import { AiFillMoneyCollect } from "react-icons/ai";
+import { QRCodeSVG } from "qrcode.react";
+import { useMediaQuery } from "react-responsive";
+import { FaCopy, FaRegCopy } from "react-icons/fa";
 
 interface AddRechargeAmountProps {
-  rechargeAmount: number; // The initial recharge amount to display
-  setRechargeAmount: (amount: number) => void; // Function to update recharge amount in parent
+  formikRef?: React.Ref<any>;
+  onSubmit: any;
 }
 
-const AddRechargeAmount: React.FC<AddRechargeAmountProps> = ({
-  rechargeAmount,
-  setRechargeAmount,
-}) => {
-  // Preset amounts array
-  const presetAmounts = [100, 200, 500, 1000, 2000];
+const AddRechargeAmount: React.FC<AddRechargeAmountProps> = forwardRef(
+  ({ formikRef, onSubmit }) => {
+    const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
+    const [isReferalCodeCopied, setIsReferalCodeCopied] = useState(false);
+    const WalletAddress = `TGKgkCyws4TMGYc71kqMPJck4kpQ1Ms8yy`;
 
-  // Form validation schema
-  const validationSchema = Yup.object({
-    amount: Yup.number()
-      .required("Amount is required")
-      .min(100, "Minimum amount is 100"),
-  });
-
-  // Custom component for updating parent state when Formik changes
-  const SyncAmountWithParent: React.FC = () => {
-    const { values } = useFormikContext<{ amount: number }>();
-    useEffect(() => {
-      setRechargeAmount(values.amount);
-    }, [values.amount]);
-    return null;
-  };
-
-  // Common style for preset amount boxes
-//   #1B84FF
-  const presetBoxStyle =
-    "flex-1 px-2 py-1.5 text-center rounded-md border border-gray-200 text-sm font-medium text-gray-600 bg-white cursor-pointer";
-
-  return (
-    <Formik
-      initialValues={{ amount: rechargeAmount }}
-      validationSchema={validationSchema}
-      onSubmit={(values) => {
-        console.log("Submitted amount:", values.amount);
-      }}
-    >
-      {({ setFieldValue }) => (
-        <Form>
-          {/* Sync Formik value with parent component */}
-          <SyncAmountWithParent />
-
-          {/* AuthInput for entering custom amount */}
-          {/* <Field
-            name="amount"
-            component={AuthInput}
-            type="number"
-            placeholder="Enter amount"
-            label="Amount"
-            icon={null}
-            prefix=""
-            required
-          /> */}
-
-          {/* Preset Amount Boxes */}
-          <div className="flex space-x-1">
-            {presetAmounts.map((presetAmount) => (
+    const validationSchema = Yup.object({
+      transactionID: Yup.string().required("Transaction ID is required"),
+    });
+    const handleSubmit = (values: any, { setSubmitting }: any) => {
+      onSubmit(values, setSubmitting);
+    };
+    return (
+      <Formik
+        initialValues={{ transactionID: "" }}
+        validationSchema={validationSchema}
+        innerRef={formikRef}
+        onSubmit={handleSubmit}
+      >
+        {() => (
+          <Form>
+            <div
+              className={`flex flex-col justify-center items-center ${
+                isMobile ? "mt-2" : ""
+              }`}
+            >
+              <p className="text-xs font-medium text-gray-600 mb-2">
+                Scan and Pay!
+              </p>
+              <QRCodeSVG value={WalletAddress} size={150} />
+              <p className="text-sm font-normal text-gray-600 mt-4 mb-1">
+                Or You can deposite amount at below address!
+              </p>
               <div
-                key={presetAmount}
-                className={presetBoxStyle}
-                onClick={() => setFieldValue("amount", presetAmount)}
+                className="flex flex-col items-center rounded-lg border border-gray-200 p-2 mt-2"
+                style={{ boxShadow: "0px 3px 4px 0px rgba(0, 0, 0, .03)" }}
               >
-                ₹ {presetAmount}
+                <p className="text-xs text-gray-500 font-medium mb-0.5">
+                  USDT Wallet Address
+                </p>
+                <div className="flex">
+                  <p className="text-sm font-medium text-black">
+                    {WalletAddress}
+                  </p>
+                  <button
+                  type="button"
+                    className="ml-2"
+                    onClick={() => {
+                      setIsReferalCodeCopied(true);
+                      navigator.clipboard.writeText(WalletAddress);
+                      setTimeout(() => {
+                        setIsReferalCodeCopied(false);
+                      }, 2000);
+                    }}
+                  >
+                    {isReferalCodeCopied ? (
+                      <FaCopy size={15} className="mt-0.5" />
+                    ) : (
+                      <FaRegCopy size={15} className="mt-0.5" />
+                    )}
+                  </button>
+                </div>
               </div>
-            ))}
-          </div>
-          <div className="mt-4">
-            <AuthInput
-              label="Amount"
-              name="amount"
-              type="decimal"
-              placeholder="Enter recharge amount"
-              prefix='₹'
-              icon={<AiFillMoneyCollect />}
-            />
-          </div>
-        </Form>
-      )}
-    </Formik>
-  );
-};
+            </div>
+            <div className="border border-t border-gray-200 mt-8 shadow-md"></div>
+            <div className="text-xs mb-2 font-medium text-center mt-2">
+              After successful payment, Enter transaction ID to verify your
+              payment.
+            </div>
+            <div>
+              <AuthInput
+                label="Transaction ID"
+                name="transactionID"
+                type="text"
+                placeholder="Enter transaction ID"
+                prefix=""
+                icon={<AiFillMoneyCollect />}
+              />
+            </div>
+            <div className="text-xs font-medium mt-4 text-gray-400">
+              NOTE: Without verifying Transaction ID, amount will not be
+              deposited to your account.
+            </div>
+          </Form>
+        )}
+      </Formik>
+    );
+  }
+);
 
 export default AddRechargeAmount;
