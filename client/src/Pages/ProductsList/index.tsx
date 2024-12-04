@@ -146,7 +146,10 @@ const ProductList: React.FC<ProductListProps> = ({ isMyProducts = false }) => {
   }
 
   return (
-    <section className="bg-white min-h-full p-6">
+    <section className="min-h-full p-6" style={{
+      background: "linear-gradient(#F9FCFF, #F9FFFD, #ffffff)",
+      // background: "linear-gradient(#EAF7FF, #EFFFF7, #ffffff)",
+    }}>
       <PageHeader
         title={isMyProducts ? "My Products" : "Market"}
         buttonText="Add Product"
@@ -155,7 +158,7 @@ const ProductList: React.FC<ProductListProps> = ({ isMyProducts = false }) => {
       />
 
       {products.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {isMyProducts
             ? products.map((product: any) => (
                 <div key={product.product_details._id}>
@@ -193,6 +196,7 @@ const ProductList: React.FC<ProductListProps> = ({ isMyProducts = false }) => {
         onClose={() => setIsBuyModalOpen(false)}
         onSubmit={handlePurchase}
         loading={paymentLoading}
+        submitButtonText="BUY NOW"
       >
         {selectedProduct && (
           <BuyProductDetails product={selectedProduct} onCalculate={() => {}} />

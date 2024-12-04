@@ -12,7 +12,10 @@ const ReferAndEarn: React.FC = () => {
   const [isReferalLinkCopied, setIsReferalLinkCopied] = useState(false);
 
   return (
-    <div className="bg-white px-4 py-2">
+    <div className="px-4 py-2 h-full" style={{
+      background: "linear-gradient(#F9FCFF, #F9FFFD, #ffffff)",
+      // background: "linear-gradient(#EAF7FF, #EFFFF7, #FFF5F0)",
+    }}>
       {/* Profile Section */}
       <div
         className="flex flex-col justify-center rounded-md p-6 bg-center bg-cover bg-no-repeat w-full"

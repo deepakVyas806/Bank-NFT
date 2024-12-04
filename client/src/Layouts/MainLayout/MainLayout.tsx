@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import Navbar from "../../Components/Navbar/Navbar";
+// import Navbar from "../../Components/Navbar/Navbar";
 import Header from "../../Components/Header/Header";
 import { useMediaQuery } from "react-responsive";
 // import { useLocation } from "react-router-dom";
@@ -14,7 +14,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const profileData = useSelector((state: any) => state.user.userProfile);
   // const location = useLocation(); // Get current location
-
 
   // Media query to determine if the device is a tablet or mobile
   const isMobileOrTablet = useMediaQuery({ query: "(max-width: 1024px)" }); // Adjust breakpoint as needed
@@ -38,16 +37,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       ) : (
         // Sidebar drawer for desktop
         <div className="flex flex-row min-h-screen">
-          <aside
+          {/* <aside
             className={`fixed inset-y-0 left-0 z-30 bg-gray-800 text-white transition-transform transform ${
               isSidebarOpen ? "translate-x-0" : "-translate-x-full"
             } lg:relative lg:translate-x-0 lg:flex lg:flex-col w-64`}
           >
             <Navbar toggleSidebar={toggleSidebar} profileData={profileData} />
-          </aside>
+          </aside> */}
 
           <div className="flex-1 flex flex-col w-full">
             <Header toggleSidebar={toggleSidebar} profileData={profileData} />
+
             <main className="flex-1 overflow-y-auto max-h-[90vh]">
               {children}
             </main>

@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import SubmitButton from "../../Components/Button/SubmitButton/SubmitButton"; // Updated import to SubmitButton
 import { fetchProfileData } from "../../GlobalFunctions/FetchProfileDetails";
 import { useDispatch } from "react-redux";
+import Logo from "../../Components/Logo/Logo";
 
 // Yup validation schema
 const validationSchema = Yup.object({
@@ -50,7 +51,7 @@ export default function LogInForm() {
       fetchProfileData(dispatch);
       resetForm();
       setSubmitting(false);
-      navigate("/market");
+      navigate("/dashboard");
       setIsLoading(false);
       showToast("Login successful", "success", 1000);
     } catch (error: any) {
@@ -68,20 +69,21 @@ export default function LogInForm() {
   return (
     <section
       className="flex justify-center items-center min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: "url('/login-bg.jpg')" }} // Update with your image path
+      // style={{ backgroundImage: "url('/login-bg.jpg')" }} // Update with your image path
     >
       <div className="container mx-auto">
         <div className="flex justify-center">
           <div className="w-full max-w-md">
             <div className="p-6 bg-white rounded-lg shadow-md">
               <div className="flex justify-center">
-                <img src="/image.jpg" className="w-20 h-20 rounded-full mb-1" />
+                {/* <img src="/image.jpg" className="w-20 h-20 rounded-full mb-1" /> */}
+                <Logo/>
               </div>
               {/* <h2 className="text-xl font-semibold text-center">Log in to Betting app</h2> */}
-              <h2 className="text-xl font-semibold text-center">
+              <h2 className="text-lg font-semibold text-center">
                 Welcome Back – Log In to Your Account
               </h2>
-              <h3 className="text-gray-600 text-sm mb-2 text-center">
+              <h3 className="text-gray-600 text-xs mb-2 text-center">
                 Enter your credentials to access your account
               </h3>
 

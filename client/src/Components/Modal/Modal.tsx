@@ -58,20 +58,23 @@ const Modal: React.FC<ResponsiveModalProps> = ({
         <div className="flex min-h-[56px] justify-end gap-4 items-center p-2 border-t border-gray-200">
           <button
             onClick={onClose}
-            className="text-gray-700 border border-gray-300 hover:shadow-lg font-medium text-xs px-2.5 py-2 rounded-md"
+            className="text-gray-700 uppercase border border-gray-300 hover:shadow-lg font-medium text-xs px-2.5 py-2 rounded-md"
           >
             Cancel
           </button>
           <button
+           style={{
+            background: "linear-gradient(90deg, #5cbffe, #a0f5d0, #ffd7c8)",
+          }}
             onClick={onSubmit}
-            className="bg-[#1B84FF] text-white font-medium hover:shadow-lg text-xs px-2.5 py-2 rounded-md"
+            className="bg-[#1B84FF] text-gray-800 uppercase font-medium hover:shadow-lg text-xs px-2.5 py-2 rounded-md"
           >
             {loading ? (
               <Loader
                 loading={loading}
                 type={"beat"}
                 size={50}
-                color="#ffffff"
+                color="#000000"
               />
             ) : (
               submitButtonText

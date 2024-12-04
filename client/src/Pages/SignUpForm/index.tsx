@@ -14,6 +14,7 @@ import { showToast } from "../../ToastServices/ToastServices";
 import OTPInput from "../../Components/Input/OTPInput";
 import { useEffect, useState } from "react";
 import SubmitButton from "../../Components/Button/SubmitButton/SubmitButton";
+import Logo from "../../Components/Logo/Logo";
 
 // Yup validation schema
 const validationSchema = Yup.object({
@@ -123,12 +124,13 @@ export default function SignUpForm() {
           <div className="w-full md:max-w-[80%] lg:max-w-[40%]">
             <div className="p-6 bg-white rounded-lg shadow-md">
               <div className="flex justify-center">
-                <img src="/image.jpg" className="w-20 h-20 rounded-full mb-1" />
+                {/* <img src="/image.jpg" className="w-20 h-20 rounded-full mb-1" /> */}
+                <Logo/>
               </div>
-              <h2 className="text-xl font-semibold text-center">
+              <h2 className="text-lg font-semibold text-center">
                 Get Started – Register Your Account Now
               </h2>
-              <h3 className="text-gray-600 text-sm mb-2 text-center">
+              <h3 className="text-gray-600 text-xs mb-2 text-center">
                 Enter your details to register
               </h3>
 

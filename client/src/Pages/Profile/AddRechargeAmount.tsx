@@ -5,7 +5,8 @@ import * as Yup from "yup";
 import { AiFillMoneyCollect } from "react-icons/ai";
 import { QRCodeSVG } from "qrcode.react";
 import { useMediaQuery } from "react-responsive";
-import { FaCopy, FaRegCopy } from "react-icons/fa";
+import { FaChevronDown, FaCopy, FaRegCopy } from "react-icons/fa";
+import { SiTether } from "react-icons/si";
 
 interface AddRechargeAmountProps {
   formikRef?: React.Ref<any>;
@@ -33,9 +34,24 @@ const AddRechargeAmount: React.FC<AddRechargeAmountProps> = forwardRef(
       >
         {() => (
           <Form>
+            <div className="relative">
+              <AuthInput
+                label=""
+                name="usdt"
+                type="text"
+                value={'USDT (TRC20)'}
+                placeholder="Enter transaction ID"
+                prefix=""
+                disabled
+                icon={<SiTether color="#26a17b"/>}
+              />
+              <div className="absolute right-2 top-3.5">
+                <FaChevronDown size={10} />
+              </div>
+            </div>
             <div
               className={`flex flex-col justify-center items-center ${
-                isMobile ? "mt-2" : ""
+                isMobile ? "mt-2" : "mt-2"
               }`}
             >
               <p className="text-xs font-medium text-gray-600 mb-2">
