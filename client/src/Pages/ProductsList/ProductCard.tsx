@@ -14,31 +14,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ Product, onBuyNow }) => {
 
   return (
     <div
-      className="flex flex-col rounded-lg border border-gray-200 grow pb-2"
+      className="flex flex-col rounded-lg border border-gray-200 grow"
       style={{ boxShadow: "0px 3px 4px 0px rgba(0, 0, 0, .03)" }}
     >
       <div className="flex flex-col justify-center items-left grow">
         <div className="">
           <img
             src={Product?.product_image}
-            className="h-32 rounded-md w-full px-2 mt-2"
+            className="h-40 rounded-md w-full"
           />
-          <div className="flex flex-col justify-between items-center my-3">
-            <div className="flex flex-col items-center">
+          <div className="flex flex-col justify-between px-2 my-3">
+            <div className="flex flex-col">
               {/* <p className="text-[9px] font-medium text-gray-500 hover:text-blue-400 cursor-pointer">
                 Product name
               </p> */}
               <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">
                 {Product?.product_name}
               </p>
-            {/* </div>
+              {/* </div>
             <div className="flex flex-col items-center"> */}
               {/* <p className="text-[9px] font-medium text-gray-500 hover:text-blue-400 cursor-pointer">
                 Price
               </p> */}
-              <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">
+              {/* <p className="text-sm font-medium text-gray-900 hover:text-blue-400 cursor-pointer">
                 $ {Product?.product_price}
-              </p>
+              </p> */}
             </div>
             {/* <div className="">
               <div className="text-[#1B84FF] inline-flex items-center justify-center rounded-md px-1.5 py-0.5 text-[10px] font-medium bg-[#EFF6FF] border border-[rgba(27, 132, 255, .2)]">
@@ -70,14 +70,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ Product, onBuyNow }) => {
         </div>
       </div>
       {profileData?.user_details?.email != "admin@gmail.com" && (
-        <div className="flex justify-around items-center mt-2 border-t pt-2 border-gray-200">
+        <div
+          className="flex justify-around shadow-md items-center mt-2 border-t pt-2 pb-2 rounded-md border-gray-200"
+          style={{
+            background: "linear-gradient(90deg, #5cbffe, #a0f5d0, #ffd7c8)",
+          }}
+        >
           <div
             className="flex items-center cursor-pointer"
             onClick={() => onBuyNow(Product)}
           >
-            <p className="text-gray-500 font-medium text-sm hover:text-blue-500">
+            <p className="text-gray-800 font-medium text-sm hover:text-black uppercase">
               {/* View Details */}
-              Buy now
+              Buy at  <span className="font-semibold">${Product?.product_price}</span>
             </p>
           </div>
         </div>

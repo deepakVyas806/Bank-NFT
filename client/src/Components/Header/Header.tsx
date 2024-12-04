@@ -1,32 +1,38 @@
 import React, { useState } from "react";
-import { AiOutlineMenu } from "react-icons/ai";
 import { FaUserCircle } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import ClickOutside from "../Utils/ClickOutside";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { setUserProfile } from "../../redux/actions/userProfileActions";
 import { useMediaQuery } from "react-responsive";
+import Logo from "../Logo/Logo";
 
 interface HeaderProps {
   toggleSidebar: () => void;
   profileData: any;
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleSidebar, profileData }) => {
+const Header: React.FC<HeaderProps> = ({ profileData }) => {
   const isMobileOrTablet = useMediaQuery({ query: "(max-width: 1024px)" }); // Adjust breakpoint as needed
+  const location = useLocation();
 
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const dispatch = useDispatch();
-  // const profileData = useSelector((state: any) => state.user.userProfile);
+  const navigation = useNavigate();
 
-  // Function to toggle the profile menu
+  // List of navigation items
+  const navItems = [
+    { label: "Explore", path: "/market" },
+    { label: "Earn", path: "/earn" },
+    { label: "Reserve", path: "/reserve" },
+    { label: "Referral", path: "/referAndEarn" },
+  ];
+
   const toggleProfileMenu = () => {
     setIsProfileMenuOpen(!isProfileMenuOpen);
   };
-
-  const navigation = useNavigate();
 
   const onLogoutClicked = () => {
     setIsProfileMenuOpen(false);
@@ -36,19 +42,43 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, profileData }) => {
     navigation("/login");
   };
 
+  const navigateTo = (path: string) => {
+    navigation(path);
+  };
+
   return (
     <header
-      className={`bg-white shadow-md flex border-b border-gray-200 rounded-md items-center ${
+      className={`bg-white flex border-b border-gray-200 rounded-md items-center ${
         isMobileOrTablet ? "justify-between" : "justify-between"
-      } lg:justify-end px-4 py-2 lg:py-2`}
+      } px-4 py-2 lg:py-2`}
     >
-      {!isMobileOrTablet ? (
-        <button className="text-gray-800 lg:hidden" onClick={toggleSidebar}>
-          <AiOutlineMenu size={28} />
-        </button>
-      ) : (
-        <p>Bank NFT</p>
-      )}
+      <div className="flex space-x-10">
+        <p
+          className="text-black font-semibold text-lg cursor-pointer"
+          onClick={() => {
+            navigation("/dashboard");
+          }}
+        >
+          <Logo />
+        </p>
+        {!isMobileOrTablet && (
+          <div className="flex space-x-4 items-center">
+            {navItems.map((item, index) => (
+              <p
+                key={index}
+                onClick={() => navigateTo(item.path)}
+                className={`text-base text-black font-semibold cursor-pointer hover:text-black ${
+                  location.pathname === item.path
+                    ? "text-black"
+                    : "text-gray-600"
+                }`}
+              >
+                {item.label}
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Profile Section */}
       <div className="relative">
@@ -81,10 +111,8 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, profileData }) => {
                 <li
                   className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
                   onClick={() => {
-                    // Handle 'My Profile' click
                     setIsProfileMenuOpen(false);
-                    navigation("/profile");
-                    console.log("My Profile clicked");
+                    navigateTo("/profile");
                   }}
                 >
                   <FaUserCircle className="mr-2" />
@@ -92,10 +120,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, profileData }) => {
                 </li>
                 <li
                   className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => {
-                    // Handle 'Logout' click
-                    onLogoutClicked();
-                  }}
+                  onClick={onLogoutClicked}
                 >
                   <MdLogout className="mr-2" />
                   Logout
