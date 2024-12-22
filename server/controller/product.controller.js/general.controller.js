@@ -89,6 +89,7 @@ const buy_product = async (req, res) => {
       console.log("referral_user_o register user",referral_user_o)
       const amount = invest_amount * 0.10;
       referral_user_o.referal_income += amount;
+      referral_user_o.withdrawl_balance += amount
       await referral_user_o.save();
 
       referral_data.activated_bonus = true;
