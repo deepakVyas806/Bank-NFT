@@ -3,6 +3,7 @@ import { product_model } from "../../model/product.model.js";
 import { user_product_model } from "../../model/user_product.js";
 import { register_model } from "../../model/register.model.js";
 import {response_message} from "../../responses.js"
+import { referral_model } from "../../model/referal.model.js";
 
 //constroller to get the products
 
@@ -73,6 +74,26 @@ const buy_product = async (req, res) => {
     // Find the user product entry after creation (this step is optional since `up` already contains the data)
     const user_product = await user_product_model.findOne({ user_id: user_id, product_id: product_id });
     console.log("user product:", user_product);
+ 
+    //make the activated_bonus false in referral table and add the 10 % of the product amount in qwithrdwa balacjke and refeeral abaklce both 
+    const referral_data = await referral_model.findOne({
+       "user_referral_s.user_id_s":user_id
+    })
+    
+    console.log("referral dtaa to upodated",referral_data);
+    
+    // if it is false then only update the things 
+    if(referral_data.activated_bonus===false){
+
+      const referral_user_o = await register_model.findOne({_id:referral_data.user_referral_o.user_id_o});
+      console.log("referral_user_o register user",referral_user_o)
+      const amount = invest_amount * 0.10;
+      referral_user_o.referal_income += amount;
+      await referral_user_o.save();
+
+      referral_data.activated_bonus = true;
+      await referral_data.save();
+    }
 
     return response_message(res, 200, true, "Purchase successful", user_product);
 
