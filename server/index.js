@@ -14,6 +14,9 @@ import { withdraw } from "./router/withdraw.js";
 import { binanceDeposit } from "./router/binance.deposit.router.js";
 import { register_model } from "./model/register.model.js";
 import { withdraw_model } from "./model/with_draw.js";
+import './jobs/dailyReset.js'
+import { user_product_model } from "./model/user_product.js";
+import { taskRouter } from "./router/task.router.js";
 
 // import {product_model} from "../server/model/product.model.js"
 // import { pro_inv } from "./model/investment.model.js";
@@ -56,6 +59,10 @@ app.use('/api/v1',withdraw)
 // binnace deposit check and update the user balance
 app.use('/api/v1',binanceDeposit);
 
+//task apis
+app.use('/api/v1',taskRouter)
+
+
 
 // Database Connection
 mongoose
@@ -68,4 +75,5 @@ mongoose
   .catch((error) => {
     console.log("Database connection error:", error.message);
   });
+
 

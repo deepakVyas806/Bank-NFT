@@ -345,10 +345,7 @@ const profile = async (req, res) => {
         {
           wallet_balance,
           user_details: {
-            first_name: user.firstname,
-            last_name: user.lastname,
-            email: user.email,
-            phone: user.phone,
+           user
           },
           products,
         }
@@ -392,12 +389,8 @@ const profile = async (req, res) => {
       // Add the product's income details to the response
       console.log(user_products);
       products.push({
-        product_details: user_product.product_id,
-        total_income: `₹${user_product.total_income.toFixed(2)}`, // Format total income
-        daily_income: `₹${daily_profit}`,
-        last_run: user_product.last_run,
-        start_date: user_product.start_date,
-        end_date: user_product.end_date,
+       
+       user_product
       });
     }
     console.log("Testing products", products);
@@ -418,10 +411,7 @@ const profile = async (req, res) => {
         wallet_balance,
         withdrawal_balance: user.withdrawl_balance,
         user_details: {
-          first_name: user.firstname,
-          last_name: user.lastname,
-          email: user.email,
-          phone: user.phone,
+         user
         },
         products,
       }
