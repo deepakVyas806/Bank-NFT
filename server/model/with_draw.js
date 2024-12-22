@@ -11,30 +11,16 @@ const withdraw_schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  account_no: {
-    type: String,
-    default: "demo_account",
-  },
-  ifsc_code: {
-    type: String,
-    default: "demo_ifsc",
-  },
-  bank_name: {
-    type: String,
-    default: "demo_bank",
-  },
-  upi_id: {
-    type: String,
-    default: "demo@bank",
-  },
+ 
   status: {
     type: String,
     default: "process",
     enum: ["process", "paid", "reject"],
   },
-  account_holder_name:{
+
+  USDTWalletAddress:{
     type:String,
-    default:'demo'
+    default:'root_usdt'
   },
   created_at: {
     type: Number,

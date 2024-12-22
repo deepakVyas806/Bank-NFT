@@ -8,7 +8,6 @@ const withdraw_list = async(req,res)=>{
     try {
       
       const userId = req.access_verification._id;
-      const user = await register_model.findOne({ _id: userId });
 
       const withdraws = await withdraw_model.find().sort({created_at:-1});
       console.log("withdraws",withdraws)

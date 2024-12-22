@@ -437,6 +437,8 @@ const profile = async (req, res) => {
   }
 };
 
+
+//withdraw controller 
 const withdraw = async (req, res) => {
   try {
     const userId = req.access_verification._id;
@@ -445,11 +447,7 @@ const withdraw = async (req, res) => {
     //information for withdraw data
     const {
       amount,
-      account_no,
-      ifsc_code,
-      bank_name,
-      upi_id,
-      account_holder_name,
+      USDTWalletAddress
     } = req.body;
 
     //check that amount should not greater than withdrawlable amount
@@ -469,12 +467,8 @@ const withdraw = async (req, res) => {
 
     const withdraw_entry = await withdraw_model.create({
       userId: userId,
-      account_no: account_no,
-      ifsc_code: ifsc_code,
-      upi_id: upi_id,
       amount: amount,
-      bank_name: bank_name,
-      account_holder_name: account_holder_name,
+      USDTWalletAddress
     });
 
     return response_message(res, 200, true, withdraw_entry);
