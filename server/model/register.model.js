@@ -29,6 +29,14 @@ const register_schema = new mongoose.Schema({
     type: String,
     default: "root@referral",
   },
+  selfReferral: {
+    type: String,
+    default: "root@referral",
+  },
+  referal_income:{
+    type:Number,
+    default:0
+  },
   password: {
     type: String,
     required: true, // Consider making this required

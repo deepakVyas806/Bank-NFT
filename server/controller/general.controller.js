@@ -6,6 +6,29 @@ import nodeMailer from "nodemailer";
 import { response_message } from "../responses.js";
 import { user_product_model } from "../model/user_product.js";
 import { withdraw_model } from "../model/with_draw.js";
+import { referral_model } from "../model/referal.model.js";
+
+
+//create the referral code random 
+function generateReferralCode(length = 8) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const requiredCharacters = 'S';
+  let referralCode = '';
+
+  // Ensure the referral code contains at least one 'S'
+  referralCode += requiredCharacters;
+
+  // Fill the rest of the referral code with random characters
+  for (let i = 1; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    referralCode += characters[randomIndex];
+  }
+
+  // Shuffle the referral code to randomize the position of 'S'
+  referralCode = referralCode.split('').sort(() => Math.random() - 0.5).join('');
+
+  return referralCode;
+}
 
 // Register
 const register = async (req, res) => {
@@ -19,6 +42,7 @@ const register = async (req, res) => {
     phone,
     otp,
     referral,
+    
   } = req.body;
   console.log(req.body);
   try {
@@ -46,6 +70,17 @@ const register = async (req, res) => {
       });
     }
 
+    //invitation check
+    const referralUsed = await register_model.find({selfReferral:referral});
+    console.log("referaal user",referralUsed)
+    if(!referralUsed || referralUsed.length==0){
+        return response_message(res,400,false,'This is not a valid referral',null)
+    }
+
+    const referralCode = generateReferralCode(8);
+    console.log("referral code ",referralCode);
+  
+
     // Register the user
     const registerUser = await register_model.create({
       username,
@@ -57,12 +92,40 @@ const register = async (req, res) => {
       referral,
       password,
       cpassword,
+      selfReferral:referralCode
     });
+
+    //entry in referral table
+    
+    console.log("registerUser",registerUser);
+
+    //get the user oppositee from the register user table so we can storte the id 
+    const get_user_o = await register_model.findOne({selfReferral:referral});
+    const get_user_s = await register_model.findOne({selfReferral:referralCode});
+    
+    const referralEntry = await referral_model.create({
+      user_referral_o:{
+        user_referral_code_o:registerUser.referral,
+        user_id_o:get_user_o?get_user_o._id:null
+      },
+      
+      user_referral_s:{
+        user_referral_code_s:registerUser.selfReferral,
+        user_id_s:get_user_s?get_user_s._id:null
+      },
+
+      activated_bonus:false
+      
+
+    })
+    
+
+    console.log("referral entry",referralEntry)
 
     return res.status(200).json({
       success: true,
       message: "User created successfully",
-      registerUser,
+      payload:{registerUser,referralEntry},
     });
   } catch (error) {
     return res.status(500).json({
