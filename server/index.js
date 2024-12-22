@@ -13,6 +13,7 @@ import { payment_success } from "./router/payment/sucess.router.js";
 import { withdraw } from "./router/withdraw.js";
 import { binanceDeposit } from "./router/binance.deposit.router.js";
 import { register_model } from "./model/register.model.js";
+import { withdraw_model } from "./model/with_draw.js";
 
 // import {product_model} from "../server/model/product.model.js"
 // import { pro_inv } from "./model/investment.model.js";
