@@ -49,7 +49,15 @@ const user_product_schema = new mongoose.Schema({
     type: Number,
     default: () => Math.floor(Date.now() / 1000),
   },
-
+ 
+  buy:{
+     type:Boolean,
+     default:false
+  },
+  sell:{
+    type:Boolean,
+    default:false
+  },
   createdAt: {
     type: Number,
     default: () => Math.floor(Date.now() / 1000),
