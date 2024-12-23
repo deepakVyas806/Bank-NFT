@@ -149,11 +149,12 @@ const Profile: React.FC = () => {
       setWithdrawLoading(true);
       const params = {
         amount: values.amount,
-        account_holder_name: values.accountHolderName,
-        account_no: values.accountNumber,
-        bank_name: values.bankName,
-        ifsc_code: values.ifscCode,
-        upi_id: "9166550809@pytes",
+        USDTWalletAddress:values.usdtWalletAddress
+        // account_holder_name: values.accountHolderName,
+        // account_no: values.accountNumber,
+        // bank_name: values.bankName,
+        // ifsc_code: values.ifscCode,
+        // upi_id: "9166550809@pytes",
       };
       // Appending values to FormData object
 

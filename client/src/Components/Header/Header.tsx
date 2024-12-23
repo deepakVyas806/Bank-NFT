@@ -25,8 +25,8 @@ const Header: React.FC<HeaderProps> = ({ profileData }) => {
   // List of navigation items
   const navItems = [
     { label: "Explore", path: "/market" },
-    { label: "Earn", path: "/earn" },
-    { label: "Reserve", path: "/reserve" },
+    { label: "Withdrawal Requests", path: "/requests" },
+    { label: "Earn Money", path: "/reserve" },
     { label: "Referral", path: "/referAndEarn" },
   ];
 
@@ -67,11 +67,17 @@ const Header: React.FC<HeaderProps> = ({ profileData }) => {
               <p
                 key={index}
                 onClick={() => navigateTo(item.path)}
-                className={`text-base text-black font-semibold cursor-pointer hover:text-black ${
+                className={`text-sm px-1.5 py-0.5 rounded-md text-black font-medium cursor-pointer hover:text-black ${
                   location.pathname === item.path
                     ? "text-black"
                     : "text-gray-600"
                 }`}
+                style={{
+                  background:
+                    location.pathname === item.path
+                      ? "linear-gradient(90deg, #5cbffe, #a0f5d0, #ffd7c8)"
+                      : "",
+                }}
               >
                 {item.label}
               </p>

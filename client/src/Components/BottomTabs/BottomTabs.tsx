@@ -1,5 +1,6 @@
 import React from "react";
-import { FaDollarSign, FaUserCircle } from "react-icons/fa";
+import { AiOutlineInbox } from "react-icons/ai";
+import { FaUserCircle } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import { MdShare, MdTrendingUp } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -11,8 +12,12 @@ const BottomTabs: React.FC = () => {
   // Define tab items in an array
   const tabs = [
     { name: "Explore", path: "/market", Icon: <FiSearch size={15} /> },
-    { name: "Earn", path: "/earn", Icon: <FaDollarSign size={15} /> },
-    { name: "Reserve", path: "/reserve", Icon: <MdTrendingUp size={18} /> },
+    {
+      name: "Withdrawal Requests",
+      path: "/requests",
+      Icon: <AiOutlineInbox size={15} />,
+    },
+    { name: "Earn Money", path: "/reserve", Icon: <MdTrendingUp size={18} /> },
     { name: "Referral", path: "/referAndEarn", Icon: <MdShare size={15} /> },
     { name: "My", path: "/profile", Icon: <FaUserCircle size={15} /> },
   ];

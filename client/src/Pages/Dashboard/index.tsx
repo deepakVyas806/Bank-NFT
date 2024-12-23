@@ -1,4 +1,8 @@
 import React from "react";
+import {
+  FaInstagramSquare,
+  FaTelegram,
+} from "react-icons/fa";
 // import NoDataAvailable from "../../Components/Utils/NoDataAvailable";
 
 const Dashboard: React.FC = () => {
@@ -10,10 +14,6 @@ const Dashboard: React.FC = () => {
         style={{
           background:
             "linear-gradient(90deg, rgba(153, 188, 237, 0.2), rgba(153, 248, 207, 0.5), rgba(255, 214, 199, 0.5))",
-          // fontFamily:'Parkinsans'
-          // style={{ fontFamily: "" }}
-
-          //   "PosteramaText-Regular, Times New Roman, Times, sans-serif",
         }}
       >
         {/* Main Content - Takes 2/4 width */}
@@ -71,6 +71,20 @@ const Dashboard: React.FC = () => {
             Earning income in Bank NFT is simple: just RESERVE and then TRADE to
             EARN
           </p>
+        </div>
+      </div>
+      <div
+        className="flex justify-evenly items-center py-6 px-8 md:px-32"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(153, 188, 237, 0.2), rgba(153, 248, 207, 0.5), rgba(255, 214, 199, 0.5))",
+        }}
+      >
+        <p className="text-sm font-medium">Bank NFT</p>
+        <div className="flex space-x-4">
+          <p className="text-sm font-medium">Follow us on:</p>
+          <FaTelegram size={20} className="cursor-pointer" />
+          <FaInstagramSquare size={20} className="cursor-pointer" />
         </div>
       </div>
     </>
