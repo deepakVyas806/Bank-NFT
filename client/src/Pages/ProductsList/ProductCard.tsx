@@ -71,18 +71,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ Product, onBuyNow }) => {
       </div>
       {profileData?.user_details?.email != "admin@gmail.com" && (
         <div
-          className="flex justify-around shadow-md items-center mt-2 border-t pt-2 pb-2 rounded-md border-gray-200"
+          onClick={() => onBuyNow(Product)}
+          className="flex justify-around cursor-pointer shadow-md items-center mt-2 border-t pt-2 pb-2 rounded-md border-gray-200"
           style={{
             background: "linear-gradient(90deg, #5cbffe, #a0f5d0, #ffd7c8)",
           }}
         >
-          <div
-            className="flex items-center cursor-pointer"
-            onClick={() => onBuyNow(Product)}
-          >
+          <div className="flex items-center cursor-pointer">
             <p className="text-gray-800 font-medium text-sm hover:text-black uppercase">
               {/* View Details */}
-              Buy at  <span className="font-semibold">${Product?.product_price}</span>
+              Buy at{" "}
+              <span className="font-semibold">${Product?.product_price}</span>
             </p>
           </div>
         </div>

@@ -15,7 +15,7 @@ import ReferAndEarn from "./Pages/ReferAndEarn/ReferAndEarn";
 import ReserveMoney from "./Pages/ReserveMoney/ReserveMoney";
 
 const App: React.FC = () => {
-  const protectedRoutes = ["/profile", "/createProduct", "/market", "/dashboard","/myProducts","/reserve","/requests","/referAndEarn"];
+  const protectedRoutes = ["/profile", "/createProduct", "/market", "/dashboard","/myProducts","/reserve","/requests","/referAndEarn","/requests"];
   const unprotectedRoutes = ["/login", "/signUp", "/forgotPassword", "/404"];
 
   return (
@@ -39,6 +39,7 @@ const App: React.FC = () => {
             <Route path="/requests" element={<AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}><MainLayout><WithdrawalRequests/></MainLayout></AuthCheck>} />
             <Route path="/referAndEarn" element={<AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}><MainLayout><ReferAndEarn/></MainLayout></AuthCheck>} />
             <Route path="/reserve" element={<AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}><MainLayout><ReserveMoney/></MainLayout></AuthCheck>} />
+            <Route path="/requests" element={<AuthCheck protectedRoutes={protectedRoutes} unprotectedRoutes={unprotectedRoutes}><MainLayout><WithdrawalRequests/></MainLayout></AuthCheck>} />
             
             {/* Redirect to /404 for undefined routes */}
             <Route path="*" element={<Navigate to="/404" replace />} />

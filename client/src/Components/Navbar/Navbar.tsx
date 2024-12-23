@@ -26,15 +26,15 @@ const Navbar: React.FC<NavBarProps> = ({ toggleSidebar }) => {
       isShow: true,
     },
     {
-      name: "Earn",
-      path: "/earn",
+      name: "Withdrawal Requests",
+      path: "/requests",
       icon: "/store_line.svg",
       section: "MENU",
       isShow: true,
     },
     // { name: 'Welfare', path: '/transactions', icon: '/welfare.png', section: 'MENU' },
     {
-      name: "Reserve",
+      name: "Earn Money",
       path: "/reserve",
       icon: "/news_line.svg",
       section: "MENU",

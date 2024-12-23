@@ -5,6 +5,7 @@ import Header from "../../Components/Header/Header";
 import { useMediaQuery } from "react-responsive";
 // import { useLocation } from "react-router-dom";
 import BottomTabs from "../../Components/BottomTabs/BottomTabs";
+import InitialPopup from "../../Components/Modal/InitialPopup";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const profileData = useSelector((state: any) => state.user.userProfile);
+  const [isPopupVisible, setIsPopupVisible] = useState(true);
   // const location = useLocation(); // Get current location
 
   // Media query to determine if the device is a tablet or mobile
@@ -61,6 +63,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           )}
         </div>
       )}
+      <InitialPopup
+        isOpen={isPopupVisible}
+        onClose={() => setIsPopupVisible(false)}
+      />
     </div>
   );
 };

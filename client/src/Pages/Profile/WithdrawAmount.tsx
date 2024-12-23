@@ -2,18 +2,23 @@ import React from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import AuthInput from "../../Components/Input/AuthInput"; // Adjust the import based on the location of AuthInput component
-import { AiOutlineUser } from "react-icons/ai"; // Adjust icons as per your preference
-import BankDropdown from "../../Components/Utils/BankDropdown";
+import { SiTether } from "react-icons/si";
+import { BiWallet } from "react-icons/bi";
+// import { AiOutlineUser } from "react-icons/ai"; // Adjust icons as per your preference
+// import BankDropdown from "../../Components/Utils/BankDropdown";
 
 // Validation schema using Yup
 const WithdrawSchema = Yup.object().shape({
+  usdtWalletAddress: Yup.string().required("Wallet Address is Required"), //  /^T[a-zA-Z0-9]{33}$/
   amount: Yup.number()
-    .required("Amount is required")
-    .min(1, "Amount must be greater than zero"),
-  accountHolderName: Yup.string().required("Account holder's name is required"),
-  accountNumber: Yup.string().required("Account number is required"),
-  bankName: Yup.string().required("Bank name is required"),
-  ifscCode: Yup.string().required("IFSC code is required"),
+    .required("Amount is Required")
+    .min(30, "Minimum withdrawal amount is $30"),
+  //   .required("Amount is required")
+  //   .min(1, "Amount must be greater than zero"),
+  // accountHolderName: Yup.string().required("Account holder's name is required"),
+  // accountNumber: Yup.string().required("Account number is required"),
+  // bankName: Yup.string().required("Bank name is required"),
+  // ifscCode: Yup.string().required("IFSC code is required"),
 });
 
 interface WithdrawFormProps {
@@ -31,28 +36,42 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
   // const handleBankSelect = (bank: { id: number; name: string }) => {
   //   console.log("Selected Bank:", bank);
   // };
-  const banksList = [
-    { id: 1, name: "State Bank of India" },
-    { id: 2, name: "HDFC Bank" },
-    { id: 3, name: "ICICI Bank" },
-    { id: 4, name: "Axis Bank" },
-    { id: 5, name: "Punjab National Bank" },
-  ];
+  // const banksList = [
+  //   { id: 1, name: "State Bank of India" },
+  //   { id: 2, name: "HDFC Bank" },
+  //   { id: 3, name: "ICICI Bank" },
+  //   { id: 4, name: "Axis Bank" },
+  //   { id: 5, name: "Punjab National Bank" },
+  // ];
   return (
     <Formik
       innerRef={formikRef}
       initialValues={{
+        usdtWalletAddress: "",
         amount: "",
-        accountHolderName: "",
-        accountNumber: "",
-        bankName: "",
-        ifscCode: "",
+        // accountHolderName: "",
+        // accountNumber: "",
+        // bankName: "",
+        // ifscCode: "",
       }}
       validationSchema={WithdrawSchema}
       onSubmit={handleSubmit}
     >
       {({}) => (
         <Form>
+          {/* USDT Wallet Address */}
+          <div>
+            <AuthInput
+              label="Enter USDT Wallet Address"
+              name="usdtWalletAddress"
+              type="text"
+              placeholder="Enter USDT Wallet Address"
+              required
+              icon={<SiTether />}
+              prefix=""
+            />
+          </div>
+
           {/* Amount */}
           <div>
             <AuthInput
@@ -62,18 +81,19 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
               placeholder="Enter withdrawal amount"
               required
               prefix="$"
+              icon={<BiWallet />}
             />
           </div>
 
-          <BankDropdown
+          {/* <BankDropdown
             name="bankName"
             label="Bank Name"
             banks={banksList}
             required
-          />
+          /> */}
 
           {/* Account Holder's Name */}
-          <div>
+          {/* <div>
             <AuthInput
               label="Account Holder's Name"
               name="accountHolderName"
@@ -83,10 +103,10 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
               prefix=""
               icon={<AiOutlineUser />}
             />
-          </div>
+          </div> */}
 
           {/* Account Number */}
-          <div>
+          {/* <div>
             <AuthInput
               label="Account Number"
               name="accountNumber"
@@ -96,7 +116,7 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
               required
               icon={<AiOutlineUser />}
             />
-          </div>        
+          </div>         */}
 
           {/* Bank Name */}
           {/* <div>
@@ -112,7 +132,7 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
           </div> */}
 
           {/* IFSC Code */}
-          <div>
+          {/* <div>
             <AuthInput
               label="IFSC Code"
               name="ifscCode"
@@ -122,7 +142,7 @@ const WithdrawAmount: React.FC<WithdrawFormProps> = ({
               prefix=""
               icon={<AiOutlineUser />}
             />
-          </div>
+          </div> */}
         </Form>
       )}
     </Formik>

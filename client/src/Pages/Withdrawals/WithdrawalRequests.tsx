@@ -12,6 +12,8 @@ const WithdrawalRequests: React.FC = () => {
   const [isRequestsLoading, setisRequestsLoading] = useState(false);
   const [requests, setRequests] = useState<Array<any>>([]);
   const isMounted = useRef(false); // Tracks if the component has mounted
+  const [isApproveLoading, setISApproveLoading] = useState(false);
+  const [isRejectLoading, setISRejectLoading] = useState(false);
 
   const fetchWithdrawalrequestes = async () => {
     try {
@@ -36,12 +38,42 @@ const WithdrawalRequests: React.FC = () => {
     }
   }, [profileData]);
 
-  const handleApprove = (item: any) => {
-    console.log(item);
+  const handleApprove = async (item: any) => {
+    try {
+      setISApproveLoading(true);
+      const params = {
+        status: "paid",
+        refId: item?.refId,
+      };
+      const response = await axiosPrivate.patch("api/v1/updateStatus", params);
+      console.log(response);
+      fetchWithdrawalrequestes();
+      showToast("Withdrawal requested Approved successfully.", "success", 1000);
+    } catch (error) {
+      showToast("Status Update Failed", "error", 1000);
+      console.error("Withdraw Error:", error);
+    } finally {
+      setISApproveLoading(false);
+    }
   };
 
-  const handleReject = (item: any) => {
-    console.log(item);
+  const handleReject = async (item: any) => {
+    try {
+      setISRejectLoading(true);
+      const params = {
+        status: "reject",
+        refId: item?._id,
+      };
+      const response = await axiosPrivate.patch("api/v1/updateStatus", params);
+      console.log(response);
+      fetchWithdrawalrequestes();
+      showToast("Withdrawal requested Rejected successfully.", "success", 1000);
+    } catch (error) {
+      showToast("Status Update Failed", "error", 1000);
+      console.error("Withdraw Error:", error);
+    } finally {
+      setISRejectLoading(false);
+    }
   };
   if (isRequestsLoading) {
     return (
@@ -61,7 +93,9 @@ const WithdrawalRequests: React.FC = () => {
               item={request}
               onApprove={handleApprove}
               onReject={handleReject}
-              isAdmin={profileData?.user_details?.email == 'admin@gmail.com'}
+              isAdmin={profileData?.user_details?.email == "admin@gmail.com"}
+              isRejectLoading={isRejectLoading}
+              isApproveLoading={isApproveLoading}
             />
           ))}
         </div>
