@@ -1,11 +1,14 @@
-import React from "react";
-import {
-  FaInstagramSquare,
-  FaTelegram,
-} from "react-icons/fa";
+import React, { useState } from "react";
+import { FaInstagramSquare, FaTelegram } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
+import InitialPopup from "../../Components/Modal/InitialPopup";
 // import NoDataAvailable from "../../Components/Utils/NoDataAvailable";
 
 const Dashboard: React.FC = () => {
+  const location = useLocation();
+  const { fromLoginPage } = location.state || {};
+  const [isPopupVisible, setIsPopupVisible] = useState(fromLoginPage);
+
   // return <><NoDataAvailable /></>;
   return (
     <>
@@ -87,6 +90,11 @@ const Dashboard: React.FC = () => {
           <FaInstagramSquare size={20} className="cursor-pointer" />
         </div>
       </div>
+
+      <InitialPopup
+        isOpen={isPopupVisible}
+        onClose={() => setIsPopupVisible(false)}
+      />
     </>
   );
 };

@@ -51,7 +51,9 @@ export default function LogInForm() {
       fetchProfileData(dispatch);
       resetForm();
       setSubmitting(false);
-      navigate("/dashboard");
+      navigate("/dashboard", {
+        state: { fromLoginPage: true },
+      });
       setIsLoading(false);
       showToast("Login successful", "success", 1000);
     } catch (error: any) {
@@ -66,10 +68,17 @@ export default function LogInForm() {
     }
   };
 
+  const ForgotpasswordClicked = async () => {
+    try {
+      const response = await axiosPublic.post("api/v1/forgot");
+      console.log(response);
+    } catch (error: any) {}
+  };
+
   return (
     <section
       className="flex justify-center items-center min-h-screen bg-cover bg-center"
-      // style={{ backgroundImage: "url('/login-bg.jpg')" }} // Update with your image path
+      style={{ backgroundImage: "url('/login-bg.jpg')" }} // Update with your image path
     >
       <div className="container mx-auto">
         <div className="flex justify-center">
@@ -77,7 +86,7 @@ export default function LogInForm() {
             <div className="p-6 bg-white rounded-lg shadow-md">
               <div className="flex justify-center">
                 {/* <img src="/image.jpg" className="w-20 h-20 rounded-full mb-1" /> */}
-                <Logo/>
+                <Logo />
               </div>
               {/* <h2 className="text-xl font-semibold text-center">Log in to Betting app</h2> */}
               <h2 className="text-lg font-semibold text-center">
@@ -139,13 +148,16 @@ export default function LogInForm() {
                         {/* <div className="text-gray-400 mt-2 text-sm font-medium">
                           RETRIEVE PASSWORD
                         </div> */}
-                        <p className="text-xs mt-2 text-center">
-                          <Link
+                        <p
+                          className="text-xs mt-2 text-center text-blue-500"
+                          onClick={ForgotpasswordClicked}
+                        >
+                          {/* <Link
                             className="text-blue-500"
                             to={"/forgotPassword"}
-                          >
-                            Forgot password?
-                          </Link>
+                          > */}
+                          Forgot password?
+                          {/* </Link> */}
                         </p>
                         {/* <Link
                           to={"/signUp"}

@@ -18,7 +18,7 @@ const WithdrawalRequests: React.FC = () => {
   const fetchWithdrawalrequestes = async () => {
     try {
       const route =
-        profileData?.user_details?.email == "admin@gmail.com"
+        profileData?.user_details?.user?.role?.toLowerCase() == "admin"
           ? "allwithdraw"
           : "userwithdraw";
       setisRequestsLoading(true);
@@ -93,7 +93,9 @@ const WithdrawalRequests: React.FC = () => {
               item={request}
               onApprove={handleApprove}
               onReject={handleReject}
-              isAdmin={profileData?.user_details?.email == "admin@gmail.com"}
+              isAdmin={
+                profileData?.user_details?.user?.role?.toLowerCase() == "admin"
+              }
               isRejectLoading={isRejectLoading}
               isApproveLoading={isApproveLoading}
             />

@@ -69,7 +69,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ Product, onBuyNow }) => {
           </div> */}
         </div>
       </div>
-      {profileData?.user_details?.email != "admin@gmail.com" && (
+      {profileData?.user_details?.user?.role?.toLowerCase() != "admin" && (
         <div
           onClick={() => onBuyNow(Product)}
           className="flex justify-around cursor-pointer shadow-md items-center mt-2 border-t pt-2 pb-2 rounded-md border-gray-200"

@@ -43,6 +43,7 @@ const validationSchema = Yup.object({
   code: Yup.string()
     .max(6, "Code must be 6 characters or less")
     .required("Code is required"),
+  invitation: Yup.string().required("Invitation Code is required"),
 });
 
 export default function SignUpForm() {
@@ -125,7 +126,7 @@ export default function SignUpForm() {
             <div className="p-6 bg-white rounded-lg shadow-md">
               <div className="flex justify-center">
                 {/* <img src="/image.jpg" className="w-20 h-20 rounded-full mb-1" /> */}
-                <Logo/>
+                <Logo />
               </div>
               <h2 className="text-lg font-semibold text-center">
                 Get Started – Register Your Account Now

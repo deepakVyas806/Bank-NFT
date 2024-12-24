@@ -3,9 +3,13 @@ import { FaChevronDown } from "react-icons/fa";
 import { MdTrendingUp } from "react-icons/md";
 import { fetchProfileData } from "../../GlobalFunctions/FetchProfileDetails";
 import { useDispatch } from "react-redux";
+import Loader from "../../Components/Loader/Loader";
+import { showToast } from "../../ToastServices/ToastServices";
+import { axiosPrivate } from "../../ApiServices/Axios";
 
 // Placeholder components for each tab
-const Reserve = ({ data, action }: any) => {
+const Reserve = ({ data, action, activeTab, isBuySellLoading }: any) => {
+  // const productsNotBought = data.filter((product:any) => !product?.user_product?.buy && !product?.user_product?.sell);
   return (
     <>
       {data?.products?.map(
@@ -67,7 +71,7 @@ const Reserve = ({ data, action }: any) => {
                 </div>
               </div>
               <div
-                onClick={action}
+                onClick={() => action(activeTab, item)}
                 className="flex w-40 mt-4 md:mt-0 justify-around shadow-md items-center border-t py-1.5 rounded-md border-gray-200"
                 style={{
                   background:
@@ -76,7 +80,16 @@ const Reserve = ({ data, action }: any) => {
               >
                 <div className="inline-flex items-center cursor-pointer">
                   <p className="text-gray-800 font-semibold text-sm hover:text-black uppercase flex items-center">
-                    <span>Confirm</span>
+                    {isBuySellLoading ? (
+                      <Loader
+                        loading={isBuySellLoading}
+                        type={"beat"}
+                        size={80}
+                        color="#ffffff"
+                      />
+                    ) : (
+                      <span>Confirm</span>
+                    )}
                   </p>
                 </div>
               </div>
@@ -88,16 +101,16 @@ const Reserve = ({ data, action }: any) => {
 };
 
 const TodaysTransactions = () => {
-  return <div>Today's Tab Content: View today's transactions here.</div>;
+  return <div></div>;
 };
 
-const Collection = ({ data, action }: any) => {
+const Collection = ({ data, action, activeTab, isBuySellLoading }: any) => {
   return (
     <>
       {data?.products?.map(
         (item: any, index: number) =>
           item?.user_product?.buy &&
-          !item?.user_product?.buy && (
+          !item?.user_product?.sell && (
             <div
               key={index}
               className="flex flex-col md:flex-row justify-between items-center rounded-lg border border-gray-200 grow p-4"
@@ -153,7 +166,7 @@ const Collection = ({ data, action }: any) => {
                 </div>
               </div>
               <div
-                onClick={action}
+                onClick={() => action(activeTab, item)}
                 className="flex w-40 mt-4 md:mt-0 justify-around shadow-md items-center border-t py-1.5 rounded-md border-gray-200"
                 style={{
                   background:
@@ -162,8 +175,19 @@ const Collection = ({ data, action }: any) => {
               >
                 <div className="inline-flex items-center cursor-pointer">
                   <p className="text-gray-800 font-semibold text-sm hover:text-black uppercase flex items-center">
-                    <span className="mr-1">Sell at 3%</span>{" "}
-                    <MdTrendingUp size={18} />
+                    {isBuySellLoading ? (
+                      <Loader
+                        loading={isBuySellLoading}
+                        type={"beat"}
+                        size={80}
+                        color="#ffffff"
+                      />
+                    ) : (
+                      <div className="flex">
+                        <span className="mr-1">Sell at 3%</span>{" "}
+                        <MdTrendingUp size={18} />
+                      </div>
+                    )}
                   </p>
                 </div>
               </div>
@@ -178,23 +202,57 @@ const ReserveMoney: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
   const dispatch = useDispatch();
   const [profileData, setProfileData] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isBuySellLoading, setIsBuySellLoading] = useState(false);
+
+  const setData = async () => {
+    setIsLoading(true);
+    const res = await fetchProfileData(dispatch);
+    setProfileData(res || []); // Default to empty array if no data
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    const setData = async () => {
-      const res = await fetchProfileData(dispatch);
-      setProfileData(res || []); // Default to empty array if no data
-    };
     setData();
   }, [dispatch]);
 
   // Action function to be passed to components
-  const handleAction = (id: any) => {
+  const handleAction = async (id: any, item: any) => {
+    console.log(item);
     switch (id) {
       case 0:
+        try {
+          setIsBuySellLoading(true);
+          await axiosPrivate.post("/api/v1/buyTask", {
+            productId: item?.user_product?.product_id?._id,
+          });
+          setData()
+          showToast("Task Buyed Successfully", "success", 1000);
+          // setProducts(response.data.payload || []); // Fetch all products
+        } catch (error) {
+          console.error("Error fetching products:", error);
+          showToast("Failed to Buy Task", "error", 1000);
+        } finally {
+          setIsBuySellLoading(false);
+        }
         // Buy Api Call
         console.log("reserrve confirm / buy");
         break;
       case 2:
+        try {
+          setIsBuySellLoading(true);
+          await axiosPrivate.post("/api/v1/sellTask", {
+            productId: item?.user_product?.product_id?._id,
+          });
+          setData()
+          showToast("Task Completed Successfully", "success", 1000);
+          // setProducts(response.data.payload || []); // Fetch all products
+        } catch (error) {
+          console.error("Error fetching products:", error);
+          showToast("Error Completing task", "error", 1000);
+        } finally {
+          setIsBuySellLoading(false);
+        }
         // Sell Api Call
         console.log("collection sell / sell");
         break;
@@ -236,12 +294,20 @@ const ReserveMoney: React.FC = () => {
       </div>
 
       {/* Tab Content */}
-      <div className="text-gray-800">
-        <ActiveComponent
-          data={profileData}
-          action={() => handleAction(activeTab)}
-        />
-      </div>
+      {isLoading ? (
+        <div className="h-full w-full flex items-center justify-center">
+          <Loader loading={true} type="moon" size={30} color="#000000" />
+        </div>
+      ) : (
+        <div className="text-gray-800">
+          <ActiveComponent
+            isBuySellLoading={isBuySellLoading}
+            activeTab={activeTab}
+            data={profileData}
+            action={handleAction}
+          />
+        </div>
+      )}
     </div>
   );
 };
