@@ -76,7 +76,6 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
               className="bg-green-400 rounded-md p-1 shadow-md cursor-pointer"
               onClick={() => onApprove(item)}
             >
-              <FaCheck color="white" size={15} />
               {isApproveLoading ? (
                 <Loader
                   loading={isApproveLoading}

@@ -49,7 +49,7 @@ const ProductList: React.FC<ProductListProps> = ({ isMyProducts = false }) => {
       }
       if (
         !isMyProducts &&
-        profileData?.user_details?.email == "admin@gmail.com"
+        profileData?.user_details?.user?.role?.toLowerCase() == "admin"
       )
         setIsCreateProductButton(true);
 
@@ -161,7 +161,7 @@ const ProductList: React.FC<ProductListProps> = ({ isMyProducts = false }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {isMyProducts
             ? products.map((product: any) => (
-                <div key={product.product_details._id}>
+                <div key={product.user_product._id}>
                   <MyProductsCard
                     Product={product}
                     // onBuyNow={handleBuyNow}

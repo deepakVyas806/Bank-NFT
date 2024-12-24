@@ -149,7 +149,7 @@ const Profile: React.FC = () => {
       setWithdrawLoading(true);
       const params = {
         amount: values.amount,
-        USDTWalletAddress:values.usdtWalletAddress
+        USDTWalletAddress: values.usdtWalletAddress,
         // account_holder_name: values.accountHolderName,
         // account_no: values.accountNumber,
         // bank_name: values.bankName,
@@ -195,8 +195,8 @@ const Profile: React.FC = () => {
 
         <div className="flex items-center mt-1">
           <p className="text-black font-medium text-lg">
-            {profileData?.user_details?.first_name}{" "}
-            {profileData?.user_details?.last_name}
+            {profileData?.user_details?.user?.firstname}{" "}
+            {profileData?.user_details?.user?.lastname}
           </p>
           <p className="text-xs text-gray-500 font-medium ml-2 mt-0.5 bg-gray-100 py-0.5 px-1 rounded-md">
             {/* VIPO */}
@@ -208,14 +208,14 @@ const Profile: React.FC = () => {
           <div className="flex items-center text-gray-500 space-x-1 hover:text-blue-500">
             <IoMailOutline size={17} className="mt-1" />
             <p className="text-gray-600 font-normal text-sm hover:text-blue-500 cursor-pointer">
-              {profileData?.user_details?.email}
+              {profileData?.user_details?.user?.email}
             </p>
           </div>
 
           <div className="flex items-center text-gray-500 hover:text-blue-500">
             <MdOutlinePhone size={16} className="mt-0.5" />
             <p className="text-gray-600 font-normal text-sm hover:text-blue-500 cursor-pointer">
-              +91 {profileData?.user_details?.phone}
+              +91 {profileData?.user_details?.user?.phone}
             </p>
           </div>
         </div>
@@ -223,7 +223,7 @@ const Profile: React.FC = () => {
       {/* Profile Card Ends */}
 
       {/* Wallet and Income Grid Starts */}
-      {profileData?.user_details?.email != "admin@gmail.com" && (
+      {profileData?.user_details?.user?.role?.toLowerCase() != "admin" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-7.5 mt-10">
           <div
             className="flex flex-col rounded-lg border border-gray-200 grow"

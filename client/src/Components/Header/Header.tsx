@@ -95,10 +95,10 @@ const Header: React.FC<HeaderProps> = ({ profileData }) => {
           {!isMobileOrTablet && (
             <div className="text-right">
               <p className="text-sm font-medium text-gray-800">
-                {profileData?.user_details?.email}
+                {profileData?.user_details?.user?.email}
               </p>
               <p className="text-xs font-normal text-gray-500">
-                +91 {profileData?.user_details?.phone}
+                +91 {profileData?.user_details?.user?.phone}
               </p>
             </div>
           )}
