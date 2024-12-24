@@ -146,10 +146,13 @@ const ProductList: React.FC<ProductListProps> = ({ isMyProducts = false }) => {
   }
 
   return (
-    <section className="min-h-full p-6" style={{
-      background: "linear-gradient(#F9FCFF, #F9FFFD, #ffffff)",
-      // background: "linear-gradient(#EAF7FF, #EFFFF7, #ffffff)",
-    }}>
+    <section
+      className="min-h-full p-6"
+      style={{
+        background: "linear-gradient(#F9FCFF, #F9FFFD, #ffffff)",
+        // background: "linear-gradient(#EAF7FF, #EFFFF7, #ffffff)",
+      }}
+    >
       <PageHeader
         title={isMyProducts ? "My Products" : "Market"}
         buttonText="Add Product"
@@ -160,19 +163,25 @@ const ProductList: React.FC<ProductListProps> = ({ isMyProducts = false }) => {
       {products.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {isMyProducts
-            ? products.map((product: any) => (
-                <div key={product.user_product._id}>
-                  <MyProductsCard
-                    Product={product}
-                    // onBuyNow={handleBuyNow}
-                  />
-                </div>
-              ))
-            : products.map((product) => (
-                <div key={product._id}>
-                  <ProductCard Product={product} onBuyNow={handleBuyNow} />
-                </div>
-              ))}
+            ? products
+                .slice() // Create a shallow copy to avoid mutating the original array
+                .reverse()
+                .map((product: any) => (
+                  <div key={product.user_product._id}>
+                    <MyProductsCard
+                      Product={product}
+                      // onBuyNow={handleBuyNow}
+                    />
+                  </div>
+                ))
+            : products
+                .slice() // Create a shallow copy to avoid mutating the original array
+                .reverse()
+                .map((product) => (
+                  <div key={product._id}>
+                    <ProductCard Product={product} onBuyNow={handleBuyNow} />
+                  </div>
+                ))}
         </div>
       ) : (
         <NoDataAvailable />

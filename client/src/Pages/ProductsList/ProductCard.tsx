@@ -23,7 +23,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ Product, onBuyNow }) => {
             src={Product?.product_image}
             className="h-40 rounded-md w-full"
           />
-          <div className="flex flex-col justify-between px-2 my-3">
+          <div className="flex flex justify-between px-2 my-3">
             <div className="flex flex-col">
               {/* <p className="text-[9px] font-medium text-gray-500 hover:text-blue-400 cursor-pointer">
                 Product name
@@ -40,11 +40,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ Product, onBuyNow }) => {
                 $ {Product?.product_price}
               </p> */}
             </div>
-            {/* <div className="">
+            <div className="">
               <div className="text-[#1B84FF] inline-flex items-center justify-center rounded-md px-1.5 py-0.5 text-[10px] font-medium bg-[#EFF6FF] border border-[rgba(27, 132, 255, .2)]">
                 Valid for {Product?.validity} days
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
 
