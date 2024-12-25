@@ -3,7 +3,7 @@ import { user_product_model } from '../model/user_product.js';
 
 
 // Schedule the job to run every day at midnight (00:00)
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('0 0 * * *', async () => {
   try {
     // Reset the status of all tasks to false
     await user_product_model.updateMany({}, { buy: false,sell:false });
