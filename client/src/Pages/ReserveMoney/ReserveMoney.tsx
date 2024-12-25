@@ -10,11 +10,25 @@ import { HiCheck } from "react-icons/hi";
 import NoDataAvailable from "../../Components/Utils/NoDataAvailable";
 
 // Placeholder components for each tab
-const Reserve = ({ data, action, activeTab, isBuySellLoading }: any) => {
+const Reserve = ({ data, action, activeTab }: any) => {
   const productsNotBought = data?.products?.filter(
     (product: any) =>
       !product?.user_product?.buy && !product?.user_product?.sell
   );
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  const handleActionClick = async (tab: number, item: any) => {
+    const itemId = item?.user_product?.product_id?._id;
+    setLoadingStates((prev) => ({ ...prev, [itemId]: true }));
+
+    try {
+      await action(tab, item);
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [itemId]: false }));
+    }
+  };
   return (
     <>
       {productsNotBought?.length > 0 ? (
@@ -74,7 +88,7 @@ const Reserve = ({ data, action, activeTab, isBuySellLoading }: any) => {
               </div>
             </div>
             <div
-              onClick={() => action(activeTab, item)}
+              onClick={() => handleActionClick(activeTab, item)}
               className="flex w-40 mt-4 md:mt-0 justify-around shadow-md items-center border-t py-1.5 rounded-md border-gray-200"
               style={{
                 background: "linear-gradient(90deg, #5cbffe, #a0f5d0, #ffd7c8)",
@@ -82,12 +96,12 @@ const Reserve = ({ data, action, activeTab, isBuySellLoading }: any) => {
             >
               <div className="inline-flex items-center cursor-pointer">
                 <p className="text-gray-800 font-semibold text-sm hover:text-black uppercase flex items-center">
-                  {isBuySellLoading ? (
+                  {loadingStates[item?.user_product?.product_id?._id] ? (
                     <Loader
-                      loading={isBuySellLoading}
+                      loading={true}
                       type={"beat"}
                       size={80}
-                      color="#ffffff"
+                      color="#000000"
                     />
                   ) : (
                     <span>Confirm</span>
@@ -201,10 +215,24 @@ const TodaysTransactions = ({ data }: any) => {
   );
 };
 
-const Collection = ({ data, action, activeTab, isBuySellLoading }: any) => {
+const Collection = ({ data, action, activeTab }: any) => {
   const productsNotBought = data?.products?.filter(
     (product: any) => product?.user_product?.buy && !product?.user_product?.sell
   );
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  const handleActionClick = async (tab: number, item: any) => {
+    const itemId = item?.user_product?.product_id?._id;
+    setLoadingStates((prev) => ({ ...prev, [itemId]: true }));
+
+    try {
+      await action(tab, item);
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [itemId]: false }));
+    }
+  };
   return (
     <>
       {productsNotBought?.length > 0 ? (
@@ -264,7 +292,7 @@ const Collection = ({ data, action, activeTab, isBuySellLoading }: any) => {
               </div>
             </div>
             <div
-              onClick={() => action(activeTab, item)}
+              onClick={() => handleActionClick(activeTab, item)}
               className="flex w-40 mt-4 md:mt-0 justify-around shadow-md items-center border-t py-1.5 rounded-md border-gray-200"
               style={{
                 background: "linear-gradient(90deg, #5cbffe, #a0f5d0, #ffd7c8)",
@@ -272,12 +300,12 @@ const Collection = ({ data, action, activeTab, isBuySellLoading }: any) => {
             >
               <div className="inline-flex items-center cursor-pointer">
                 <p className="text-gray-800 font-semibold text-sm hover:text-black uppercase flex items-center">
-                  {isBuySellLoading ? (
+                  {loadingStates[item?.user_product?.product_id?._id] ? (
                     <Loader
-                      loading={isBuySellLoading}
+                      loading={true}
                       type={"beat"}
                       size={80}
-                      color="#ffffff"
+                      color="#000000"
                     />
                   ) : (
                     <div className="flex">
@@ -329,7 +357,7 @@ const ReserveMoney: React.FC = () => {
           });
           setData();
           showToast("Task Buyed Successfully", "success", 1000);
-          handleTabChange(2)
+          handleTabChange(2);
           // setProducts(response.data.payload || []); // Fetch all products
         } catch (error) {
           console.error("Error fetching products:", error);
@@ -348,7 +376,7 @@ const ReserveMoney: React.FC = () => {
           });
           setData();
           showToast("Task Completed Successfully", "success", 1000);
-          handleTabChange(1)
+          handleTabChange(1);
           // setProducts(response.data.payload || []); // Fetch all products
         } catch (error) {
           console.error("Error fetching products:", error);

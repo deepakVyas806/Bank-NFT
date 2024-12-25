@@ -3,19 +3,24 @@ import { FaCopy, FaRegCopy } from "react-icons/fa";
 import { useMediaQuery } from "react-responsive";
 import SocialShare from "../../Components/SocialShare/SocialShare";
 import { QRCodeSVG } from "qrcode.react";
+import { useSelector } from "react-redux";
 
 const ReferAndEarn: React.FC = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" }); // Adjust breakpoint as needed
   const ShareURL = "https://betting-app-frontend-neon.vercel.app/signUp";
-  const ReferralCode = "ADSC123456";
+  const profileData = useSelector((state: any) => state.user.userProfile); // Fetch user profile from Redux store
+  const ReferralCode = profileData?.user_details?.user?.selfReferral;
   const [isReferalCodeCopied, setIsReferalCodeCopied] = useState(false);
   const [isReferalLinkCopied, setIsReferalLinkCopied] = useState(false);
 
   return (
-    <div className="px-4 py-2 h-full" style={{
-      background: "linear-gradient(#F9FCFF, #F9FFFD, #ffffff)",
-      // background: "linear-gradient(#EAF7FF, #EFFFF7, #FFF5F0)",
-    }}>
+    <div
+      className="px-4 py-2 h-full"
+      style={{
+        background: "linear-gradient(#F9FCFF, #F9FFFD, #ffffff)",
+        // background: "linear-gradient(#EAF7FF, #EFFFF7, #FFF5F0)",
+      }}
+    >
       {/* Profile Section */}
       <div
         className="flex flex-col justify-center rounded-md p-6 bg-center bg-cover bg-no-repeat w-full"
