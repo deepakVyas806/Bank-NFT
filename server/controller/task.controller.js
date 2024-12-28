@@ -26,44 +26,40 @@ function isProductExpiry(createdAt,validity){
 //buy api:
 const buyTask = async(req,res)=>{
   try {
-     const {productId} = req.body;
+     const {userProductId} = req.body;
      const user = req.access_verification;
      
      //product is is necessary 
-     if(!productId){
-        return response_message(res,400,false,'product id is nescceary ',null);
+     if(!userProductId){
+        return response_message(res,400,false,'user product id is nescceary ',null);
      }
    
-     const product = await product_model.findOne({_id:productId});
-     if(!productId){
-        return response_message(res,400,false,'No Product exist ',null);
+     const userProduct = await user_product_model.findOne({_id:userProductId}).populate('product_id');
+     if(!userProduct){
+        return response_message(res,400,false,'No Product assosiate wi9th this user  ',null);
      }
    
-     console.log("product",product);
-     
+     console.log("user product",userProduct);
+     console.log("user product created at",userProduct.product_id.createdAt);
 
      //check the product expiry 
-     if(isProductExpiry(product.createdAt,product.validity)){
+     if(isProductExpiry(userProduct.product_id.createdAt,userProduct.product_id.validity)){
         return response_message(res,400,false,'product is expired ',null)
      }
     
-     const user_product = await user_product_model.findOne({user_id:user._id,product_id:productId});
-
-     if(!user_product){
-        return response_message(res,400,false,'this product is not assosisate with this user',null)
-     }
+  
    
-     if(user_product.buy==true){
+     if(userProduct.buy==true){
         return response_message(res,400,false,'wait for next day or sell it ',null)
      }
 
-     if(user_product.buy===true && user_product.sell===true){
-        return response_message(res,400,false,'buy or sell both donme ',null)
+     if(userProduct.buy===true && userProduct.sell===true){
+        return response_message(res,400,false,'buy or sell both done ',null)
      }
      
-     user_product.buy = true;
-     user_product.save();
-     return response_message(res,200,true,'buy successfull amount to sell ',user_product)
+     userProduct.buy = true;
+     userProduct.save();
+     return response_message(res,200,true,'buy successfull amount to sell ',userProduct)
 
   } catch (error) {
     return response_message(res,500,false,'erro in buy task api',error.message);
@@ -73,54 +69,50 @@ const buyTask = async(req,res)=>{
 }
 
 const sellTask = async(req,res)=>{
-    const {productId} = req.body;
+    const {userProductId} = req.body;
     const user = req.access_verification;
 
    try {
      //product is is necessary 
-     if(!productId){
-         return response_message(res,400,false,'product id is nescceary ',null);
+     if(!userProductId){
+         return response_message(res,400,false,' user product id is nescceary ',null);
       }
     
-      const product = await product_model.findOne({_id:productId});
-      console.log("product",product);
+      const userProduct = await user_product_model.findOne({_id:userProductId}).populate('product_id');
+      console.log("product",userProduct);
  
        //check the product expiry 
-       if(isProductExpiry(product.createdAt,product.validity)){
+       if(isProductExpiry(userProduct.product_id.createdAt,userProduct.product_id.validity)){
          return response_message(res,400,false,'product is expired ',null)
       }
      
-      const user_product = await user_product_model.findOne({user_id:user._id,product_id:productId});
-       
-      if(!productId){
-        return response_message(res,400,false,'No Product exist ',null);
-     }
 
-      if(!user_product){
+
+      if(!userProduct){
          return response_message(res,400,false,'this product is not assosisate with this user',null)
       }
  
-      if(user_product.buy===false){
+      if(userProduct.buy===false){
          return response_message(res,400,false,'You need to buy first',null)
       }
  
-      if(user_product.buy===true && user_product.sell===true){
+      if(userProduct.buy===true && userProduct.sell===true){
          return response_message(res,400,false,'buy or sell both donme ',null)
       }
  
       //increaase amount by 3 % and added in withdraw 
-      const amount = product.product_price * 3/100;
+      const amount = userProduct.product_id.product_price * 3/100;
  
       const curr_user = await register_model.findOne({_id:user._id});
       console.log("curr user",curr_user);
       console.log("amount",amount)
       curr_user.withdrawl_balance += amount;
       await curr_user.save();
-      // update the sell flaf 
+      // update the sell flag 
  
-      user_product.sell = true;
-      user_product.save();
-      return response_message(res,200,true,'sell succesfully  ',user_product)
+      userProduct.sell = true;
+      userProduct.save();
+      return response_message(res,200,true,'sell succesfully  ',userProduct)
    } catch (error) {
     return response_message(res,500,false,'erro in sell task api',error.message);
    }
