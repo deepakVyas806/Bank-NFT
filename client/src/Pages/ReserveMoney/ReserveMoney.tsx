@@ -20,7 +20,7 @@ const Reserve = ({ data, action, activeTab }: any) => {
   );
 
   const handleActionClick = async (tab: number, item: any) => {
-    const itemId = item?.user_product?.product_id?._id;
+    const itemId = item?.user_product?._id;
     setLoadingStates((prev) => ({ ...prev, [itemId]: true }));
 
     try {
@@ -96,7 +96,7 @@ const Reserve = ({ data, action, activeTab }: any) => {
             >
               <div className="inline-flex items-center cursor-pointer">
                 <p className="text-gray-800 font-semibold text-sm hover:text-black uppercase flex items-center">
-                  {loadingStates[item?.user_product?.product_id?._id] ? (
+                  {loadingStates[item?.user_product?._id] ? (
                     <Loader
                       loading={true}
                       type={"beat"}
@@ -224,7 +224,7 @@ const Collection = ({ data, action, activeTab }: any) => {
   );
 
   const handleActionClick = async (tab: number, item: any) => {
-    const itemId = item?.user_product?.product_id?._id;
+    const itemId = item?.user_product?._id;
     setLoadingStates((prev) => ({ ...prev, [itemId]: true }));
 
     try {
@@ -300,7 +300,7 @@ const Collection = ({ data, action, activeTab }: any) => {
             >
               <div className="inline-flex items-center cursor-pointer">
                 <p className="text-gray-800 font-semibold text-sm hover:text-black uppercase flex items-center">
-                  {loadingStates[item?.user_product?.product_id?._id] ? (
+                  {loadingStates[item?.user_product?._id] ? (
                     <Loader
                       loading={true}
                       type={"beat"}
@@ -353,7 +353,7 @@ const ReserveMoney: React.FC = () => {
         try {
           setIsBuySellLoading(true);
           await axiosPrivate.post("/api/v1/buyTask", {
-            productId: item?.user_product?.product_id?._id,
+            userProductId: item?.user_product?._id,
           });
           setData();
           showToast("Task Buyed Successfully", "success", 1000);
@@ -372,7 +372,7 @@ const ReserveMoney: React.FC = () => {
         try {
           setIsBuySellLoading(true);
           await axiosPrivate.post("/api/v1/sellTask", {
-            productId: item?.user_product?.product_id?._id,
+            userProductId: item?.user_product?._id,
           });
           setData();
           showToast("Task Completed Successfully", "success", 1000);
