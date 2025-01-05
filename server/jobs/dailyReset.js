@@ -2,7 +2,7 @@ import cron from "node-cron";
 import { user_product_model } from "../model/user_product.js";
 
 cron.schedule(
-  "0 */12 * * *", // Runs every minute
+  "*/5 *   * * *", // Runs every minute
   async () => {
     try {
       // Fetch the user's product data
@@ -33,6 +33,7 @@ cron.schedule(
           // Reset buy and sell flags for a new day
           product.buy = false;
           product.sell = false;
+          product.last_run = Math.floor(Date.now()/1000);
 
           console.log(
             `Product statuses reset for a new day.user product id ${product._id}`
