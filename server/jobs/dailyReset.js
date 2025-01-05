@@ -2,7 +2,7 @@ import cron from "node-cron";
 import { user_product_model } from "../model/user_product.js";
 
 cron.schedule(
-  "* *   * * *", // Runs every minute
+  "*/10 * * * *", // Runs every minute
   async () => {
     try {
       // Fetch the user's product data
