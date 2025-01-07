@@ -7,7 +7,6 @@ import { response_message } from "../responses.js";
 import { user_product_model } from "../model/user_product.js";
 import { withdraw_model } from "../model/with_draw.js";
 import { referral_model } from "../model/referal.model.js";
-import datetime from "datetime";
 
 //create the referral code random
 function generateReferralCode(length = 8) {
