@@ -157,6 +157,7 @@ const sellTask = async (req, res) => {
     // update the sell flag
 
     userProduct.sell = true;
+    userProduct.last_run = Math.floor(Date.now() / 1000);
     userProduct.save();
     return response_message(res, 200, true, "sell succesfully  ", userProduct);
   } catch (error) {
