@@ -7,13 +7,13 @@ import { response_message } from "../responses.js";
 import { user_product_model } from "../model/user_product.js";
 import { withdraw_model } from "../model/with_draw.js";
 import { referral_model } from "../model/referal.model.js";
+import datetime from "datetime";
 
-
-//create the referral code random 
+//create the referral code random
 function generateReferralCode(length = 8) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const requiredCharacters = 'S';
-  let referralCode = '';
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const requiredCharacters = "S";
+  let referralCode = "";
 
   // Ensure the referral code contains at least one 'S'
   referralCode += requiredCharacters;
@@ -25,7 +25,10 @@ function generateReferralCode(length = 8) {
   }
 
   // Shuffle the referral code to randomize the position of 'S'
-  referralCode = referralCode.split('').sort(() => Math.random() - 0.5).join('');
+  referralCode = referralCode
+    .split("")
+    .sort(() => Math.random() - 0.5)
+    .join("");
 
   return referralCode;
 }
@@ -42,7 +45,6 @@ const register = async (req, res) => {
     phone,
     otp,
     referral,
-    
   } = req.body;
   console.log(req.body);
   try {
@@ -71,15 +73,20 @@ const register = async (req, res) => {
     }
 
     //invitation check
-    const referralUsed = await register_model.find({selfReferral:referral});
-    console.log("referaal user",referralUsed)
-    if(!referralUsed || referralUsed.length==0){
-        return response_message(res,400,false,'This is not a valid referral',null)
+    const referralUsed = await register_model.find({ selfReferral: referral });
+    console.log("referaal user", referralUsed);
+    if (!referralUsed || referralUsed.length == 0) {
+      return response_message(
+        res,
+        400,
+        false,
+        "This is not a valid referral",
+        null
+      );
     }
 
     const referralCode = generateReferralCode(8);
-    console.log("referral code ",referralCode);
-  
+    console.log("referral code ", referralCode);
 
     // Register the user
     const registerUser = await register_model.create({
@@ -92,40 +99,39 @@ const register = async (req, res) => {
       referral,
       password,
       cpassword,
-      selfReferral:referralCode
+      selfReferral: referralCode,
     });
 
     //entry in referral table
-    
-    console.log("registerUser",registerUser);
 
-    //get the user oppositee from the register user table so we can storte the id 
-    const get_user_o = await register_model.findOne({selfReferral:referral});
-    const get_user_s = await register_model.findOne({selfReferral:referralCode});
-    
+    console.log("registerUser", registerUser);
+
+    //get the user oppositee from the register user table so we can storte the id
+    const get_user_o = await register_model.findOne({ selfReferral: referral });
+    const get_user_s = await register_model.findOne({
+      selfReferral: referralCode,
+    });
+
     const referralEntry = await referral_model.create({
-      user_referral_o:{
-        user_referral_code_o:registerUser.referral,
-        user_id_o:get_user_o?get_user_o._id:null
-      },
-      
-      user_referral_s:{
-        user_referral_code_s:registerUser.selfReferral,
-        user_id_s:get_user_s?get_user_s._id:null
+      user_referral_o: {
+        user_referral_code_o: registerUser.referral,
+        user_id_o: get_user_o ? get_user_o._id : null,
       },
 
-      activated_bonus:false
-      
+      user_referral_s: {
+        user_referral_code_s: registerUser.selfReferral,
+        user_id_s: get_user_s ? get_user_s._id : null,
+      },
 
-    })
-    
+      activated_bonus: false,
+    });
 
-    console.log("referral entry",referralEntry)
+    console.log("referral entry", referralEntry);
 
     return res.status(200).json({
       success: true,
       message: "User created successfully",
-      payload:{registerUser,referralEntry},
+      payload: { registerUser, referralEntry },
     });
   } catch (error) {
     return res.status(500).json({
@@ -331,6 +337,19 @@ const profile = async (req, res) => {
     console.log("user", user);
     const wallet_balance = user.wallet_balance;
     const today = Math.floor(Date.now() / 1000); // Current timestamp (seconds)
+
+    const todayDate = new Date(today * 1000); // Convert to Date object to extract year/month/day
+
+    // Function to check if the given timestamp is from today
+    function isFromToday(timestamp) {
+      const timestampDate = new Date(timestamp * 1000); // Convert to Date object
+      return (
+        timestampDate.getFullYear() === todayDate.getFullYear() &&
+        timestampDate.getMonth() === todayDate.getMonth() &&
+        timestampDate.getDate() === todayDate.getDate()
+      );
+    }
+
     // const today = 1732194877
     let products = [];
     const user_products = await user_product_model
@@ -345,7 +364,7 @@ const profile = async (req, res) => {
         {
           wallet_balance,
           user_details: {
-           user
+            user,
           },
           products,
         }
@@ -353,47 +372,24 @@ const profile = async (req, res) => {
     }
 
     for (let user_product of user_products) {
-      let hourly_income = 0;
-      const daily_profit = user_product.daily_income;
-
-      //skip the product calculation if the withdrawl flag is 1
-      // Skip processing if the withdrawal flag is set
-      if (user_product.withdrawl_flag === 1) {
-        continue; // Skip further processing for this product
-      }
-
       // Check if the product has expired
       if (user_product.end_date < today) {
-        // user_product.total_income =
-        // user_product.daily_income * user_product.validity; // Expired product, full income
-        // user_product.withdrawal_balance =
-        // user_product.daily_income * user_product.validity;
-        user_product.withdrawl_flag = 1; // Mark for withdrawal if expired
-        user.withdrawl_balance +=
-          user_product.daily_income * user_product.validity;
-      } else {
-        const elapsed_seconds = today - user_product.last_run; // Elapsed time in seconds
-        const elapsed_hours = elapsed_seconds / 3600; // Convert elapsed time to hours
-
-        // Update income if at least one hour has passed
-        if (elapsed_hours >= 1) {
-          hourly_income = (daily_profit / 24) * elapsed_hours; // Calculate hourly income for the elapsed time
-          user_product.total_income += hourly_income; // Accumulate total income
-          user_product.last_run = today; // Update last run to the current time
-        }
+        continue;
       }
+      console.log("user_product today", today);
 
-      // Save the updated user_product to the database
-      await user_product.save();
+      if (!isFromToday(user_product.last_run)) {
+        user_product.buy = false;
+        user_product.sell = false;
+        await user_product.save();
+      }
 
       // Add the product's income details to the response
       console.log(user_products);
       products.push({
-       
-       user_product
+        user_product,
       });
     }
-    console.log("Testing products", products);
 
     // // Update the user's withdrawal balance
     // user.withdrawl_balance = products.reduce(
@@ -411,7 +407,7 @@ const profile = async (req, res) => {
         wallet_balance,
         withdrawal_balance: user.withdrawl_balance,
         user_details: {
-         user
+          user,
         },
         products,
       }
@@ -427,18 +423,14 @@ const profile = async (req, res) => {
   }
 };
 
-
-//withdraw controller 
+//withdraw controller
 const withdraw = async (req, res) => {
   try {
     const userId = req.access_verification._id;
     const user = await register_model.findOne({ _id: userId });
 
     //information for withdraw data
-    const {
-      amount,
-      USDTWalletAddress
-    } = req.body;
+    const { amount, USDTWalletAddress } = req.body;
 
     //check that amount should not greater than withdrawlable amount
     if (amount > user.withdrawl_balance) {
@@ -458,7 +450,7 @@ const withdraw = async (req, res) => {
     const withdraw_entry = await withdraw_model.create({
       userId: userId,
       amount: amount,
-      USDTWalletAddress
+      USDTWalletAddress,
     });
 
     return response_message(res, 200, true, withdraw_entry);
