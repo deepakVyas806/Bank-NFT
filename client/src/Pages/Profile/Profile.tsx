@@ -6,6 +6,7 @@ import { axiosPrivate } from "../../ApiServices/Axios";
 import Modal from "../../Components/Modal/Modal";
 import AddRechargeAmount from "./AddRechargeAmount";
 import Loader from "../../Components/Loader/Loader";
+import Cookies from "js-cookie";
 import WithdrawAmount from "./WithdrawAmount";
 import { FormikProps } from "formik";
 import { useDispatch } from "react-redux";
@@ -13,6 +14,7 @@ import { setUserProfile } from "../../redux/actions/userProfileActions";
 import { AiFillProduct } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { FaUsers } from "react-icons/fa";
+import axios from "axios";
 
 const Profile: React.FC = () => {
   const formikRef = useRef<FormikProps<any>>(null);
@@ -113,7 +115,17 @@ const Profile: React.FC = () => {
       const rechargeDetails: any = {
         TxId: formikRef.current?.values?.transactionID,
       };
-      await axiosPrivate.post("api/v1/binanceVerify", rechargeDetails);
+      // await axiosPrivate.post("api/v1/binanceVerify", rechargeDetails);
+      await axios.post(
+        "https://bank-nft.onrender.com/api/v1/binanceVerify",
+        rechargeDetails,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("ACCESS_TOKEN")}`, // Replace yourToken with the actual token
+            "Content-Type": "application/json", // Optional, depending on the API
+          },
+        }
+      );
       showToast("Amount deposited successfully", "success", 1000);
       fetchProfileData();
       // const rechargeOrder = response.data.payload;

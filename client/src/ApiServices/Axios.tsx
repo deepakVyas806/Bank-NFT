@@ -9,9 +9,9 @@ import Cookies from "js-cookie";
 
 // Base URL of your API
 // const BASE_URL = 'https://betting-app-gold.vercel.app/';  //Live
-export const BASE_URL = "https://bank-nft.onrender.com/"; //Local
+export const BASE_URL_RENDER = "https://bank-nft.onrender.com/"; //Local
 // export const BASE_URL = "http://localhost:4000/"; //Local
-export const Vercel_BASE_URL = "https://betting-app-gold.vercel.app/"; //vercel url
+export const BASE_URL = "https://betting-app-gold.vercel.app/"; //vercel url
 
 // Get tokens from local storage
 const getAccessToken = (): string | undefined => Cookies.get("ACCESS_TOKEN");
@@ -25,13 +25,17 @@ const setAccessToken = (token: string) => Cookies.set("ACCESS_TOKEN", token);
 export const axiosPublic = axios.create({
   baseURL: BASE_URL,
 });
-export const axiosPublicVercel = axios.create({
-  baseURL: Vercel_BASE_URL,
+export const axiosPublicRender = axios.create({
+  baseURL: BASE_URL_RENDER,
 });
 
 // Private Axios Instance - Auth Token Required
 export const axiosPrivate = axios.create({
   baseURL: BASE_URL,
+  withCredentials: true, // Necessary if using cookies for token management
+});
+export const axiosPrivateRender = axios.create({
+  baseURL: BASE_URL_RENDER,
   withCredentials: true, // Necessary if using cookies for token management
 });
 
