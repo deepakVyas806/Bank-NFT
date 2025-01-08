@@ -4,7 +4,7 @@ import AuthInput from "../../Components/Input/AuthInput";
 import { AiOutlineLock, AiOutlineUser } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { axiosPublic, axiosPublicVercel } from "../../ApiServices/Axios";
+import { axiosPublic } from "../../ApiServices/Axios";
 import { showToast } from "../../ToastServices/ToastServices";
 import Cookies from "js-cookie";
 import SubmitButton from "../../Components/Button/SubmitButton/SubmitButton"; // Updated import to SubmitButton
@@ -34,7 +34,7 @@ export default function LogInForm() {
   ) => {
     setIsLoading(true);
     try {
-      const response = await axiosPublicVercel.post("api/v1/login", {
+      const response = await axiosPublic.post("api/v1/login", {
         email: values.email,
         login_pass: values.password,
       });
