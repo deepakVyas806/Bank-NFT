@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { setUserProfile } from "../../redux/actions/userProfileActions";
 import { AiFillProduct } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { FaUsers } from "react-icons/fa";
 
 const Profile: React.FC = () => {
   const formikRef = useRef<FormikProps<any>>(null);
@@ -215,7 +216,7 @@ const Profile: React.FC = () => {
           <div className="flex items-center text-gray-500 hover:text-blue-500">
             <MdOutlinePhone size={16} className="mt-0.5" />
             <p className="text-gray-600 font-normal text-sm hover:text-blue-500 cursor-pointer">
-              +91 {profileData?.user_details?.user?.phone}
+              {profileData?.user_details?.user?.phone}
             </p>
           </div>
         </div>
@@ -285,7 +286,7 @@ const Profile: React.FC = () => {
                 Services
               </p>
             </div>
-            <div className="p-2 px-4">
+            <div className="p-2 px-4 flex items-center space-x-4">
               <div
                 onClick={() => {
                   navigation("/myProducts");
@@ -300,6 +301,22 @@ const Profile: React.FC = () => {
                 {/* Text */}
                 <p className="text-blue-600 text-xs font-medium mt-1">
                   My Products
+                </p>
+              </div>
+              <div
+                onClick={() => {
+                  navigation("/myReferrals");
+                }}
+                className="cursor-pointer flex flex-col items-center justify-center rounded-xl w-20 h-20"
+              >
+                {/* Icon */}
+                <div className="flex items-center justify-center text-purple-600">
+                  <FaUsers size={25} />
+                </div>
+
+                {/* Text */}
+                <p className="text-purple-600 text-xs font-medium mt-1">
+                  My Referrals
                 </p>
               </div>
             </div>
