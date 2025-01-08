@@ -19,7 +19,7 @@ const MyReferrals: React.FC = () => {
     //       ? "allreferrals"
     //       : "userreferrals";
       setIsLoading(true);
-      const response = await axiosPrivate.get(`/api/v1/referrals_entry`);
+      const response = await axiosPrivate.post(`/api/v1/referral`);
       setReferrals(response.data.payload || []); // Fetch referrals
     } catch (error) {
       console.error("Error fetching referrals:", error);
@@ -89,12 +89,12 @@ const ReferralCard: React.FC<{ item: any }> = ({ item }) => {
           className="w-12 h-12 rounded-full border-2 border-yellow-400 mr-4"
         />
         <div>
-          <p className="font-medium text-sm text-black">{item.userName}</p>
+          <p className="font-medium text-sm text-black">{item.Name}</p>
           <p className="text-xs text-gray-600">{item.email}</p>
           {/* <p className="text-xs text-gray-600">{item.mobile}</p> */}
         </div>
       </div>
-      <div className="text-sm font-medium text-green-700">+ $10</div>
+      <div className="text-sm font-medium text-green-700">+ ${item?.Amount}</div>
     </div>
   );
 };
