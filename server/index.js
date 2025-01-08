@@ -12,11 +12,11 @@ import { payment_success } from "./router/payment/sucess.router.js";
 // import { register_model } from "./model/register.model.js";
 import { withdraw } from "./router/withdraw.js";
 import { binanceDeposit } from "./router/binance.deposit.router.js";
-import { register_model } from "./model/register.model.js";
 import { withdraw_model } from "./model/with_draw.js";
-import './jobs/dailyReset.js'
+import "./jobs/dailyReset.js";
 import { user_product_model } from "./model/user_product.js";
 import { taskRouter } from "./router/task.router.js";
+import { referral_model } from "./model/referal.model.js";
 
 // import {product_model} from "../server/model/product.model.js"
 // import { pro_inv } from "./model/investment.model.js";
@@ -52,17 +52,15 @@ app.use("/api/v1", proute); // Product routes
 //this route related to payment verification and the orde creation
 app.use("/api/v1", payment),
   //payment success call back
-app.use("/api/v1", payment_success);
+  app.use("/api/v1", payment_success);
 //withdaw list
-app.use('/api/v1',withdraw)
+app.use("/api/v1", withdraw);
 
 // binnace deposit check and update the user balance
-app.use('/api/v1',binanceDeposit);
+app.use("/api/v1", binanceDeposit);
 
 //task apis
-app.use('/api/v1',taskRouter)
-
-
+app.use("/api/v1", taskRouter);
 
 // Database Connection
 mongoose
@@ -75,5 +73,3 @@ mongoose
   .catch((error) => {
     console.log("Database connection error:", error.message);
   });
-
-

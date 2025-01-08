@@ -29,13 +29,22 @@ const register_schema = new mongoose.Schema({
     type: String,
     default: "root@referral",
   },
+  referral_amount: {
+    type: Number,
+    default: "0",
+  },
+  referral_amount_status: {
+    type: Boolean,
+    default: "false",
+  },
+
   selfReferral: {
     type: String,
     default: "root@referral",
   },
-  referal_income:{
-    type:Number,
-    default:0
+  referal_income: {
+    type: Number,
+    default: 0,
   },
   password: {
     type: String,
@@ -63,10 +72,10 @@ const register_schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  role:{
-    type:String,
-    default:'user',
-    enum:['user','admin']
+  role: {
+    type: String,
+    default: "user",
+    enum: ["user", "admin"],
   },
   createdAt: {
     type: Number,

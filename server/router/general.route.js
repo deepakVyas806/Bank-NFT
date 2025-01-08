@@ -7,6 +7,7 @@ import {
   withdraw,
   forgot_pass,
   new_password_save,
+  referral_details,
 } from "../controller/general.controller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { mail_otp } from "../controller/node_mailer.controller.js";
@@ -40,5 +41,8 @@ router.post("/forgot", verifyToken, forgot_pass);
 
 //new password save
 router.post("/resetLink", new_password_save);
+
+//referal details
+router.post("/referral", verifyToken, referral_details);
 
 export default router;

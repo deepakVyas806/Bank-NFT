@@ -115,6 +115,7 @@ const register = async (req, res) => {
       user_referral_o: {
         user_referral_code_o: registerUser.referral,
         user_id_o: get_user_o ? get_user_o._id : null,
+        referral_amount: 0,
       },
 
       user_referral_s: {
@@ -645,6 +646,56 @@ const new_password_save = async (req, res) => {
   }
 };
 
+//referall details of each user
+const referral_details = async (req, res) => {
+  let data = [];
+  const userId = req.access_verification._id;
+  const user = await register_model.findOne({ _id: userId });
+  try {
+    const referall_users = await referral_model.find({
+      "user_referral_s.user_id_s": userId,
+    });
+
+    if (!referall_users && referall_users.length === 0) {
+      return response_message(res, 400, false, "No data found", null);
+    }
+    console.log("referall users entry", referall_users);
+
+    for (let referaal_user of referall_users) {
+      const all_referalls = await referral_model.find({
+        "user_referral_o.user_referral_code_o":
+          referaal_user.user_referral_s.user_referral_code_s,
+      });
+
+      console.log("all_referrals", all_referalls);
+
+      for (let referral_data of all_referalls) {
+        const user_details = await register_model.findOne({
+          _id: referral_data.user_referral_s.user_id_s,
+        });
+
+        console.log("user details", user_details);
+
+        data.push({
+          Name: user_details.firstname,
+          email: user_details.email,
+          Amount: referral_data.user_referral_o.referral_amount,
+        });
+      }
+    }
+
+    return response_message(res, 200, true, "data fetch succesfully", data);
+  } catch (error) {
+    return response_message(
+      res,
+      500,
+      false,
+      "error in referral api",
+      error.message
+    );
+  }
+};
+
 export {
   register,
   login,
@@ -653,4 +704,5 @@ export {
   withdraw,
   forgot_pass,
   new_password_save,
+  referral_details,
 };
