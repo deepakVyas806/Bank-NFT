@@ -15,6 +15,8 @@ import OTPInput from "../../Components/Input/OTPInput";
 import { useEffect, useState } from "react";
 import SubmitButton from "../../Components/Button/SubmitButton/SubmitButton";
 import Logo from "../../Components/Logo/Logo";
+import CountryCodeDropdown from "../../Components/Utils/CountryCodeDropdown";
+import countryCodes from "../../Jsons/CountryCode.json";
 
 // Yup validation schema
 const validationSchema = Yup.object({
@@ -99,7 +101,7 @@ export default function SignUpForm() {
         otp: values.code,
         cpassword: values.confirmPassword,
         email: values.email,
-        phone: values.mobile,
+        phone: values.countryCode + " " + values.mobile,
         referral: values.invitation,
       });
       console.log(response.data);
@@ -146,6 +148,7 @@ export default function SignUpForm() {
                   confirmPassword: "",
                   invitation: InvitationCode ? InvitationCode : "",
                   code: "",
+                  countryCode: countryCodes?.[0]?.code || "",
                 }}
                 validationSchema={validationSchema}
                 onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -209,15 +212,24 @@ export default function SignUpForm() {
                           required
                         />
                       </div>
-                      <div>
-                        <AuthInput
-                          label="Mobile"
-                          name="mobile"
-                          placeholder="Enter mobile number"
-                          prefix="+91"
-                          icon={<AiOutlineMobile />}
-                          required
-                        />
+                      <div className="flex">
+                        <div className="w-24 mr-4">
+                          <CountryCodeDropdown
+                            name="countryCode"
+                            label="Country Code"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <AuthInput
+                            label="Enter mobile number"
+                            name="mobile"
+                            placeholder="Enter mobile number"
+                            prefix=""
+                            icon={<AiOutlineMobile />}
+                            required
+                          />
+                        </div>
                       </div>
                       <div>
                         <AuthInput
