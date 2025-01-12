@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 
 const ReferAndEarn: React.FC = () => {
   const isMobile = useMediaQuery({ query: "(max-width: 1024px)" }); // Adjust breakpoint as needed
-  const ShareURL = "https://betting-app-frontend-neon.vercel.app/signUp";
+  const ShareURL = "https://www.banknft.site/signUp";
   const profileData = useSelector((state: any) => state.user.userProfile); // Fetch user profile from Redux store
   const ReferralCode = profileData?.user_details?.user?.selfReferral;
   const [isReferalCodeCopied, setIsReferalCodeCopied] = useState(false);

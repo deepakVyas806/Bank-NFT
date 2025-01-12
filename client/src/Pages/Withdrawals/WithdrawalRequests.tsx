@@ -43,7 +43,7 @@ const WithdrawalRequests: React.FC = () => {
       setISApproveLoading(true);
       const params = {
         status: "paid",
-        refId: item?.refId,
+        refId: item?._id,
       };
       const response = await axiosPrivate.patch("api/v1/updateStatus", params);
       console.log(response);
