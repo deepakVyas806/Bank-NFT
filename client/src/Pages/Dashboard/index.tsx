@@ -8,6 +8,9 @@ const Dashboard: React.FC = () => {
   const location = useLocation();
   const { fromLoginPage } = location.state || {};
   const [isPopupVisible, setIsPopupVisible] = useState(fromLoginPage);
+  const handleRedirect = (url: string) => {
+    window.open(url, "_blank");
+  };
 
   // return <><NoDataAvailable /></>;
   return (
@@ -86,8 +89,20 @@ const Dashboard: React.FC = () => {
         <p className="text-sm font-medium">Bank NFT</p>
         <div className="flex space-x-4">
           <p className="text-sm font-medium">Follow us on:</p>
-          <FaTelegram size={20} className="cursor-pointer" />
-          <FaInstagramSquare size={20} className="cursor-pointer" />
+          <FaTelegram
+            size={20}
+            className="cursor-pointer"
+            onClick={() => handleRedirect("https://t.me/+GZzFD9Jmld5hZTk1")}
+          />
+          <FaInstagramSquare
+            size={20}
+            className="cursor-pointer"
+            onClick={() =>
+              handleRedirect(
+                "https://www.instagram.com/banknft2025?igsh=MWE0dThuNmJkYmZ0aQ=="
+              )
+            }
+          />
         </div>
       </div>
 

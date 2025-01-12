@@ -2,6 +2,7 @@ import React from "react";
 // import { AiOutlineClose, AiOutlineRight } from "react-icons/ai";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import Loader from "../../Components/Loader/Loader";
+import { useMediaQuery } from "react-responsive";
 // import { FiMoreVertical } from "react-icons/fi";
 
 interface WithdrawalRequestProps {
@@ -22,6 +23,7 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
   isRejectLoading,
 }) => {
   const { _id, amount, USDTWalletAddress, status } = item;
+  const isMobileOrTablet = useMediaQuery({ query: "(max-width: 1024px)" });
   // const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -31,7 +33,7 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
         <div>
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-300">
-              Ref. Id: <span className="text-black">#{_id}</span>
+              Ref. Id: <span className="text-black text-xs">#{_id}</span>
             </h3>
             <span
               className={`ml-1 ${
@@ -51,7 +53,7 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
             <span className="font-medium text-black text-sm">${amount}</span>
           </p>
         </div>
-        {status?.toLowerCase() == "process" && isAdmin && (
+        {status?.toLowerCase() == "process" && isAdmin && !isMobileOrTablet && (
           <div className="flex items-center space-x-2">
             <button
               type="button"
@@ -142,7 +144,7 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
           <p className="text-xs text-gray-500 font-medium">
             USDT Wallet Address:
           </p>
-          <p className="font-medium text-sm ">{USDTWalletAddress}</p>
+          <p className="font-medium text-xs">{USDTWalletAddress}</p>
         </div>
         {/* </p> */}
         {/* <div className="mt-2">
@@ -162,6 +164,50 @@ const WithdrawalRequestCard: React.FC<WithdrawalRequestProps> = ({
           <p className="font-medium text-sm ">{upi_id}</p>
         </div> */}
       </div>
+      {status?.toLowerCase() == "process" && isAdmin && isMobileOrTablet && (
+        <div className="flex items-center space-x-2 mt-4 justify-end">
+          <button
+            type="button"
+            disabled={isRejectLoading}
+            className="bg-red-400 rounded-md p-1 shadow-md cursor-pointer"
+            onClick={() => onReject(item)}
+          >
+            {isRejectLoading ? (
+              <Loader
+                loading={isRejectLoading}
+                type="scale"
+                size={12}
+                color="#ffffff"
+              />
+            ) : (
+              <div className="flex items-center space-x-2 px-1">
+                <span className="text-xs text-white font-medium">Reject</span>{" "}
+                <FaTimes color="white" size={12} />
+              </div>
+            )}
+          </button>
+          <button
+            type="button"
+            disabled={isApproveLoading}
+            className="bg-green-400 rounded-md p-1 shadow-md cursor-pointer"
+            onClick={() => onApprove(item)}
+          >
+            {isApproveLoading ? (
+              <Loader
+                loading={isApproveLoading}
+                type="scale"
+                size={12}
+                color="#ffffff"
+              />
+            ) : (
+              <div className="flex items-center space-x-2 px-1">
+                <span className="text-xs text-white font-medium">Approve</span>{" "}
+                <FaCheck color="white" size={12} />
+              </div>
+            )}
+          </button>
+        </div>
+      )}
 
       {/* Bank details for bank details */}
       {/* <div
